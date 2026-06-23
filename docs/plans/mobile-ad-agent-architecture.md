@@ -278,8 +278,10 @@ Cloud Linux/Cloudflare workers cannot run iOS Simulator. Options:
 Benchmark identical 9:16 proof-driven ads across:
 
 - HyperFrames Cloud
+- HyperFrames local CLI/producer
 - HyperFrames GCP Cloud Run
 - Remotion Lambda
+- AdAgentic local Remotion `AdRenderer`
 - custom Cloud Run Docker renderer
 
 Inputs:
@@ -306,6 +308,8 @@ Measurements:
 - OCR/QA pass rate
 - file size and codec acceptance
 - agent editability/success rate
+
+See `docs/plans/local-renderer-benchmark.md` for the local side-by-side harness plan.
 
 ## Open Decisions
 

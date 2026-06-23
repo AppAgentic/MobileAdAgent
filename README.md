@@ -8,3 +8,4 @@ The initial planning spine lives in:
 
 - `AGENTS.md`
 - `docs/plans/mobile-ad-agent-architecture.md`
+- `docs/plans/local-renderer-benchmark.md`
