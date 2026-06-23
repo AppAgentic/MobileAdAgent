@@ -8,7 +8,8 @@ Important findings:
 
 - Hosted HyperFrames Cloud supports project uploads and async render jobs.
 - Pay-as-you-go published concurrency is `10` concurrent video jobs.
-- 1080p/30fps pricing is approximately `$0.10` per output minute.
+- 1080p/30fps pricing is `0.1 credits` per output minute; dollar cost depends on the
+  active HeyGen account plan / credit price.
 - HyperFrames has self-host paths for AWS Lambda and GCP Cloud Run + Workflows.
 - HyperFrames should be a first-class render backend candidate for Mobile Ad Agent.
 
@@ -39,9 +40,9 @@ Cloudflare Containers should be treated as a prototype render path until product
 
 HeyGen hosted HyperFrames:
 
-- 15s 1080p/30fps ad: about `$0.025`
-- 30s 1080p/30fps ad: about `$0.05`
-- 60s 1080p/30fps ad: about `$0.10`
+- 15s 1080p/30fps ad: `0.025 credits`
+- 30s 1080p/30fps ad: `0.05 credits`
+- 60s 1080p/30fps ad: `0.1 credits`
 
 Cloud Run self-host:
 

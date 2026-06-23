@@ -170,8 +170,9 @@ Use HeyGen HyperFrames Cloud for the fastest v1 path.
 
 Known defaults from research:
 
-- 1080p/30fps cost is approximately `$0.10` per output minute.
-- A 30s 1080p/30 ad is approximately `$0.05`.
+- 1080p/30fps cost is `0.1 credits` per output minute; dollar cost depends on the
+  active HeyGen account plan / credit price.
+- A 30s 1080p/30 ad is `0.05 credits`.
 - Pay-as-you-go published concurrency is `10` concurrent video jobs.
 - Use idempotency keys and queue/backoff on `429` + `Retry-After`.
 
@@ -329,6 +330,7 @@ See `docs/plans/local-renderer-benchmark.md` for the local side-by-side harness 
 - Treat App Store URL bootstrap as useful intake, not proof by default.
 - Build a swappable render backend.
 - Make HyperFrames a first-class render candidate and likely v1 render backend.
+- Start product v1 with our own PepMod-style UGC generation pipeline, using HeyGen-hosted HyperFrames only as the V1 finishing/render backend; keep generation/render abstractions so HyperFrames can move to our own Cloud Run worker later.
 - Keep Remotion as a mature benchmark/fallback.
 - Use Cloudflare R2 as asset lake.
 - Use Firebase/App Hosting/Auth/Firestore for the product control plane.
