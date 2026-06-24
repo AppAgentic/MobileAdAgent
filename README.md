@@ -11,6 +11,32 @@ The initial planning spine lives in:
 - `docs/plans/heygen-hosted-product-plan.md`
 - `docs/plans/local-renderer-benchmark.md`
 
+## Local Prototype
+
+Run the local control-plane prototype:
+
+```bash
+pnpm run local:app
+```
+
+Then open:
+
+```text
+http://127.0.0.1:3107
+```
+
+This first local version is intentionally provider-safe. It uses a tiny Node server and
+browser UI to test the product workflow without Firebase, R2, HeyGen, model providers, or
+ad-network mutations. The prototype covers app intake, proof library editing, a mocked
+creative pipeline, HyperFrames-first timeline planning, local QA, manifest preview, and
+creative-pack export shape.
+
+Run the local workflow smoke test:
+
+```bash
+pnpm run smoke:local-app
+```
+
 ## Local Renderer Benchmark
 
 Run the generation-only local benchmark:
