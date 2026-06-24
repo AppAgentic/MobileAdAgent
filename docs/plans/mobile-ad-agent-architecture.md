@@ -19,7 +19,8 @@ Mobile Ad Agent is an agent-native creative factory:
 - Do not directly manage live ad-network spend.
 - Do not become a campaign optimizer in v1.
 - Do not invent app UI, fake screenshots, fake product values, or unsupported claims.
-- Do not make the web app perform heavy render/ffmpeg/OCR/model work.
+- Do not make the web app perform heavy render/editing, media normalization/validation,
+  OCR, or model work.
 
 ## Architecture Overview
 

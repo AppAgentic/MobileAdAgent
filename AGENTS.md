@@ -24,7 +24,7 @@ The product is intended to be human-usable and agent-native. Claude Code, Codex,
   - V1 candidate: HeyGen HyperFrames Cloud
   - Portable self-host candidate: HyperFrames on GCP Cloud Run + Workflows
   - Benchmark/fallback: Remotion Lambda / custom Cloud Run render workers
-- **Workers**: Cloud Run services/jobs or equivalent container workers for heavy generation, render, OCR, ffmpeg, and multimodal QA
+- **Workers**: Cloud Run services/jobs or equivalent container workers for heavy generation, HyperFrames render/editing, media normalization/validation (`ffmpeg`/`ffprobe` only as utilities), OCR, and multimodal QA
 
 ## Core Workflow
 

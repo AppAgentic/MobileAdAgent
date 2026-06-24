@@ -6,13 +6,14 @@ Last updated: 2026-06-23
 > render/edit backend for the deterministic finishing stage. It is **not** the UGC
 > generator. All UGC generation is **our own pipeline** — the cloud productization
 > of the PepMod-style flow we validated locally (script/brief → creator-style
-> generation → proof cutaways/b-roll → multimodal QA → HyperFrames finishing).
+> generation → proof media selection → HyperFrames editing/finishing → multimodal QA).
 
 ## Decision
 
 Mobile Ad Agent is **our own proof-driven UGC creative factory**. It is the cloud
 productization of the local pipeline that produced the PepMod UGC: we own the brief,
-script, creator generation, proof cutaways, QA, manifests, cost ledger, and artifacts.
+script, creator generation, proof-media prep, HyperFrames edit spec, QA, manifests,
+cost ledger, and artifacts.
 
 The only thing we rent from HeyGen in V1 is the **hosted HyperFrames renderer** for the
 finishing/editing stage (hook + CTA captions, proof overlays, thumbnails, contact
@@ -29,7 +30,8 @@ dependency anything else relies on.
 - **IS NOT:** the UGC/talking-head generator. We do **not** use HeyGen Direct Video,
   HeyGen Video Agent, or HeyGen Cinematic Avatar for the product's creative generation.
   Creator generation is our own pipeline (Nano Banana identity transform → Kling/Seedance
-  image-to-video with native audio → ffmpeg/Gemini QA), exactly like the PepMod flow.
+  image-to-video with native audio → media validation/Gemini QA → HyperFrames finishing),
+  exactly like the PepMod flow.
 
 So HeyGen sits behind exactly one swappable interface (`RenderBackend = heygen-hyperframes-cloud`)
 and is replaced in Phase 2 by `hyperframes-cloud-run`. Generation never touches HeyGen.
@@ -39,7 +41,8 @@ and is replaced in Phase 2 by `hyperframes-cloud-run`. Generation never touches 
 We just proved two things locally on branch `implement-local-renderer-benchmark`:
 
 1. Our own pipeline already makes the actual creative (the PepMod UGC: script → creator
-   video → proof cutaways → captions). That is the product's core competence and we keep it.
+   video → proof media → HyperFrames captions/cutaways/CTA). That is the product's core
+   competence and we keep it.
 2. The finishing/render layer is portable: a HyperFrames composition can closely reproduce
    the Remotion AdRenderer caption-finishing (SSIM 0.977 on the PepMod copy, lint clean).
    So "hosted HyperFrames now, our own HyperFrames worker later" is a low-risk swap.
@@ -107,18 +110,19 @@ and worker queues.
      change, never ship a reference subject's likeness).
    - Image-to-video per segment with **Kling v3 Pro** (native audio) or one-shot
      **Seedance**, with exact-script enforcement and static-camera negative prompts.
-   - ffmpeg silencedetect dead-zone trimming for tight cuts.
+   - Optional silence/dead-zone analysis creates edit metadata for tight cuts. `ffmpeg`
+     can be used here as a utility, but it is not the creative editor.
    - This stage is provider-neutral behind `GenerationBackend` (Kling, Seedance, fal,
      future owned models) — **HeyGen is not an option here**.
 
 6. **Proof Cutaways / B-roll**
-   - Splice cropped real app proof clips/screenshots into the creator video at the
-     planned timings (the "demo proof" beats), produced from the proof library — never
-     fabricated UI.
+   - Select, crop, and time real app proof clips/screenshots from the proof library —
+     never fabricated UI.
+   - The final timeline assembly happens in HyperFrames, not in `ffmpeg`.
 
 7. **Finishing — HeyGen hosted HyperFrames (V1), then our Cloud Run HyperFrames**
-   - Compose hook caption, CTA, proof/overlay finishing, first-frame thumbnail, app icon,
-     optional ducked music via a `RenderBackend`.
+   - Compose creator segments, proof cutaways, hook caption, CTA, proof overlays,
+     first-frame thumbnail, app icon, and optional ducked music via a `RenderBackend`.
    - V1 backend: `heygen-hyperframes-cloud`. Phase 2 backend: `hyperframes-cloud-run`.
      Remotion AdRenderer (`remotion-cloud-run` / `remotion-lambda`) kept as a fidelity
      fallback for templates HyperFrames cannot yet match.
@@ -146,8 +150,10 @@ and worker queues.
 - Firebase Auth for users, teams, roles
 - Firestore for canonical state
 - Cloudflare R2 for the binary artifact lake
-- Cloud Run workers for generation, proof-cutaway editing, ffmpeg, finishing, QA, and
-  provider calls
+- Cloud Run workers for generation, proof-media preparation, HyperFrames editing/
+  finishing, media normalization/validation, QA, and provider calls. `ffmpeg`/`ffprobe`
+  may run inside utility workers for codec, seekability, stream, and decode checks, but
+  the creative timeline is HyperFrames-first.
 
 ### Provider Secrets
 
@@ -306,7 +312,7 @@ type RenderTask = {
     | 'remotion-lambda';          // burst-scale fallback
   compositionKey: string;
   variablesKey: string;
-  inputAssetIds: string[];        // creator video + proof cutaways from our pipeline
+  inputAssetIds: string[];        // creator segments + proof media assets
   status: 'queued' | 'submitted' | 'processing' | 'completed' | 'failed' | 'cancelled';
   dimensions: { width: number; height: number };
   fps: 24 | 25 | 30 | 60;
@@ -356,8 +362,8 @@ stored as an artifact. Because finishing is behind `RenderBackend`, swapping
 
 - Use HeyGen's hosted **HyperFrames Cloud** endpoint to render a self-contained
   HTML/CSS/JS composition bundle to MP4/WebM/MOV.
-- Inputs: the finished creator video + proof cutaways (from our pipeline) plus the
-  HyperFrames composition zip and variables (captions, CTA, overlays, thumbnail hold).
+- Inputs: creator media, proof media assets, and the HyperFrames composition zip plus
+  variables (caption timing, proof crop/timing, CTA, overlays, thumbnail hold).
 - Server-side only via `X-Api-Key`; base `https://api.heygen.com`. Download result into R2.
 - Official pricing checked 2026-06-23: HyperFrames 1080p/30fps is billed at
   `0.1 credits/min` of output. Convert credits to dollars from the active HeyGen account
@@ -402,7 +408,7 @@ Internal worker routes:
 
 - `POST /internal/tasks/generate/ugc-segment`     (Kling/Seedance — our pipeline)
 - `POST /internal/tasks/generate/nano-banana`      (identity transform / images)
-- `POST /internal/tasks/edit/proof-cutaways`       (splice proof beats)
+- `POST /internal/tasks/edit/proof-cutaways`       (prepare/timestamp proof beats)
 - `POST /internal/tasks/render/hyperframes`        (finishing; HeyGen hosted in V1)
 - `POST /webhooks/heygen`                          (HyperFrames render completion)
 
@@ -416,8 +422,9 @@ artifacts the self-hosted finishing worker will consume.
 
 ### Phase 1: Product Fit
 
-Own pipeline for generation (Nano Banana + Kling/Seedance + proof cutaways + QA) with
-HeyGen-hosted HyperFrames for finishing; R2 + Firestore as source of truth.
+Own pipeline for generation (Nano Banana + Kling/Seedance + proof-media preparation)
+with HeyGen-hosted HyperFrames for timeline editing/finishing and QA; R2 + Firestore as
+source of truth.
 
 Exit criteria:
 
@@ -430,7 +437,8 @@ Exit criteria:
 
 Move HyperFrames finishing from HeyGen-hosted Cloud to our own `hyperframes-cloud-run`
 worker, keeping identical composition zips/variables. Prioritize caption overlays, proof
-overlays, thumbnails/first frames, contact sheets, ffprobe, OCR, audio normalization.
+cutaways/overlays, thumbnails/first frames, contact sheets, ffprobe, OCR, audio
+normalization.
 This is the lowest-risk migration — the benchmark already showed HyperFrames reproduces
 PepMod-style caption finishing. After this, HeyGen is no longer in the product path.
 
@@ -462,13 +470,13 @@ and finishing logic matters more than owning raw model inference.
 
 - `NanoBananaImageBackend` (identity transform / first frame)
 - `KlingV3ProI2VBackend` (talking-head, native audio) and/or `SeedanceI2VBackend`
-- dead-zone trimming + segment stitching worker
+- dead-zone analysis + segment metadata worker
 - provider manifest persistence; server-side media download into R2
 - cost estimation + cost ledger; one 9:16 creator video from a script
 
 ### Week 3: Proof Cutaways + HyperFrames Finishing
 
-- proof-cutaway splice worker (cropped real proof beats)
+- proof-cutaway preparation worker (cropped/timed real proof beats)
 - composition builder for hook caption, CTA, proof overlays, app icon, thumbnail hold
 - `heygen-hyperframes-cloud` render adapter + webhook
 - R2 composition zip storage; ffprobe/contact sheet generation
@@ -517,7 +525,8 @@ and finishing logic matters more than owning raw model inference.
 Ship the first usable product with:
 
 - **Our own UGC generation pipeline** (Nano Banana identity → Kling/Seedance i2v native
-  audio → proof cutaways → multimodal QA) — the productized PepMod flow.
+  audio → proof-media preparation → HyperFrames editing/finishing → multimodal QA) — the
+  productized PepMod flow.
 - **HeyGen HyperFrames Cloud** for hosted finishing only, behind `RenderBackend`.
 - **R2 + Firestore** as the only source of truth.
 - **Provider-neutral generation + render task schemas** from day one.
