@@ -17,6 +17,12 @@ File:
 
 `docs/design-explorations/gpt-image-2-mobile-ad-agent-saas/mobile-ad-agent-saas-directions-contact-sheet.png`
 
+Additional iterations:
+
+- `mobile-ad-agent-iteration-02-format-studio.png`
+- `mobile-ad-agent-iteration-03-proof-workflow.png`
+- `mobile-ad-agent-iteration-04-production-suite.png`
+
 Generated directions:
 
 1. Campaign cockpit: project rail, app URL intake, proof sources, central ad preview, right QA/export.
@@ -26,7 +32,24 @@ Generated directions:
 
 ## Recommendation
 
-Use direction 1 as the first-run SaaS shell, then borrow direction 3 as the differentiating core workflow.
+Use the iteration 04 shell as the main product shape:
+
+1. Launchpad: app URL import, proof found, choose outputs.
+2. Creative Suite: one workspace for image ads, UGC videos, stories, and thumbnails.
+3. Storyboard + Static: each claim creates both a video scene and one or more static image ads.
+4. Approval Room: review, QA, cost, comments, platform readiness, export.
+
+Borrow the iteration 03 Proof Canvas as the signature interaction inside the Creative Suite.
+
+Image ads should be first-class deliverables, not secondary thumbnails. Every pack can include:
+
+- 1:1 image ads for Meta/Instagram feed;
+- 4:5 image ads for feed;
+- 9:16 story image ads;
+- thumbnails/first-frame assets for video;
+- UGC video ads.
+
+Use direction 1 from the first board as a fallback for the simplest MVP: app URL, proof sources, ad preview, QA/export in one screen.
 
 The first screen should answer:
 
@@ -38,10 +61,11 @@ The first screen should answer:
 Recommended information architecture:
 
 1. Left rail: projects, templates, actors, proof library, brand kit, team/settings.
-2. Main workspace: step-by-step app URL, proof upload/import, creator plan, format settings.
-3. Center/right preview: vertical ad preview with scene navigation.
-4. Right inspector: QA score, proof match, text readability, brand safety, estimated cost, export pack.
-5. Secondary tabs: creator casting, storyboard, variants, performance/review queue.
+2. Launchpad: app URL import, detected claims/proof, output toggles for image/video/story/thumbnail.
+3. Creative Suite: proof tray, multi-format canvas, static image layouts, video preview, headlines, CTA, brand kit.
+4. Storyboard + Static: claim rows showing proof match, video scene, static image variants, and output formats.
+5. Approval Room: QA score, proof match, text readability, brand safety, cost estimate, platform readiness, export pack.
+6. Secondary tabs: creator casting, variants, performance/review queue.
 
 ## What Not To Copy
 
