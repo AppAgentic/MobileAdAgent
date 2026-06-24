@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mobile Ad Agent — Studio (Claude scratch build)</title>
+    <link rel="stylesheet" href="/studio.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="dot"></span>
+        Mobile Ad Agent · <strong>Studio</strong>
+        <span class="tag">Claude scratch build · :3108</span>
+      </div>
+      <div class="safe" id="safeBadge">provider-safe · providerMutations 0</div>
+    </header>
+
+    <main class="layout">
+      <section class="panel intake">
+        <h2>1 · App intake</h2>
+        <p class="hint">Provider-safe local planning. Nothing here calls a real provider.</p>
+
+        <label>App name<input id="appName" type="text" /></label>
+        <label>Store URL<input id="storeUrl" type="text" placeholder="https://apps.apple.com/..." /></label>
+        <label>Audience<textarea id="audience" rows="2"></textarea></label>
+        <label>Tone<input id="tone" type="text" /></label>
+        <label>Product facts <small>(one per line — claims must trace to these)</small>
+          <textarea id="productFacts" rows="4"></textarea>
+        </label>
+        <label>Avoid list <small>(one per line)</small>
+          <textarea id="avoidClaims" rows="3"></textarea>
+        </label>
+
+        <h3>Proof library <small>(one per line: <code>label | kind | ocr | category</code>)</small></h3>
+        <p class="hint">kinds: raw_screenshot, cropped_proof, store_screenshot, rawified_store_screenshot</p>
+        <textarea id="proofAssets" rows="5"></textarea>
+
+        <div class="grid2">
+          <label>Duration (s)<input id="durationSeconds" type="number" min="6" max="60" /></label>
+          <label>Aspect<select id="aspectRatio">
+            <option>9:16</option><option>4:5</option><option>1:1</option><option>16:9</option>
+          </select></label>
+          <label>Cost ceiling ($)<input id="costCeilingUsd" type="number" min="1" max="200" /></label>
+          <label>Identity attrs changed<input id="identityAttrs" type="number" min="0" max="6" value="4" /></label>
+        </div>
+
+        <div class="actions">
+          <button id="loadSample" class="ghost">Load sample</button>
+          <button id="runBtn" class="primary">Run pipeline ▶</button>
+        </div>
+      </section>
+
+      <section class="panel results">
+        <div class="results-head">
+          <h2>Pipeline run</h2>
+          <span id="statusPill" class="pill pill-idle">idle</span>
+        </div>
+        <ol class="stages" id="stages"></ol>
+        <div id="detail" class="detail">
+          <p class="hint">Run the pipeline to see stage output, the HyperFrames timeline plan, the QA verdict, and the export manifest.</p>
+        </div>
+      </section>
+    </main>
+    <script src="/studio.js"></script>
+  </body>
+</html>

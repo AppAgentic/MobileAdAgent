@@ -10,7 +10,9 @@
     "smoke:local-app": "node scripts/smoke-local-app.mjs",
     "benchmark:local-renderers": "node scripts/local-render-benchmark.mjs",
     "render:hyperframes-adrenderer-copy": "node scripts/render-adrenderer-hyperframes-copy.mjs",
-    "render:hyperframes-pepmod-ugc-copy": "node scripts/render-pepmod-ugc-hyperframes-copy.mjs"
+    "render:hyperframes-pepmod-ugc-copy": "node scripts/render-pepmod-ugc-hyperframes-copy.mjs",
+    "studio:app": "node studio/server/server.mjs",
+    "studio:smoke": "node studio/test/smoke.mjs"
   },
   "dependencies": {
     "hyperframes": "0.7.3",
