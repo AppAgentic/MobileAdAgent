@@ -22,6 +22,15 @@ Additional iterations:
 - `mobile-ad-agent-iteration-02-format-studio.png`
 - `mobile-ad-agent-iteration-03-proof-workflow.png`
 - `mobile-ad-agent-iteration-04-production-suite.png`
+- `mobile-ad-agent-iteration-05-multi-app-launchpad.png`
+- `mobile-ad-agent-iteration-06-guided-launchpad.png`
+- `mobile-ad-agent-iteration-07-app-portfolio-launchpad.png`
+- `mobile-ad-agent-iteration-08-recommended-launchpad.png`
+- `mobile-ad-agent-iteration-09-refined-launchpad-no-preview.png`
+- `mobile-ad-agent-iteration-10-proof-review.png`
+- `mobile-ad-agent-iteration-11-draft-pack-setup.png`
+- `mobile-ad-agent-iteration-12-review-drafts.png`
+- `mobile-ad-agent-iteration-13-qa-export.png`
 
 Generated directions:
 
@@ -32,7 +41,38 @@ Generated directions:
 
 ## Recommendation
 
-Use the iteration 04 shell as the main product shape:
+Use `mobile-ad-agent-iteration-08-recommended-launchpad.png` as the current implementation target.
+
+It combines:
+
+- iteration 07's multi-app portfolio;
+- iteration 06's one-expanded-step progressive disclosure;
+- iteration 05's pack preview and output clarity;
+- iteration 04's Launchpad product shell.
+
+Selected Launchpad findings from Joe's chosen artifact:
+
+- The first screen works because it starts with one job: import or choose an app.
+- The launchpad has three clear sections: import app, choose outputs, next best action.
+- Output choices are plain and comparable: Image Ads, UGC Videos, Stories, Thumbnails.
+- Proof reassurance appears early, before asking the user to trust generated ads.
+- A sample pack preview shows the payoff without forcing the user into the editor.
+- The bottom sequence explains the journey: URL/App -> Proof -> Outputs -> QA -> Export.
+- The page does not expose pipeline internals, provider details, JSON, or technical stage names.
+- Multiple apps should appear as a calm app switcher/portfolio, not as a dense analytics dashboard.
+
+Implementation principles:
+
+1. The user should never wonder what to click next.
+2. Only one step should be expanded at a time.
+3. Completed steps collapse into short, reassuring summaries.
+4. Future steps stay visible enough to explain the journey, but not editable yet.
+5. Image Ads should be selected by default and treated as a primary output.
+6. Multiple apps belong at the top as selectable app cards/statuses, with only the selected app expanded.
+7. The right inspector should always answer: recommended next move, what the pack includes, proof readiness, estimated cost.
+8. Advanced creative controls belong later in Creative Suite, not on the Launchpad.
+
+Use the iteration 04 shell as the broader product shape:
 
 1. Launchpad: app URL import, proof found, choose outputs.
 2. Creative Suite: one workspace for image ads, UGC videos, stories, and thumbnails.
@@ -66,6 +106,34 @@ Recommended information architecture:
 4. Storyboard + Static: claim rows showing proof match, video scene, static image variants, and output formats.
 5. Approval Room: QA score, proof match, text readability, brand safety, cost estimate, platform readiness, export pack.
 6. Secondary tabs: creator casting, variants, performance/review queue.
+
+## Updated Direction After Launchpad Feedback
+
+Joe prefers iteration 05 as the base, with these corrections:
+
+- Remove sample pack preview from Launchpad because it implies generation/cost too early.
+- Do not ask users to choose Stories or Thumbnails as top-level outputs.
+- Top-level output choices should be only Image Ads and UGC Videos.
+- Story crops and thumbnails may exist as derived assets, but they should not be a Launchpad decision.
+- Keep each section purposeful; no analytics, broad dashboards, or ornamental preview areas.
+- Show the downstream states so the whole product path is visible.
+
+Recommended product path:
+
+1. Launchpad: choose app, confirm proof readiness, choose Image Ads and/or UGC Videos.
+2. Proof Review: approve/edit/ignore detected claims, attach raw proof, mark store art as not-proof.
+3. Draft Pack Setup: confirm image ad layouts and UGC video settings before spending credits.
+4. Review Drafts: approve/request changes/regenerate individual creatives.
+5. QA & Export: pass meaningful checks, then download/share/send pack to an ad inbox.
+
+Implementation notes:
+
+- Image Ads are selected by default.
+- UGC Videos are optional and can be added in the same pack.
+- Credits are not spent until the user clicks Generate drafts.
+- Export should be explicit: Download ZIP, Send to ad inbox, Copy share link.
+- Do not imply live provider publishing during export unless the user chooses a live destination.
+- The main navigation can stay lean: Launchpad, Apps, Ad Packs, Proof Library, Creative Studio, Review/Approval, Brand Kit, Settings.
 
 ## What Not To Copy
 
