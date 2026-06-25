@@ -63,7 +63,7 @@ p {
 .app-shell {
   min-height: 100svh;
   display: grid;
-  grid-template-columns: 254px minmax(760px, 1fr) 336px;
+  grid-template-columns: 226px minmax(760px, 1fr) 318px;
   background: var(--paper);
 }
 
@@ -102,6 +102,9 @@ p {
 .top-actions,
 .app-summary-bar,
 .summary-app,
+.workspace-title,
+.workspace-switcher,
+.current-app,
 .pack-include-row,
 .screen-head,
 .export-head,
@@ -246,6 +249,7 @@ p {
 }
 
 .app-header {
+  min-width: 0;
   padding: 16px 28px 18px;
   border-bottom: 1px solid var(--line);
   background: rgba(251, 250, 247, 0.96);
@@ -254,8 +258,20 @@ p {
 .top-command {
   justify-content: space-between;
   gap: 16px;
+  min-width: 0;
   min-height: 38px;
   margin-bottom: 10px;
+}
+
+.workspace-title {
+  gap: 12px;
+  min-width: 0;
+}
+
+.workspace-title strong {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 850;
 }
 
 .back-link {
@@ -351,6 +367,35 @@ p {
   font-size: 13px;
 }
 
+.workspace-switcher {
+  gap: 12px;
+  min-width: 0;
+  min-height: 72px;
+}
+
+.current-app {
+  min-width: 230px;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  padding: 10px 12px;
+}
+
+.current-app strong,
+.current-app small {
+  display: block;
+}
+
+.current-app strong {
+  font-size: 16px;
+}
+
+.current-app small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
 .summary-stat {
   min-width: 96px;
   padding: 0 18px;
@@ -382,15 +427,16 @@ p {
 }
 
 .portfolio-strip {
+  flex: 1;
   gap: 10px;
   overflow-x: auto;
-  padding: 14px 0 0;
+  padding: 0;
 }
 
 .app-card {
   gap: 12px;
-  min-width: 188px;
-  min-height: 82px;
+  min-width: 166px;
+  min-height: 64px;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: var(--surface);
@@ -427,13 +473,19 @@ p {
 
 .view {
   min-height: 0;
+  min-width: 0;
   overflow: auto;
   padding: 22px 28px 24px;
+}
+
+.launch-accordion {
+  max-width: 980px;
 }
 
 .screen-head {
   justify-content: space-between;
   gap: 18px;
+  min-width: 0;
   margin-bottom: 16px;
 }
 
@@ -456,7 +508,7 @@ p {
 
 .proof-layout,
 .setup-layout {
-  grid-template-columns: minmax(330px, 0.75fr) minmax(440px, 1fr);
+  grid-template-columns: minmax(320px, 0.66fr) minmax(480px, 1.12fr);
   align-items: start;
 }
 
@@ -891,6 +943,11 @@ p {
   border-color: rgba(180, 106, 8, 0.38);
 }
 
+.claim-row.is-locked {
+  background: #fffaf1;
+  border-color: rgba(180, 106, 8, 0.42);
+}
+
 .claim-main {
   flex: 1;
   min-width: 0;
@@ -915,6 +972,26 @@ p {
 .proof-pills .is-warning {
   background: var(--orange-soft);
   color: var(--orange);
+}
+
+.queue-note {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  border-radius: 9px;
+  background: var(--surface-soft);
+  padding: 11px 12px;
+}
+
+.queue-note strong {
+  color: var(--green);
+  font-size: 13px;
+}
+
+.queue-note span {
+  color: var(--muted);
+  font-size: 12px;
 }
 
 .segmented-actions,
@@ -946,6 +1023,50 @@ p {
 
 .setup-section h3 {
   font-size: 14px;
+}
+
+.recipe-summary {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-soft);
+  padding: 14px;
+}
+
+.recipe-summary span,
+.recipe-summary small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.recipe-summary strong {
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.customize-panel {
+  margin-top: 12px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.customize-panel summary {
+  width: fit-content;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 10px 12px;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.customize-panel[open] summary {
+  border-color: var(--green);
+  color: var(--green);
 }
 
 .is-muted {
@@ -1058,7 +1179,7 @@ select:focus {
 
 .generation-preview {
   display: grid;
-  grid-template-columns: 1fr repeat(4, auto) auto;
+  grid-template-columns: minmax(210px, 1fr) repeat(4, auto) auto;
   gap: 18px;
   align-items: center;
   margin-top: 14px;
@@ -1085,6 +1206,39 @@ select:focus {
   box-shadow: inset 0 -2px 0 var(--green);
 }
 
+.sort-note {
+  border-color: transparent !important;
+  background: var(--surface-soft) !important;
+  color: var(--muted) !important;
+  box-shadow: none !important;
+}
+
+.winner-band {
+  display: grid;
+  gap: 5px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(8, 115, 63, 0.24);
+  border-radius: 10px;
+  background: var(--green-soft);
+  padding: 14px;
+}
+
+.winner-band span {
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.winner-band strong {
+  font-size: 17px;
+  line-height: 1.25;
+}
+
+.winner-band small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
 .draft-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1100,6 +1254,11 @@ select:focus {
 
 .draft-card[data-status="approved"] {
   border-color: var(--green);
+}
+
+.draft-card.is-recommended {
+  border-color: rgba(8, 115, 63, 0.48);
+  box-shadow: 0 0 0 3px rgba(8, 115, 63, 0.08);
 }
 
 .draft-art {
@@ -1180,7 +1339,7 @@ select:focus {
 }
 
 .draft-actions {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   padding: 0 10px 10px;
 }
 
@@ -1368,6 +1527,11 @@ select:focus {
   font-weight: 900;
 }
 
+.qa-pass-pill[data-status="warn"] {
+  background: var(--orange-soft);
+  color: var(--orange);
+}
+
 .qa-list {
   display: grid;
 }
@@ -1465,6 +1629,10 @@ select:focus {
   padding: 8px 0 12px;
 }
 
+.export-options-label {
+  margin: 8px 0;
+}
+
 .destination-list {
   display: grid;
   overflow: hidden;
@@ -1505,6 +1673,11 @@ select:focus {
   background: var(--green-soft);
 }
 
+.destination-card:disabled {
+  opacity: 0.62;
+  background: #f4f2ec;
+}
+
 .sticky-actions {
   position: sticky;
   bottom: 0;
@@ -1533,6 +1706,7 @@ select:focus {
 }
 
 .stepper {
+  min-width: 0;
   border-top: 1px solid var(--line);
   background: rgba(251, 250, 247, 0.98);
   padding: 12px 20px;
@@ -1543,6 +1717,7 @@ select:focus {
   grid-template-columns: repeat(5, minmax(120px, 1fr));
   align-items: center;
   gap: 10px;
+  min-width: 0;
 }
 
 .step-chip {
@@ -1746,6 +1921,7 @@ select:focus {
   }
 
   .app-summary-bar,
+  .workspace-switcher,
   .app-hero-card,
   .proof-layout,
   .setup-layout,
@@ -1761,6 +1937,36 @@ select:focus {
   .inspector,
   .stepper-track {
     grid-template-columns: 1fr;
+  }
+
+  .workspace-switcher {
+    align-items: stretch;
+  }
+
+  .current-app,
+  .app-card,
+  .output-choice,
+  .generation-preview,
+  .flow-panel {
+    min-width: 0;
+  }
+
+  .portfolio-strip {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .app-card {
+    min-width: 210px;
+  }
+
+  .accordion-row {
+    grid-template-columns: 34px minmax(0, 1fr);
+    padding: 12px;
+  }
+
+  .accordion-row.is-open {
+    padding: 14px 12px;
   }
 
   .summary-app,

@@ -119,6 +119,9 @@ async function onClick(event) {
     case 'continue-setup':
       goToStep('setup');
       break;
+    case 'approve-supported-claims':
+      approveSupportedClaims();
+      break;
     case 'generate-drafts':
       await generateDrafts();
       break;
@@ -214,17 +217,33 @@ function renderRail() {
 function renderHeader() {
   const app = activeApp();
   const apps = state.portfolio.apps;
+  const activeStep = STEPS[stepIndex(state.currentStep)];
+  const counts = app ? appCounts(app) : null;
   els.header.innerHTML = `
     <div class="top-command">
-      <button class="back-link" type="button" data-step="launchpad">Back to Launchpad</button>
+      <div class="workspace-title">
+        <button class="back-link" type="button" data-step="launchpad">${state.currentStep === 'launchpad' ? 'Launchpad' : 'Back to Launchpad'}</button>
+        <strong>${escapeHtml(activeStep?.summary || 'Pack workspace')}</strong>
+      </div>
       <div class="top-actions">
         <div class="credit-badge"><span>Credits</span><strong>${state.portfolio.credits.toLocaleString()}</strong></div>
         <button class="icon-action" type="button" aria-label="Notifications"><span></span></button>
       </div>
     </div>
-    ${app ? appSummaryBar(app) : ''}
-    <div class="portfolio-strip" aria-label="Apps">
-      ${apps.map((candidate) => appButton(candidate)).join('')}
+    <div class="workspace-switcher">
+      ${app ? `
+        <div class="current-app" style="--app-hue:${app.hue}">
+          <span class="app-icon-large">${escapeHtml(app.icon)}</span>
+          <div>
+            <strong>${escapeHtml(app.name)}</strong>
+            <small>${escapeHtml(app.category)} · ${counts?.approvedClaims ? 'proof ready' : 'needs proof'}</small>
+          </div>
+        </div>
+      ` : ''}
+      <div class="portfolio-strip" aria-label="Apps">
+        ${apps.map((candidate) => appButton(candidate)).join('')}
+      </div>
+      <button class="secondary-button" type="button" data-quick="import-app">Import app</button>
     </div>
   `;
 }
@@ -270,19 +289,28 @@ function renderInspector() {
   }
 
   const counts = appCounts(app);
-  const next = nextMove(app);
   const estimate = estimateCost(app);
   const pack = state.pack;
+  const activeStep = STEPS[stepIndex(state.currentStep)];
   els.inspector.innerHTML = `
-    <section class="inspector-block hero-inspector">
-      <p class="eyebrow">${escapeHtml(inspectorEyebrow())}</p>
-      <h2>${escapeHtml(next.title)}</h2>
-      <p>${escapeHtml(next.detail)}</p>
-      <button class="primary-button full" type="button" data-action="${escapeAttr(next.action)}">${escapeHtml(next.button)}</button>
+    <section class="inspector-block">
+      <p class="eyebrow">This pack</p>
+      <h2>${escapeHtml(activeStep?.label || 'Pack workspace')}</h2>
+      <dl class="compact-list">
+        <div><dt>App</dt><dd>${escapeHtml(app.name)}</dd></div>
+        <div><dt>Progress</dt><dd>${stepIndex(state.currentStep) + 1}/${STEPS.length}</dd></div>
+        <div><dt>Approved claims</dt><dd>${counts.approvedClaims}/${counts.claims}</dd></div>
+        <div><dt>Estimated credits</dt><dd>${estimate.total}</dd></div>
+      </dl>
+      <div class="metric-row with-margin">
+        <span>Proof readiness</span>
+        <strong>${counts.readiness}%</strong>
+      </div>
+      <div class="progress-bar" aria-hidden="true"><span style="width:${counts.readiness}%"></span></div>
     </section>
 
     <section class="inspector-block">
-      <p class="eyebrow">Pack includes</p>
+      <p class="eyebrow">Output plan</p>
       <div class="pack-include-row">
         <span class="include-icon image">IA</span>
         <div><strong>Image Ads</strong><small>1:1, 4:5, 9:16</small></div>
@@ -293,20 +321,13 @@ function renderInspector() {
         <div><strong>UGC Videos</strong><small>9:16 videos</small></div>
         <em>${state.config.outputs.ugcVideos ? state.config.ugcSetup.count : 0}</em>
       </div>
-      <div class="metric-row with-margin">
-        <span>Proof readiness</span>
-        <strong>${counts.readiness}%</strong>
-      </div>
-      <div class="progress-bar" aria-hidden="true"><span style="width:${counts.readiness}%"></span></div>
     </section>
 
     <section class="inspector-block">
-      <p class="eyebrow">Status</p>
+      <p class="eyebrow">Safety rails</p>
       <dl class="compact-list">
-        <div><dt>Approved claims</dt><dd>${counts.approvedClaims}/${counts.claims}</dd></div>
         <div><dt>Raw proof</dt><dd>${counts.rawProof}</dd></div>
         <div><dt>Store art</dt><dd>${counts.storeArt} not proof</dd></div>
-        <div><dt>Estimated credits</dt><dd>${estimate.total}</dd></div>
         <div><dt>Generated drafts</dt><dd>${pack ? pack.summary.total : 0}</dd></div>
         <div><dt>Provider mutations</dt><dd>0</dd></div>
       </dl>
@@ -319,47 +340,36 @@ function renderLaunchpad(app) {
   const estimate = estimateCost(app);
   return `
     <section class="screen-head">
-      <h1>Launchpad</h1>
-      <p>Pick an app and build the next ad pack.</p>
-    </section>
-
-    <section class="app-hero-card">
-      <div class="app-icon-xl" style="--app-hue:${app.hue}">${escapeHtml(app.icon)}</div>
-      <div class="app-hero-copy">
-        <h2>${escapeHtml(app.name)}: Build Better Habits</h2>
-        <p>${escapeHtml(app.category)} - iOS + Android - In-App Purchases</p>
+      <div>
+        <h1>Start the next ad pack</h1>
+        <p>Choose the outputs, confirm real proof, then generate the first draft pack.</p>
       </div>
-      ${miniStat('Proof assets', counts.rawProof)}
-      ${miniStat('Claims detected', counts.claims)}
-      ${miniStat('Est. credits', estimate.total)}
-      <button class="secondary-button" type="button">View store</button>
-      <button class="secondary-button" type="button" data-quick="import-app">Switch app</button>
+      <button class="secondary-button" type="button" data-quick="new-pack">New pack</button>
     </section>
 
     <section class="flow-panel primary-panel launch-accordion">
-      ${accordionRow(1, 'Select app', `${app.name} selected`, 'complete')}
-      ${accordionRow(2, 'Check proof', `${counts.rawProof} assets - ${counts.claims} claims detected`, counts.rawProof ? 'complete' : 'warning')}
+      ${accordionRow(1, 'Choose app', `${app.name} selected - ${counts.rawProof} raw proof assets`, 'complete')}
       <article class="accordion-row is-open">
-        <div class="accordion-index">3</div>
+        <div class="accordion-index">2</div>
         <div class="accordion-body">
           <div class="accordion-title">
             <h3>Choose outputs <span>Recommended</span></h3>
-            <p>Pick the deliverables you want in this ad pack.</p>
+            <p>Select the deliverables for this pack. Crops, thumbnails, and first frames are derived later.</p>
           </div>
           <div class="choice-grid">
-            ${outputChoice('imageAds', 'Image Ads', "We'll create static ads for feed and in-app placements.", state.config.outputs.imageAds, 'Est. 8-12')}
-            ${outputChoice('ugcVideos', 'UGC Videos', "We'll generate short-form videos with real creators.", state.config.outputs.ugcVideos, 'Est. 3-5')}
+            ${outputChoice('imageAds', 'Image Ads', "Static paid-social ads using approved app proof.", state.config.outputs.imageAds, `${estimate.imageCount} drafts - ${estimate.imageCost} credits`)}
+            ${outputChoice('ugcVideos', 'UGC Videos', "Short-form creator-style videos with proof cutaways.", state.config.outputs.ugcVideos, `${state.config.ugcSetup.count} videos - ${estimate.ugcCost} credits`)}
           </div>
-          <p class="info-note">You can change outputs anytime before we draft your pack.</p>
+          <p class="info-note">Nothing is generated until proof is approved and you click the credit-labeled generate button.</p>
           <div class="action-row">
             <button class="secondary-button" type="button" data-action="add-proof">Add proof</button>
             <button class="primary-button" type="button" data-action="continue-proof">Review proof</button>
           </div>
         </div>
       </article>
-      ${accordionRow(4, 'Draft pack', "We'll generate your first round of creatives.", state.pack ? 'complete' : 'locked')}
-      ${accordionRow(5, 'Review', 'Approve winners and request changes.', state.pack ? 'available' : 'locked')}
-      ${accordionRow(6, 'Export', 'Download your pack or send to ad inbox.', state.qa ? 'available' : 'locked')}
+      ${accordionRow(3, 'Approve proof', `${counts.approvedClaims}/${counts.claims} claims approved for generation`, counts.approvedClaims ? 'available' : 'warning')}
+      ${accordionRow(4, 'Generate drafts', state.pack ? `${state.pack.summary.total} drafts generated` : `${estimate.total} credits estimated`, state.pack ? 'complete' : 'locked')}
+      ${accordionRow(5, 'Pick winners and export', state.qa ? 'QA complete and ready to export' : 'Approve drafts before QA and export', state.qa ? 'available' : 'locked')}
     </section>
   `;
 }
@@ -367,16 +377,21 @@ function renderLaunchpad(app) {
 function renderProofReview(app) {
   const storeArt = app.proofAssets.filter((proof) => proof.trust === 'store_art');
   const rawProof = app.proofAssets.filter((proof) => proof.trust !== 'store_art');
+  const supportedClaims = app.claims.filter((claim) => claim.supportingProofIds.length);
+  const unsupportedClaims = app.claims.filter((claim) => !claim.supportingProofIds.length);
   return `
     <section class="screen-head">
-      <h1>Review proof</h1>
-      <p>Only approved claims can be used in generated ads.</p>
+      <div>
+        <h1>Approve the claims ads can use</h1>
+        <p>Claims without raw app proof stay locked until proof is attached.</p>
+      </div>
+      <button class="primary-button" type="button" data-action="approve-supported-claims">Approve supported claims</button>
     </section>
     <section class="work-surface proof-layout">
       <div class="flow-panel">
         <div class="panel-heading compact-heading">
           <div>
-            <p class="eyebrow">Raw proof assets</p>
+            <p class="eyebrow">Proof source</p>
             <h2>${rawProof.length} assets</h2>
           </div>
           <button class="secondary-button small" type="button" data-action="add-proof">Add</button>
@@ -402,10 +417,14 @@ function renderProofReview(app) {
       <div class="flow-panel primary-panel">
         <div class="panel-heading compact-heading">
           <div>
-            <p class="eyebrow">Detected claims</p>
-            <h2>${app.claims.length} claims</h2>
+            <p class="eyebrow">Review queue</p>
+            <h2>${supportedClaims.length} supported · ${unsupportedClaims.length} locked</h2>
           </div>
           <button class="secondary-button small" type="button" data-action="add-proof">Add custom claim</button>
+        </div>
+        <div class="queue-note">
+          <strong>${appCounts(app).approvedClaims}/${app.claims.length} approved</strong>
+          <span>Only approved, proof-backed claims can generate drafts.</span>
         </div>
         <div class="claim-list">
           ${app.claims.length ? app.claims.map((claim) => claimRow(app, claim)).join('') : emptyInline('No detected claims yet. Add proof to start.')}
@@ -413,7 +432,7 @@ function renderProofReview(app) {
 
         <div class="action-row">
           <button class="secondary-button" type="button" data-step="launchpad">Back</button>
-          <button class="primary-button" type="button" data-action="continue-setup">Continue setup</button>
+          <button class="primary-button" type="button" data-action="continue-setup" ${appCounts(app).approvedClaims ? '' : 'disabled'}>Confirm claims & continue</button>
         </div>
       </div>
     </section>
@@ -423,118 +442,139 @@ function renderProofReview(app) {
 function renderDraftSetup(app) {
   const estimate = estimateCost(app);
   const counts = appCounts(app);
+  const canGenerateNow = canGenerate(app);
   return `
     <section class="screen-head">
-      <h1>Draft pack</h1>
-      <p>Confirm the creative recipe before we generate drafts.</p>
+      <div>
+        <h1>Confirm generation</h1>
+        <p>Defaults are ready. Open customize only if this pack needs a different recipe.</p>
+      </div>
     </section>
     <section class="work-surface setup-layout">
       <div class="flow-panel primary-panel">
         <div class="panel-heading">
           <span class="step-number">1</span>
           <div>
-            <p class="eyebrow">Image Ads setup</p>
-            <h2>Static ads for feeds. Auto-crops included.</h2>
+            <p class="eyebrow">Image Ads</p>
+            <h2>${state.config.outputs.imageAds ? `${estimate.imageCount} drafts ready to generate` : 'Disabled for this pack'}</h2>
           </div>
           <span class="toggle-pill is-on"></span>
         </div>
 
         <div class="setup-section">
-          <h3>Approved claims (${counts.approvedClaims})</h3>
+          <h3>Approved claims feeding image ads (${counts.approvedClaims})</h3>
           <div class="approved-chip-row">
             ${app.claims.filter((claim) => claim.status === 'approved').map((claim) => `<span>${escapeHtml(shortText(claim.text, 36))}</span>`).join('') || '<span>No approved claims yet</span>'}
           </div>
         </div>
 
-        <div class="setup-section">
-          <h3>Layout style</h3>
-          <div class="option-grid">
-            ${checkbox('Product proof', 'layout:product_proof', state.config.imageSetup.layouts.includes('product_proof'), state.config.outputs.imageAds)}
-            ${checkbox('Lifestyle', 'layout:lifestyle', state.config.imageSetup.layouts.includes('lifestyle'), state.config.outputs.imageAds)}
-            ${checkbox('Comparison', 'layout:comparison', state.config.imageSetup.layouts.includes('comparison'), state.config.outputs.imageAds)}
-          </div>
+        <div class="recipe-summary">
+          <span>Recommended default</span>
+          <strong>Product proof + lifestyle layouts · 1:1, 4:5, 9:16</strong>
+          <small>${estimate.imageCost} credits if generated.</small>
         </div>
 
-        <div class="setup-section">
-          <h3>Formats (auto-included)</h3>
-          <div class="option-grid tight">
-            ${checkbox('1:1', 'format:1:1', state.config.imageSetup.formats.includes('1:1'), state.config.outputs.imageAds)}
-            ${checkbox('4:5', 'format:4:5', state.config.imageSetup.formats.includes('4:5'), state.config.outputs.imageAds)}
-            ${checkbox('9:16', 'format:9:16', state.config.imageSetup.formats.includes('9:16'), state.config.outputs.imageAds)}
+        <details class="customize-panel">
+          <summary>Customize image ads</summary>
+          <div class="setup-section">
+            <h3>Layout style</h3>
+            <div class="option-grid">
+              ${checkbox('Product proof', 'layout:product_proof', state.config.imageSetup.layouts.includes('product_proof'), state.config.outputs.imageAds)}
+              ${checkbox('Lifestyle', 'layout:lifestyle', state.config.imageSetup.layouts.includes('lifestyle'), state.config.outputs.imageAds)}
+              ${checkbox('Comparison', 'layout:comparison', state.config.imageSetup.layouts.includes('comparison'), state.config.outputs.imageAds)}
+            </div>
           </div>
-        </div>
 
-        <div class="setup-section ${state.config.outputs.ugcVideos ? '' : 'is-muted'}">
-          <h3>Customize image layouts</h3>
-          <button class="disclosure-row" type="button">Headlines, CTAs, color themes</button>
-        </div>
+          <div class="setup-section">
+            <h3>Formats</h3>
+            <div class="option-grid tight">
+              ${checkbox('1:1', 'format:1:1', state.config.imageSetup.formats.includes('1:1'), state.config.outputs.imageAds)}
+              ${checkbox('4:5', 'format:4:5', state.config.imageSetup.formats.includes('4:5'), state.config.outputs.imageAds)}
+              ${checkbox('9:16', 'format:9:16', state.config.imageSetup.formats.includes('9:16'), state.config.outputs.imageAds)}
+            </div>
+          </div>
+        </details>
       </div>
 
       <div class="flow-panel primary-panel ${state.config.outputs.ugcVideos ? '' : 'is-muted'}">
         <div class="panel-heading">
           <span class="step-number">2</span>
           <div>
-            <p class="eyebrow">UGC Videos setup</p>
-            <h2>Short-form videos with natural creators.</h2>
+            <p class="eyebrow">UGC Videos</p>
+            <h2>${state.config.outputs.ugcVideos ? `${state.config.ugcSetup.count} proof-backed videos` : 'Disabled for this pack'}</h2>
           </div>
           <span class="toggle-pill ${state.config.outputs.ugcVideos ? 'is-on' : ''}"></span>
         </div>
-        <div class="control-row stacked">
-          <label>Number of videos<input type="number" min="1" max="8" data-config="ugcCount" value="${state.config.ugcSetup.count}" ${state.config.outputs.ugcVideos ? '' : 'disabled'}></label>
-          <label>Creator style
-            <select data-config="ugcStyle" ${state.config.outputs.ugcVideos ? '' : 'disabled'}>
-              ${option('natural', 'Natural & Authentic', state.config.ugcSetup.style)}
-              ${option('energetic', 'Energetic', state.config.ugcSetup.style)}
-              ${option('calm', 'Calm explainer', state.config.ugcSetup.style)}
-            </select>
-          </label>
-          <label>Script length<input type="number" min="8" max="30" data-config="ugcDuration" value="${state.config.ugcSetup.durationSeconds}" ${state.config.outputs.ugcVideos ? '' : 'disabled'}></label>
+        <div class="recipe-summary">
+          <span>Recommended default</span>
+          <strong>Natural creator style · ${state.config.ugcSetup.durationSeconds}s scripts · stock creators if none added</strong>
+          <small>${estimate.ugcCost} credits if generated.</small>
         </div>
-        <p class="info-note">Creators are optional. We'll use stock creators if none are added.</p>
-        <button class="disclosure-row" type="button">Customize creators</button>
+        <details class="customize-panel">
+          <summary>Customize UGC videos</summary>
+          <div class="control-row stacked">
+            <label>Number of videos<input type="number" min="1" max="8" data-config="ugcCount" value="${state.config.ugcSetup.count}" ${state.config.outputs.ugcVideos ? '' : 'disabled'}></label>
+            <label>Creator style
+              <select data-config="ugcStyle" ${state.config.outputs.ugcVideos ? '' : 'disabled'}>
+                ${option('natural', 'Natural & Authentic', state.config.ugcSetup.style)}
+                ${option('energetic', 'Energetic', state.config.ugcSetup.style)}
+                ${option('calm', 'Calm explainer', state.config.ugcSetup.style)}
+              </select>
+            </label>
+            <label>Script length<input type="number" min="8" max="30" data-config="ugcDuration" value="${state.config.ugcSetup.durationSeconds}" ${state.config.outputs.ugcVideos ? '' : 'disabled'}></label>
+          </div>
+          <p class="info-note">Creators are optional. We'll use stock creators if none are added.</p>
+        </details>
       </div>
     </section>
     <section class="generation-preview">
-      <strong>Generation preview before spending</strong>
+      <strong>Generate only after this spend check</strong>
       ${miniStat('Image Ads', state.config.outputs.imageAds ? estimate.imageCount : 0)}
       ${miniStat('UGC Videos', state.config.outputs.ugcVideos ? state.config.ugcSetup.count : 0)}
       ${miniStat('Total deliverables', (state.config.outputs.imageAds ? estimate.imageCount : 0) + (state.config.outputs.ugcVideos ? state.config.ugcSetup.count : 0))}
       ${miniStat('Estimated credits', estimate.total)}
       <div class="action-row no-margin">
         <button class="secondary-button" type="button" data-step="proof">Back to proof review</button>
-        <button class="primary-button" type="button" data-action="generate-drafts">${state.pack ? 'Regenerate drafts' : 'Generate drafts'}</button>
+        <button class="primary-button" type="button" data-action="generate-drafts" ${canGenerateNow ? '' : 'disabled'}>${state.pack ? `Regenerate (${estimate.total} credits)` : `Generate (${estimate.total} credits)`}</button>
       </div>
-      <p class="spend-note">Credits are only used when you click Generate drafts.</p>
+      <p class="spend-note">${canGenerateNow ? 'Credits are only used when you click the generate button.' : 'Approve at least one proof-backed claim and choose one output before generation.'}</p>
     </section>
   `;
 }
 
 function renderDraftReview() {
   const pack = state.pack;
+  const approvedDrafts = pack?.drafts.filter((draft) => draft.status === 'approved').length || 0;
+  const selectedDraft = pack?.drafts
+    .filter((draft) => draft.type === 'image')
+    .sort((a, b) => proofMatch(b) - proofMatch(a))[0] || pack?.drafts[0];
   return `
     <section class="screen-head">
-      <h1>Review drafts</h1>
-      <p>Approve the creatives you want in the final pack.</p>
+      <div>
+        <h1>Pick the winners</h1>
+        <p>Drafts are sorted by proof match so the safest candidates appear first.</p>
+      </div>
+      <button class="primary-button" type="button" data-action="run-qa" ${approvedDrafts ? '' : 'disabled'}>Run QA</button>
     </section>
     <section class="review-tabs">
       <span class="is-active">Image Ads ${pack?.summary.imageCount || 0}</span>
       <span>UGC Videos ${pack?.summary.ugcCount || 0}</span>
       <button class="secondary-button small" type="button">All formats</button>
-      <button class="secondary-button small" type="button">Sort by proof match</button>
+      <span class="sort-note">Sorted by proof match</span>
     </section>
     <section class="work-surface review-layout">
       <div class="flow-panel primary-panel">
         ${pack ? draftGrid(pack) : emptyDrafts()}
       </div>
       <aside class="selected-creative-panel">
-        ${pack ? selectedCreativePanel(pack.drafts[0]) : emptyInline('Generate drafts to inspect a selected creative.')}
+        ${pack ? selectedCreativePanel(selectedDraft) : emptyInline('Generate drafts to inspect a selected creative.')}
       </aside>
     </section>
     ${pack ? ugcStrip(pack) : ''}
     <section class="action-row sticky-actions">
       <button class="secondary-button" type="button" data-step="setup">Back to setup</button>
       <button class="secondary-button" type="button" data-action="approve-all" ${pack ? '' : 'disabled'}>Approve all</button>
-      <button class="primary-button" type="button" data-action="run-qa" ${pack ? '' : 'disabled'}>Run QA</button>
+      <button class="primary-button" type="button" data-action="run-qa" ${approvedDrafts ? '' : 'disabled'}>Run QA with ${approvedDrafts} approved</button>
     </section>
   `;
 }
@@ -548,7 +588,7 @@ function renderQaExport() {
         <h1>Ready to export</h1>
         <p>Your pack passed the checks needed to hand off.</p>
       </div>
-      <span class="qa-pass-pill">${qa ? 'All checks passed' : 'QA not run'}</span>
+      <span class="qa-pass-pill" data-status="${escapeAttr(qa?.verdict || 'empty')}">${qa ? (qa.verdict === 'pass' ? 'All checks passed' : 'Review warnings') : 'QA not run'}</span>
     </section>
     <section class="work-surface export-layout">
       <div class="flow-panel primary-panel">
@@ -564,13 +604,14 @@ function renderQaExport() {
       </div>
 
       <div class="flow-panel export-panel">
-        <h2>You're good to go.</h2>
-        <p>Export your ad pack to your computer, ad inbox, or share with your team.</p>
+        <h2>Export packet</h2>
+        <p>Download the approved source inventory. Nothing publishes live from this prototype.</p>
         <button class="primary-button full export-cta" type="button" data-action="export-pack" ${qa && pack ? '' : 'disabled'}>Export pack</button>
-        <span class="lock-note">No provider publishing until you choose a destination.</span>
+        <span class="lock-note">Provider mutations stay at 0.</span>
+        <p class="eyebrow export-options-label">Export options</p>
         <div class="destination-list">
           ${destinationButton('download_zip', 'Download ZIP', 'All creatives, proofs, and docs')}
-          ${destinationButton('ad_inbox', 'Send to ad inbox', 'Push to your ad inbox')}
+          ${destinationButton('ad_inbox', 'Send to ad inbox', 'Disabled until a destination is connected', true)}
           ${destinationButton('share_link', 'Copy share link', 'Share with team or client')}
         </div>
         <div class="action-row">
@@ -645,18 +686,21 @@ function claimRow(app, claim) {
   const linkedProof = claim.supportingProofIds
     .map((id) => app.proofAssets.find((proof) => proof.id === id))
     .filter(Boolean);
+  const hasProof = linkedProof.length > 0;
   return `
-    <article class="claim-row" data-status="${escapeAttr(claim.status)}">
+    <article class="claim-row ${hasProof ? '' : 'is-locked'}" data-status="${escapeAttr(claim.status)}">
       <div class="claim-main">
         <textarea rows="2" data-claim-id="${escapeAttr(claim.id)}" data-field="claimText">${escapeHtml(claim.text)}</textarea>
         <div class="proof-pills">
-          ${linkedProof.length ? linkedProof.map((proof) => `<span>${escapeHtml(proof.label)}</span>`).join('') : '<span class="is-warning">No raw proof attached</span>'}
+          ${hasProof ? linkedProof.map((proof) => `<span>from ${escapeHtml(proof.label)}</span>`).join('') : '<span class="is-warning">Cannot be used - no raw proof attached</span>'}
         </div>
       </div>
       <div class="segmented-actions" aria-label="Claim status">
-        <button type="button" data-claim-id="${escapeAttr(claim.id)}" data-action="approved" class="${claim.status === 'approved' ? 'is-active' : ''}">Approve</button>
+        <button type="button" data-claim-id="${escapeAttr(claim.id)}" data-action="approved" class="${claim.status === 'approved' ? 'is-active' : ''}" ${hasProof ? '' : 'disabled'}>Approve</button>
         <button type="button" data-claim-id="${escapeAttr(claim.id)}" data-action="needs_review" class="${claim.status === 'needs_review' ? 'is-active' : ''}">Review</button>
-        <button type="button" data-claim-id="${escapeAttr(claim.id)}" data-action="ignored" class="${claim.status === 'ignored' ? 'is-active' : ''}">Ignore</button>
+        ${hasProof
+          ? `<button type="button" data-claim-id="${escapeAttr(claim.id)}" data-action="ignored" class="${claim.status === 'ignored' ? 'is-active' : ''}">Ignore</button>`
+          : `<button type="button" data-claim-id="${escapeAttr(claim.id)}" data-action="attach-proof">Attach proof</button>`}
       </div>
     </article>
   `;
@@ -681,11 +725,18 @@ function draftGrid(pack) {
     return emptyInline('No drafts generated for the current setup.');
   }
 
-  const imageDrafts = pack.drafts.filter((draft) => draft.type === 'image');
+  const imageDrafts = pack.drafts
+    .filter((draft) => draft.type === 'image')
+    .sort((a, b) => proofMatch(b) - proofMatch(a));
   return `
+    <div class="winner-band">
+      <span>Recommended winners</span>
+      <strong>${shortText(imageDrafts[0]?.headline || 'Proof-backed candidates are ready.', 72)}</strong>
+      <small>Ranked by claim support, proof availability, and format fit.</small>
+    </div>
     <div class="draft-grid">
       ${imageDrafts.map((draft, index) => `
-        <article class="draft-card" data-status="${escapeAttr(draft.status)}">
+        <article class="draft-card ${index < 2 ? 'is-recommended' : ''}" data-status="${escapeAttr(draft.status)}">
           <div class="draft-art" style="--draft-hue:${draft.hue || 160}">
             <span>${draft.type === 'image' ? escapeHtml(draft.format) : `${draft.durationSeconds}s`}</span>
             <strong>${escapeHtml(shortText(draft.headline || draft.hook, 42))}</strong>
@@ -693,13 +744,12 @@ function draftGrid(pack) {
             <i class="mock-phone two"></i>
           </div>
           <div class="draft-body">
-            <small>${88 - (index % 4) * 4}% proof match</small>
+            <small>${proofMatch(draft)}% proof match ${index < 2 ? '- recommended' : ''}</small>
             <h3>${escapeHtml(draft.headline || draft.hook)}</h3>
             <p>${escapeHtml(draft.subhead || draft.beat)}</p>
           </div>
           <div class="draft-actions">
             <button type="button" data-draft-id="${escapeAttr(draft.id)}" data-action="approved" class="${draft.status === 'approved' ? 'is-active' : ''}">Approve</button>
-            <button type="button" data-draft-id="${escapeAttr(draft.id)}" data-action="changes_requested" class="${draft.status === 'changes_requested' ? 'is-active' : ''}">Changes</button>
             <button type="button" data-draft-id="${escapeAttr(draft.id)}" data-action="regenerate">Regenerate</button>
           </div>
         </article>
@@ -725,10 +775,10 @@ function qaChecks(qa) {
   `;
 }
 
-function destinationButton(id, label, detail) {
+function destinationButton(id, label, detail, disabled = false) {
   const active = state.destination === id;
   return `
-    <button class="destination-card ${active ? 'is-active' : ''}" type="button" data-destination="${escapeAttr(id)}">
+    <button class="destination-card ${active ? 'is-active' : ''}" type="button" ${disabled ? 'disabled' : `data-destination="${escapeAttr(id)}"`}>
       <span>${id === 'download_zip' ? 'ZIP' : id === 'ad_inbox' ? 'IN' : 'URL'}</span>
       <strong>${escapeHtml(label)}</strong>
       <small>${escapeHtml(detail)}</small>
@@ -801,7 +851,7 @@ function selectedCreativePanel(draft) {
     </div>
     <dl class="creative-detail-list">
       <div><dt>Headline</dt><dd>${escapeHtml(draft.headline || draft.hook)}</dd></div>
-      <div><dt>Proof match</dt><dd>88%</dd></div>
+      <div><dt>Proof match</dt><dd>${proofMatch(draft)}%</dd></div>
       <div><dt>Status</dt><dd>${escapeHtml(draft.status)}</dd></div>
     </dl>
     <div class="qa-mini-list">
@@ -838,15 +888,19 @@ function ugcStrip(pack) {
 }
 
 function packContents(pack) {
+  const approved = pack.drafts.filter((draft) => draft.status === 'approved');
+  const source = approved.length ? approved : pack.drafts;
+  const imageCount = source.filter((draft) => draft.type === 'image').length;
+  const ugcCount = source.filter((draft) => draft.type === 'ugc').length;
   return `
     <section class="pack-contents">
-      <div class="section-line"><strong>Pack contents (${pack.summary.total} creatives)</strong></div>
+      <div class="section-line"><strong>Pack contents (${source.length} approved creatives)</strong></div>
       <div class="contents-grid">
-        ${contentTile('Image Ads', pack.summary.imageCount, '1:1 - 4:5', 'image')}
-        ${contentTile('UGC Videos', pack.summary.ugcCount, '9:16', 'video')}
+        ${contentTile('Image Ads', imageCount, '1:1 - 4:5', 'image')}
+        ${contentTile('UGC Videos', ugcCount, '9:16', 'video')}
         ${contentTile('QA Report', 1, 'PDF', 'report')}
         ${contentTile('Source Proof', pack.summary.derivedAssets, 'Raw screenshots', 'proof')}
-        ${contentTile('Captions & Scripts', pack.summary.total, 'Ready to use', 'script')}
+        ${contentTile('Captions & Scripts', source.length, 'Ready to use', 'script')}
       </div>
     </section>
   `;
@@ -916,6 +970,28 @@ function handleClaimAction(claimId, action) {
   const app = activeApp();
   const claim = app?.claims.find((candidate) => candidate.id === claimId);
   if (!claim) {
+    return;
+  }
+  if (action === 'attach-proof') {
+    const number = app.proofAssets.length + 1;
+    const proofId = `${app.id}-proof-${Date.now()}`;
+    app.proofAssets.push({
+      id: proofId,
+      label: `Claim proof ${number}`,
+      kind: 'screen',
+      trust: 'raw_app_proof',
+      hue: app.hue,
+      ocr: `Proof uploaded for: ${claim.text}`,
+    });
+    claim.supportingProofIds = [proofId];
+    claim.status = 'needs_review';
+    invalidateGeneratedWork();
+    toast('Proof attached locally. Review the claim before approving.');
+    render();
+    return;
+  }
+  if (action === 'approved' && !claim.supportingProofIds.length) {
+    toast('Attach raw proof before approving this claim.');
     return;
   }
   claim.status = action;
@@ -990,6 +1066,10 @@ async function generateDrafts() {
   if (!app) {
     return;
   }
+  if (!canGenerate(app)) {
+    toast('Approve at least one proof-backed claim and choose one output first.');
+    return;
+  }
   await withBusy(async () => {
     state.pack = await postJson('/api/generate-drafts', {
       appId: app.id,
@@ -1005,6 +1085,11 @@ async function generateDrafts() {
 
 async function runQa() {
   if (!state.pack) {
+    return;
+  }
+  const approvedDrafts = state.pack.drafts.filter((draft) => draft.status === 'approved');
+  if (!approvedDrafts.length) {
+    toast('Approve at least one draft before running QA.');
     return;
   }
   await withBusy(async () => {
@@ -1041,6 +1126,23 @@ function approveAllDrafts() {
   }
   state.pack.drafts = state.pack.drafts.map((draft) => ({ ...draft, status: 'approved' }));
   state.qa = null;
+  render();
+}
+
+function approveSupportedClaims() {
+  const app = activeApp();
+  if (!app) {
+    return;
+  }
+  let approved = 0;
+  app.claims.forEach((claim) => {
+    if (claim.supportingProofIds.length && claim.status !== 'ignored') {
+      claim.status = 'approved';
+      approved += 1;
+    }
+  });
+  invalidateGeneratedWork();
+  toast(`${approved} proof-backed claims approved.`);
   render();
 }
 
@@ -1096,7 +1198,7 @@ function ensureArrayValue(values, fallback) {
 
 function createDefaultConfig() {
   return {
-    outputs: { imageAds: true, ugcVideos: false },
+    outputs: { imageAds: true, ugcVideos: true },
     imageSetup: {
       layouts: ['product_proof', 'lifestyle'],
       formats: ['1:1', '4:5', '9:16'],
@@ -1138,6 +1240,14 @@ function shortText(value, maxLength) {
   return `${text.slice(0, Math.max(0, maxLength - 1)).trim()}...`;
 }
 
+function proofMatch(draft) {
+  const proofCount = Array.isArray(draft?.proofIds) ? draft.proofIds.length : 0;
+  const base = proofCount ? 82 : 58;
+  const formatBonus = draft?.format === '1:1' ? 6 : draft?.format === '4:5' ? 4 : 2;
+  const statusBonus = draft?.status === 'approved' ? 4 : 0;
+  return Math.min(96, base + formatBonus + statusBonus);
+}
+
 function appCounts(app) {
   const rawProof = app.proofAssets.filter((proof) => proof.trust !== 'store_art').length;
   const storeArt = app.proofAssets.filter((proof) => proof.trust === 'store_art').length;
@@ -1163,11 +1273,21 @@ function estimateCost(app) {
     ? claimCount * state.config.imageSetup.layouts.length * state.config.imageSetup.perClaim
     : 0;
   const ugcCount = state.config.outputs.ugcVideos ? state.config.ugcSetup.count : 0;
+  const imageCost = imageCount * 6;
+  const ugcCost = ugcCount * 18;
   return {
     imageCount,
     ugcCount,
-    total: imageCount * 6 + ugcCount * 18,
+    imageCost,
+    ugcCost,
+    total: imageCost + ugcCost,
   };
+}
+
+function canGenerate(app) {
+  const hasOutput = state.config.outputs.imageAds || state.config.outputs.ugcVideos;
+  const hasApprovedProof = app.claims.some((claim) => claim.status === 'approved' && claim.supportingProofIds.length);
+  return hasOutput && hasApprovedProof;
 }
 
 function nextMove(app) {
