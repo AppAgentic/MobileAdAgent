@@ -3,127 +3,58 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mobile Ad Agent Local</title>
+    <title>Mobile Ad Agent</title>
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
-    <main class="workspace">
-      <aside class="sidebar" aria-label="App and proof controls">
-        <div class="brand-row">
+    <div class="app-shell">
+      <nav class="rail" aria-label="Primary">
+        <div class="rail-brand">
           <div class="brand-mark">MA</div>
-          <div>
-            <h1>Mobile Ad Agent</h1>
-            <p>Local control plane</p>
+          <div class="brand-text">
+            <strong>Mobile</strong>
+            <span>Ad Agent</span>
           </div>
         </div>
 
-        <section class="panel">
-          <div class="section-head">
-            <h2>App Intake</h2>
-            <span class="status-pill" id="modePill">local mock</span>
-          </div>
-          <label>
-            App name
-            <input id="appName" autocomplete="off">
-          </label>
-          <label>
-            Store URL
-            <input id="storeUrl" autocomplete="off">
-          </label>
-          <label>
-            Audience
-            <textarea id="audience" rows="3"></textarea>
-          </label>
-          <label>
-            Objective
-            <textarea id="objective" rows="3"></textarea>
-          </label>
-          <label>
-            Avoid list
-            <textarea id="avoidList" rows="3"></textarea>
-          </label>
-        </section>
+        <ul class="rail-nav" id="railNav">
+          <li><button data-nav="launchpad" class="rail-link is-active" type="button">Launchpad</button></li>
+          <li><button data-nav="apps" class="rail-link" type="button">Apps</button></li>
+          <li><button data-nav="packs" class="rail-link" type="button">Ad Packs</button></li>
+          <li><button data-nav="proof" class="rail-link" type="button">Proof Library</button></li>
+          <li><button data-nav="studio" class="rail-link" type="button">Creative Studio</button></li>
+          <li><button data-nav="approval" class="rail-link" type="button">Approval Room</button></li>
+          <li><button data-nav="brand" class="rail-link" type="button">Brand Kit</button></li>
+          <li><button data-nav="settings" class="rail-link" type="button">Settings</button></li>
+        </ul>
 
-        <section class="panel">
-          <div class="section-head">
-            <h2>Proof Library</h2>
-            <button id="addProofButton" class="icon-button" type="button" title="Add proof">+</button>
-          </div>
-          <div id="proofList" class="proof-list"></div>
-        </section>
-      </aside>
-
-      <section class="main-stage" aria-label="Creative job workspace">
-        <header class="topbar">
-          <div>
-            <p class="eyebrow">No provider calls. No ad-network mutations.</p>
-            <h2>Proof-driven UGC pipeline</h2>
-          </div>
-          <div class="actions">
-            <button id="resetButton" class="secondary-button" type="button">Reset sample</button>
-            <button id="generateButton" class="primary-button" type="button">Run local job</button>
-          </div>
-        </header>
-
-        <div class="stage-grid">
-          <section class="timeline-panel">
-            <div class="section-head">
-              <h3>Agent stages</h3>
-              <span id="jobStatus" class="status-pill">not run</span>
-            </div>
-            <div id="stageList" class="stage-list"></div>
-          </section>
-
-          <section class="preview-panel">
-            <div class="phone-preview" aria-label="Creative preview">
-              <div class="phone-top">
-                <span id="previewAppName">PepMod</span>
-                <span>9:16</span>
-              </div>
-              <div id="previewScene" class="preview-scene">
-                <div class="creator-block">
-                  <span>creator segment</span>
-                </div>
-                <div class="proof-window">
-                  <span id="proofWindowTitle">Protocol log</span>
-                  <strong id="proofWindowClaim">Dose logged - next reminder</strong>
-                </div>
-                <div class="caption-strip" id="captionStrip">Stop losing track</div>
-              </div>
-              <div class="phone-footer">
-                <span id="previewCta">Try PepMod</span>
-              </div>
-            </div>
-            <div id="timelineLayers" class="layer-list"></div>
-          </section>
+        <div class="rail-quick">
+          <p class="rail-label">Quick actions</p>
+          <button class="quick-link" data-quick="new-pack" type="button">New pack</button>
+          <button class="quick-link" data-quick="import-app" type="button">Import app</button>
+          <button class="quick-link" data-quick="upload-proof" type="button">Upload proof</button>
         </div>
-      </section>
 
-      <aside class="inspector" aria-label="QA and manifest inspector">
-        <section class="panel qa-panel">
-          <div class="section-head">
-            <h2>QA</h2>
-            <span id="qaVerdict" class="status-pill">waiting</span>
+        <div class="rail-user">
+          <div class="avatar" id="userAvatar">AC</div>
+          <div class="rail-user-text">
+            <strong id="userName">Alex Chan</strong>
+            <span id="userRole">Growth</span>
           </div>
-          <div id="qaChecks" class="qa-checks"></div>
-        </section>
+        </div>
+      </nav>
 
-        <section class="panel">
-          <div class="section-head">
-            <h2>Pack</h2>
-            <button id="downloadManifestButton" class="secondary-button compact" type="button" disabled>Manifest</button>
-          </div>
-          <div id="packSummary" class="pack-summary"></div>
-        </section>
+      <main class="main" aria-label="Workspace">
+        <header class="app-header" id="appHeader"></header>
+        <div class="view" id="viewRoot"></div>
+        <footer class="stepper" id="stepper"></footer>
+      </main>
 
-        <section class="panel manifest-panel">
-          <div class="section-head">
-            <h2>Manifest Preview</h2>
-          </div>
-          <pre id="manifestPreview">{}</pre>
-        </section>
-      </aside>
-    </main>
+      <aside class="inspector" id="inspectorRoot" aria-label="Guidance"></aside>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
     <script type="module" src="/app.js"></script>
   </body>
 </html>

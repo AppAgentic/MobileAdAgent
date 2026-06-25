@@ -2,7 +2,12 @@ import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createSampleState, exportManifest, runLocalCreativePipeline } from '../lib/local-pipeline.mjs';
+import {
+  buildQaReport,
+  createPortfolioState,
+  exportManifest,
+  generateDraftPack,
+} from '../lib/local-pipeline.mjs';
 
 const rootDir = fileURLToPath(new URL('..', import.meta.url));
 const publicDir = join(rootDir, 'local-app');
@@ -29,22 +34,27 @@ const server = createServer(async (request, response) => {
       return;
     }
 
-    if (url.pathname === '/api/sample-state') {
-      sendJson(response, createSampleState());
+    if (url.pathname === '/api/portfolio') {
+      sendJson(response, createPortfolioState());
       return;
     }
 
-    if (url.pathname === '/api/jobs/generate' && request.method === 'POST') {
+    if (url.pathname === '/api/generate-drafts' && request.method === 'POST') {
       const body = await readJson(request);
-      const job = runLocalCreativePipeline(body);
-      sendJson(response, job);
+      const pack = generateDraftPack(body);
+      sendJson(response, pack);
       return;
     }
 
-    if (url.pathname === '/api/jobs/manifest' && request.method === 'POST') {
+    if (url.pathname === '/api/qa' && request.method === 'POST') {
       const body = await readJson(request);
-      const job = body.jobId && body.qaReport ? body : runLocalCreativePipeline(body);
-      sendJson(response, exportManifest(job));
+      sendJson(response, buildQaReport(body.pack || body, body.appOverride));
+      return;
+    }
+
+    if (url.pathname === '/api/manifest' && request.method === 'POST') {
+      const body = await readJson(request);
+      sendJson(response, exportManifest(body));
       return;
     }
 

@@ -1,23 +1,58 @@
-import { exportManifest, runLocalCreativePipeline } from '../lib/local-pipeline.mjs';
+import {
+  buildQaReport,
+  createPortfolioState,
+  exportManifest,
+  generateDraftPack,
+} from '../lib/local-pipeline.mjs';
 
-const job = runLocalCreativePipeline();
-const manifest = exportManifest(job);
+const portfolio = createPortfolioState();
+const app = portfolio.apps[0];
+const pack = generateDraftPack({
+  appId: app.id,
+  appOverride: app,
+  config: {
+    outputs: { imageAds: true, ugcVideos: true },
+    imageSetup: {
+      layouts: ['product_proof', 'lifestyle'],
+      formats: ['1:1', '4:5', '9:16'],
+      perClaim: 1,
+    },
+    ugcSetup: {
+      style: 'natural',
+      durationSeconds: 15,
+      count: 2,
+    },
+  },
+});
+
+pack.drafts = pack.drafts.map((draft) => ({ ...draft, status: 'approved' }));
+const qa = buildQaReport(pack, app);
+const manifest = exportManifest({
+  appId: app.id,
+  pack,
+  qa,
+  destination: 'download_zip',
+});
 
 const failures = [];
-if (job.providerMutations !== 0) {
-  failures.push('providerMutations must be 0');
+
+if (!portfolio.apps.length) {
+  failures.push('portfolio should include sample apps');
 }
-if (job.status !== 'approved_local_mock') {
-  failures.push(`expected approved_local_mock, got ${job.status}`);
+if (pack.providerMutations !== 0) {
+  failures.push('draft pack providerMutations must be 0');
 }
-if (!job.stages.some((stage) => stage.id === 'hyperframes_render' && stage.status === 'mocked')) {
-  failures.push('hyperframes_render stage missing or not mocked');
+if (manifest.providerMutations !== 0) {
+  failures.push('manifest providerMutations must be 0');
 }
-if (!job.qaReport.checks.every((check) => ['pass', 'warn'].includes(check.status))) {
-  failures.push('default sample should not have QA hold checks');
+if (!pack.summary.imageCount || !pack.summary.ugcCount) {
+  failures.push('pack should include both image ads and UGC videos');
 }
-if (manifest.output.composition.providerMutations !== 0) {
-  failures.push('manifest render providerMutations must be 0');
+if (!qa.checks.every((check) => ['pass', 'warn'].includes(check.status))) {
+  failures.push('approved local pack should not have QA hold checks');
+}
+if (manifest.handoff.destination !== 'download_zip') {
+  failures.push('manifest handoff destination should be preserved');
 }
 
 if (failures.length) {
@@ -28,8 +63,10 @@ if (failures.length) {
 
 console.log('Local app smoke passed');
 console.log(JSON.stringify({
-  jobId: job.jobId,
-  stages: job.stages.length,
-  qaVerdict: job.qaReport.verdict,
-  packStatus: job.creativePack.status,
+  app: app.name,
+  drafts: pack.summary.total,
+  imageAds: manifest.outputs.imageAds,
+  ugcVideos: manifest.outputs.ugcVideos,
+  qaVerdict: qa.verdict,
+  providerMutations: manifest.providerMutations,
 }, null, 2));
