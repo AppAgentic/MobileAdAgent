@@ -298,8 +298,21 @@ function renderInspector() {
   const counts = appCounts(app);
   const estimate = estimateCost(app);
   const pack = state.pack;
-  const activeStep = STEPS[stepIndex(state.currentStep)];
+  const activeIndex = stepIndex(state.currentStep);
+  const activeStep = STEPS[activeIndex];
   els.inspector.innerHTML = `
+    <section class="inspector-block next-steps">
+      <p class="eyebrow">Your next steps</p>
+      <ol class="next-steps-list">
+        ${STEPS.map((step, index) => `
+          <li class="${index < activeIndex ? 'is-done' : ''} ${index === activeIndex ? 'is-current' : ''}">
+            <span>${index < activeIndex ? '&#10003;' : index + 1}</span>
+            <div><strong>${escapeHtml(step.label)}</strong><small>${escapeHtml(step.summary)}</small></div>
+          </li>
+        `).join('')}
+      </ol>
+    </section>
+
     <section class="inspector-block">
       <p class="eyebrow">This pack</p>
       <h2>${escapeHtml(activeStep?.label || 'Pack workspace')}</h2>

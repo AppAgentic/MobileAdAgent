@@ -3192,3 +3192,970 @@ button:not(:disabled):active {
 :is(.output-pill, .proof-pills span, .asset-filters span, .review-tabs span, .qa-pass-pill, .progress-bar, .stage-strip i, .launch-proof-meter i) {
   border-radius: 6px;
 }
+
+/* =====================================================================
+   COMMAND DECK THEME — navy rail, crisp white workspace, blue/violet
+   primary, amber/green state accents. Final cascade layer (wins).
+   Hybrid of 01 Concierge Launchpad / 02 Proof Ledger / 04 Review
+   Gallery / 05 QA & Export Room.
+   ===================================================================== */
+:root {
+  --paper: #eef1f7;
+  --rail: #0b1324;
+  --surface: #ffffff;
+  --surface-soft: #eef2f8;
+  --surface-tint: #e9edff;
+  --ink: #0f1729;
+  --muted: #57617a;
+  --soft: #94a0b8;
+  --line: #e4e9f2;
+  --line-strong: #cfd8e8;
+
+  /* primary = blue -> violet */
+  --primary: #3b62f6;
+  --primary-2: #6047e8;
+  --primary-ink: #2c47c9;
+  --blue: #3b62f6;
+  --blue-soft: #e8edff;
+
+  /* success */
+  --green: #0e9d68;
+  --green-deep: #0a7c52;
+  --green-soft: #def4ea;
+
+  /* warning */
+  --orange: #b06a12;
+  --amber: #c47a13;
+  --orange-soft: #fbeed3;
+
+  --danger: #d8443c;
+  --danger-soft: #fbe3e1;
+
+  --shadow: 0 28px 60px rgba(15, 23, 41, 0.14);
+  --tight-shadow: 0 10px 26px rgba(15, 23, 41, 0.07);
+  --hairline: rgba(15, 23, 41, 0.08);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+html {
+  background: #060b16;
+}
+
+body {
+  background:
+    linear-gradient(90deg, rgba(40, 60, 110, 0.05) 1px, transparent 1px),
+    linear-gradient(rgba(40, 60, 110, 0.04) 1px, transparent 1px),
+    radial-gradient(1200px 460px at 18% -8%, rgba(59, 98, 246, 0.07), transparent 70%),
+    var(--paper);
+  background-size: 40px 40px, 40px 40px, auto, auto;
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 3px solid rgba(59, 98, 246, 0.34);
+  outline-offset: 3px;
+}
+
+/* ---- Rail: deep navy command rail ------------------------------- */
+.app-shell {
+  grid-template-columns: 244px minmax(720px, 1fr) 340px;
+}
+
+.rail {
+  border-right: 1px solid rgba(148, 164, 200, 0.12);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(184deg, #101b34, #0a1120 72%);
+  background-size: 30px 30px, 30px 30px, auto;
+  color: #eaf0fb;
+}
+
+.rail::after {
+  background: linear-gradient(90deg, transparent, rgba(99, 130, 255, 0.5), transparent);
+}
+
+.rail-brand {
+  border-bottom: 1px solid rgba(148, 164, 200, 0.14);
+}
+
+.brand-mark {
+  background:
+    linear-gradient(150deg, rgba(255, 255, 255, 0.28), transparent 46%),
+    linear-gradient(155deg, #4f6bff, #6047e8);
+  color: #f4f6ff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), 0 14px 30px rgba(48, 64, 200, 0.4);
+}
+
+.brand-text strong,
+.rail-user-text strong {
+  color: #f6f8ff;
+}
+
+.brand-text span,
+.rail-label,
+.rail-user-text span {
+  color: rgba(214, 224, 245, 0.56);
+}
+
+.rail-link,
+.quick-link {
+  color: rgba(214, 224, 245, 0.74);
+}
+
+.rail-link:hover,
+.quick-link:hover,
+.rail-link.is-active {
+  border-color: rgba(99, 130, 255, 0.26);
+  background: rgba(99, 130, 255, 0.12);
+  color: #f6f8ff;
+}
+
+.rail-link.is-active::before,
+.quick-link:hover::before {
+  background: #5d7bff;
+  box-shadow: 0 0 0 4px rgba(93, 123, 255, 0.18);
+}
+
+.rail-user {
+  border-color: rgba(148, 164, 200, 0.16);
+  background: rgba(148, 164, 200, 0.08);
+}
+
+.avatar {
+  background: linear-gradient(155deg, #4f6bff, #6047e8);
+  color: #f4f6ff;
+}
+
+/* ---- Main + header ---------------------------------------------- */
+.main {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.66), rgba(238, 241, 247, 0.94)),
+    var(--paper);
+}
+
+.app-header {
+  border-bottom: 1px solid var(--hairline);
+  background: rgba(238, 241, 247, 0.86);
+  backdrop-filter: blur(18px) saturate(1.1);
+}
+
+.workspace-title strong {
+  color: #3a4763;
+}
+
+.back-link,
+.text-button {
+  color: var(--primary-ink);
+}
+
+.credit-badge,
+.icon-action,
+.current-app,
+.app-card {
+  border-color: var(--hairline);
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(15, 23, 41, 0.04);
+}
+
+.credit-badge strong {
+  color: var(--primary-ink);
+}
+
+.icon-action span {
+  border-color: var(--ink);
+}
+
+/* ---- Stage strip / meters --------------------------------------- */
+.stage-strip strong {
+  color: var(--ink);
+}
+
+.stage-strip i,
+.launch-proof-meter i,
+.progress-bar {
+  background: rgba(15, 23, 41, 0.08);
+}
+
+.stage-strip b,
+.launch-proof-meter b,
+.progress-bar span {
+  background: linear-gradient(90deg, var(--primary), var(--primary-2));
+}
+
+.stage-strip small {
+  color: var(--green-deep);
+  font-weight: 800;
+}
+
+/* ---- App cards / portfolio -------------------------------------- */
+.current-app::after,
+.app-card::after {
+  background: linear-gradient(115deg, hsla(var(--app-hue), 70%, 56%, 0.12), transparent 60%);
+}
+
+.app-card.is-active {
+  border-color: rgba(59, 98, 246, 0.45);
+  background: #fbfcff;
+  box-shadow: 0 0 0 3px rgba(59, 98, 246, 0.1);
+}
+
+.app-icon,
+.app-icon-large,
+.app-icon-xl {
+  background:
+    linear-gradient(150deg, hsla(var(--app-hue), 80%, 62%, 0.55), transparent 58%),
+    hsl(var(--app-hue), 48%, 30%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22), 0 12px 26px hsla(var(--app-hue), 50%, 30%, 0.24);
+}
+
+.app-copy small b {
+  background: var(--green);
+}
+
+/* ---- Headlines: tighter hierarchy (was 54px) -------------------- */
+.screen-head h1 {
+  font-size: 32px;
+  line-height: 1.04;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.screen-head p {
+  font-size: 15px;
+}
+
+.eyebrow {
+  color: #6b7691;
+  letter-spacing: 0.09em;
+}
+
+.rail-label {
+  letter-spacing: 0.09em;
+}
+
+/* ---- Buttons ---------------------------------------------------- */
+.primary-button {
+  border: 1px solid var(--primary-ink);
+  background: linear-gradient(180deg, #4a6cff, #4836d8);
+  color: #f8faff;
+  box-shadow: 0 12px 24px rgba(59, 71, 220, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+.primary-button:not(:disabled):hover {
+  box-shadow: 0 16px 30px rgba(59, 71, 220, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+.secondary-button {
+  border: 1px solid var(--line-strong);
+  background: #ffffff;
+  color: #28324a;
+}
+
+.secondary-button:hover {
+  border-color: rgba(59, 98, 246, 0.42);
+  color: var(--primary-ink);
+}
+
+/* ---- Command rails / launch console ----------------------------- */
+.launch-console,
+.proof-command-rail,
+.setup-command-rail,
+.review-command-rail,
+.manifest-command-rail {
+  border-color: var(--hairline);
+  background: var(--surface);
+  box-shadow: var(--tight-shadow);
+}
+
+.launch-prime,
+.launch-proof-meter,
+.launch-sequence,
+.launch-next,
+.proof-command-rail .summary-stat,
+.setup-command-rail > div,
+.review-command-rail .summary-stat,
+.manifest-command-rail .summary-stat,
+.review-ledger-note {
+  background: #ffffff;
+}
+
+.launch-console {
+  gap: 1px;
+  background: var(--line);
+}
+
+.launch-proof-meter strong {
+  color: var(--primary-ink);
+}
+
+.launch-sequence span {
+  border-color: var(--line-strong);
+  color: var(--soft);
+}
+
+.launch-sequence .is-lit {
+  border-color: rgba(59, 98, 246, 0.34);
+  background: var(--blue-soft);
+  color: var(--primary-ink);
+}
+
+.proof-command-rail .summary-stat strong,
+.setup-command-rail strong,
+.review-command-rail .summary-stat strong,
+.manifest-command-rail .summary-stat strong {
+  color: var(--ink);
+}
+
+/* ---- Panels ----------------------------------------------------- */
+.flow-panel,
+.selected-creative-panel,
+.generation-preview,
+.ugc-strip,
+.pack-contents,
+.inspector-block {
+  border-color: var(--hairline);
+  background: var(--surface);
+  box-shadow: var(--tight-shadow);
+}
+
+.primary-panel {
+  background: var(--surface);
+}
+
+.accordion-row {
+  border-color: var(--hairline);
+}
+
+.accordion-row.is-open {
+  background:
+    linear-gradient(90deg, rgba(59, 98, 246, 0.07), transparent 52%),
+    #ffffff;
+}
+
+.accordion-index,
+.step-number {
+  background: linear-gradient(160deg, #1c2742, #121a30);
+  color: #eef2ff;
+}
+
+.accordion-row.is-complete .accordion-index {
+  background: var(--green);
+  color: #fff;
+}
+
+.accordion-row.is-warning .accordion-index {
+  background: var(--orange-soft);
+  color: var(--orange);
+}
+
+.accordion-title h3 span {
+  background: var(--blue-soft);
+  color: var(--primary-ink);
+}
+
+/* ---- Output choice tiles (01) ----------------------------------- */
+.output-choice {
+  border-color: var(--line);
+  background: #ffffff;
+}
+
+.output-choice.is-selected {
+  border-color: rgba(59, 98, 246, 0.5);
+  background:
+    linear-gradient(135deg, rgba(59, 98, 246, 0.09), transparent 56%),
+    #ffffff;
+  box-shadow: 0 16px 36px rgba(59, 98, 246, 0.14);
+}
+
+.output-choice input {
+  accent-color: var(--primary);
+}
+
+.output-icon.image,
+.include-icon.image {
+  background: linear-gradient(160deg, #3b62f6, #4836d8);
+  color: #f8faff;
+}
+
+.output-icon.video,
+.include-icon.video {
+  background: linear-gradient(160deg, #d98a1f, #b8650f);
+  color: #fff8ec;
+}
+
+.output-copy em {
+  background: var(--blue-soft);
+  color: var(--primary-ink);
+}
+
+.output-pill.image {
+  background: var(--blue-soft);
+  color: var(--primary-ink);
+}
+
+.output-pill.video {
+  background: var(--orange-soft);
+  color: var(--orange);
+}
+
+/* ---- Notes ------------------------------------------------------ */
+.info-note {
+  border: 1px solid rgba(59, 98, 246, 0.18);
+  background: var(--blue-soft);
+  color: var(--primary-ink);
+}
+
+.spend-note,
+.queue-note {
+  border: 1px solid var(--hairline);
+  background: var(--surface-soft);
+  color: var(--muted);
+}
+
+/* ---- Proof tiles / claims (02) ---------------------------------- */
+.proof-tile {
+  border-color: var(--hairline);
+  background: #ffffff;
+}
+
+.proof-thumb {
+  background: linear-gradient(180deg, hsla(var(--proof-hue), 42%, 38%, 0.95), hsla(var(--proof-hue), 50%, 18%, 0.98));
+}
+
+.proof-meta-line span {
+  color: var(--green-deep);
+}
+
+.asset-filters span {
+  background: var(--surface-soft);
+  color: #3a4763;
+}
+
+.asset-filters span:first-child {
+  background: var(--blue-soft);
+  color: var(--primary-ink);
+}
+
+.claim-row {
+  border-color: var(--hairline);
+  background: #ffffff;
+}
+
+.claim-row[data-status="approved"] {
+  border-color: rgba(14, 157, 104, 0.4);
+  background: linear-gradient(90deg, rgba(14, 157, 104, 0.06), transparent 46%), #ffffff;
+}
+
+.claim-row[data-status="needs_review"] {
+  border-color: rgba(196, 122, 19, 0.34);
+}
+
+.claim-row.is-locked {
+  background: #fff8ef;
+  border-color: rgba(196, 122, 19, 0.34);
+}
+
+.proof-pills span {
+  background: var(--surface-soft);
+  color: #3a4763;
+}
+
+.proof-pills .is-warning {
+  background: var(--orange-soft);
+  color: var(--orange);
+}
+
+.queue-note strong {
+  color: var(--green-deep);
+}
+
+/* segmented control: neutral track, GREEN = approve/active */
+.segmented-actions {
+  border-color: var(--hairline);
+  background: var(--surface-soft);
+}
+
+.segmented-actions button,
+.draft-actions button {
+  color: var(--muted);
+}
+
+.segmented-actions button.is-active,
+.draft-actions button.is-active {
+  background: var(--green);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(14, 157, 104, 0.24);
+}
+
+/* claim text + inputs */
+.claim-main textarea,
+input,
+textarea,
+select {
+  background: #ffffff;
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 98, 246, 0.14);
+}
+
+.check-tile {
+  border-color: var(--line);
+  background: #ffffff;
+}
+
+.check-tile.is-selected {
+  border-color: rgba(59, 98, 246, 0.45);
+  background: var(--blue-soft);
+}
+
+.check-tile input {
+  accent-color: var(--primary);
+}
+
+.toggle-pill.is-on {
+  background: var(--primary);
+}
+
+.recipe-summary {
+  border-color: var(--hairline);
+  background:
+    linear-gradient(90deg, rgba(59, 98, 246, 0.07), transparent 56%),
+    #ffffff;
+}
+
+.customize-panel {
+  border-color: var(--hairline);
+  background: var(--surface-soft);
+}
+
+.customize-panel[open] summary,
+.customize-panel summary:hover {
+  border-color: rgba(59, 98, 246, 0.4);
+  color: var(--primary-ink);
+}
+
+/* ---- Generation preview band: navy command band ----------------- */
+.generation-preview {
+  border-color: rgba(148, 164, 200, 0.16);
+  background: linear-gradient(120deg, #0e1a33, #1a2a4d);
+  color: #eef2ff;
+}
+
+.generation-preview .summary-stat span,
+.generation-preview .spend-note {
+  color: rgba(226, 233, 250, 0.66);
+}
+
+.generation-preview .summary-stat strong,
+.generation-preview > strong {
+  color: #f6f8ff;
+}
+
+.generation-preview .spend-note {
+  border-color: rgba(226, 233, 250, 0.16);
+  background: rgba(226, 233, 250, 0.08);
+  color: rgba(255, 235, 200, 0.92);
+}
+
+/* ---- Review (04) ------------------------------------------------ */
+.review-tabs {
+  border-color: var(--hairline);
+  background: #ffffff;
+}
+
+.review-tabs .is-active {
+  background: linear-gradient(160deg, #1c2742, #121a30);
+  color: #eef2ff;
+}
+
+.winner-band {
+  border-color: rgba(59, 98, 246, 0.22);
+  background:
+    linear-gradient(90deg, rgba(59, 98, 246, 0.12), transparent 56%),
+    #ffffff;
+}
+
+.winner-band span {
+  color: var(--primary-ink);
+}
+
+.draft-card {
+  border-color: var(--hairline);
+  background: #ffffff;
+}
+
+.draft-card[data-status="approved"] {
+  border-color: rgba(14, 157, 104, 0.5);
+  box-shadow: 0 0 0 2px rgba(14, 157, 104, 0.12);
+}
+
+.draft-card.is-recommended {
+  border-color: rgba(59, 98, 246, 0.4);
+  box-shadow: 0 0 0 2px rgba(59, 98, 246, 0.1);
+}
+
+.draft-art {
+  background: linear-gradient(150deg, hsla(var(--draft-hue), 60%, 40%, 0.96), hsla(var(--draft-hue), 66%, 18%, 0.98));
+}
+
+.draft-art span {
+  background: var(--primary);
+}
+
+.draft-body small {
+  color: var(--green-deep);
+  font-weight: 700;
+}
+
+/* selected creative preview -> WHITE card (matches 04 right rail) */
+.selected-creative-panel {
+  background: #ffffff;
+  color: var(--ink);
+}
+
+.selected-head span {
+  background: var(--surface-soft);
+  color: var(--muted);
+}
+
+.creative-detail-list,
+.qa-mini-list {
+  border-color: var(--hairline);
+}
+
+.creative-detail-list dt,
+.qa-mini-list span {
+  color: var(--muted);
+}
+
+.creative-detail-list dd {
+  color: var(--ink);
+}
+
+.qa-mini-list em {
+  color: var(--green-deep);
+}
+
+.qa-mini-list strong {
+  color: var(--ink);
+}
+
+.ugc-card {
+  border-color: var(--hairline);
+  background: #ffffff;
+}
+
+.ugc-thumb {
+  background: linear-gradient(150deg, hsla(var(--draft-hue), 60%, 40%, 0.96), hsla(var(--draft-hue), 66%, 18%, 0.98));
+}
+
+/* ---- QA & Export (05) ------------------------------------------- */
+.qa-item {
+  border-color: var(--hairline);
+  background: #ffffff;
+}
+
+.qa-item[data-status="pass"] > span,
+.qa-pass-pill {
+  background: var(--green-soft);
+  color: var(--green-deep);
+}
+
+.qa-item[data-status="warn"] > span,
+.qa-pass-pill[data-status="warn"] {
+  background: var(--orange-soft);
+  color: var(--orange);
+}
+
+.qa-item em {
+  color: var(--green-deep);
+}
+
+.content-tile {
+  border-color: var(--hairline);
+  background: #ffffff;
+}
+
+.content-tile span {
+  background: var(--blue-soft);
+  color: var(--primary-ink);
+}
+
+.content-tile strong {
+  color: var(--ink);
+}
+
+/* export packet -> WHITE card (matches 05) */
+.export-panel {
+  background: #ffffff;
+  color: var(--ink);
+}
+
+.export-panel h2 {
+  color: var(--ink);
+}
+
+.export-panel p,
+.export-panel .lock-note,
+.export-panel .eyebrow {
+  color: var(--muted);
+}
+
+.export-cta {
+  background: linear-gradient(180deg, #4a6cff, #4836d8);
+}
+
+.destination-list {
+  border-color: var(--line);
+}
+
+.destination-card {
+  border-color: var(--line);
+  background: #ffffff;
+  color: var(--ink);
+}
+
+.destination-card small {
+  color: var(--muted);
+}
+
+.destination-card > span {
+  border-color: var(--line-strong);
+  color: var(--muted);
+}
+
+.destination-card.is-active {
+  border-color: rgba(59, 98, 246, 0.45);
+  background: var(--blue-soft);
+}
+
+.destination-card:disabled {
+  background: var(--surface-soft);
+}
+
+/* paid-network launch separation banner (kept distinct from export) */
+.lock-note {
+  color: var(--muted);
+}
+
+/* ---- Stepper ---------------------------------------------------- */
+.stepper {
+  position: static;
+  bottom: auto;
+  z-index: 1;
+  border-top: 1px solid var(--hairline);
+  background: rgba(238, 241, 247, 0.9);
+  backdrop-filter: blur(18px);
+}
+
+.step-chip {
+  border-color: transparent;
+  background: transparent;
+}
+
+.step-chip strong {
+  color: var(--ink);
+}
+
+.step-chip.is-current {
+  border-color: rgba(59, 98, 246, 0.4);
+  background: #ffffff;
+  box-shadow: 0 6px 16px rgba(59, 98, 246, 0.12);
+}
+
+.step-chip span {
+  background: var(--surface-soft);
+  color: var(--soft);
+}
+
+.step-chip.is-current span {
+  background: linear-gradient(160deg, #4a6cff, #4836d8);
+  color: #fff;
+}
+
+.step-chip.is-complete span {
+  background: var(--green);
+  color: #fff;
+}
+
+/* ---- Inspector (right "next steps" rail, 01) -------------------- */
+.inspector {
+  border-left: 1px solid var(--hairline);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(233, 237, 245, 0.9)),
+    var(--paper);
+}
+
+.inspector-block {
+  background: #ffffff;
+}
+
+.inspector-block h2 {
+  color: var(--ink);
+}
+
+.metric-row strong {
+  color: var(--primary-ink);
+}
+
+.pack-include-row em {
+  color: var(--ink);
+}
+
+.compact-list div {
+  border-color: var(--hairline);
+}
+
+/* ---- Inspector: "Your next steps" numbered rail (01 / 05) ------- */
+.next-steps-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.next-steps-list li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 10px 0;
+}
+
+.next-steps-list li::before {
+  content: "";
+  position: absolute;
+  left: 13px;
+  top: 30px;
+  bottom: -2px;
+  width: 2px;
+  background: var(--line);
+}
+
+.next-steps-list li:last-child::before {
+  display: none;
+}
+
+.next-steps-list li > span {
+  z-index: 1;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface-soft);
+  color: var(--soft);
+  font-size: 12px;
+  font-weight: 900;
+  font-family: var(--font-mono);
+}
+
+.next-steps-list li.is-done > span {
+  background: var(--green);
+  color: #fff;
+}
+
+.next-steps-list li.is-current > span {
+  background: linear-gradient(160deg, #4a6cff, #4836d8);
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(59, 98, 246, 0.14);
+}
+
+.next-steps-list strong {
+  display: block;
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.next-steps-list li:not(.is-current):not(.is-done) strong {
+  color: var(--muted);
+}
+
+.next-steps-list small {
+  display: block;
+  margin-top: 2px;
+  color: var(--soft);
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+/* ---- Toast ------------------------------------------------------ */
+.toast {
+  border-color: rgba(148, 164, 200, 0.2);
+  background: #0e1a33;
+  color: #f6f8ff;
+}
+
+/* ---- Card radius: slightly softer premium feel ------------------ */
+:is(
+  .flow-panel, .inspector-block, .current-app, .app-card, .output-choice,
+  .check-tile, .claim-row, .proof-tile, .draft-card, .ugc-card,
+  .destination-card, .content-tile, .generation-preview, .launch-console,
+  .proof-command-rail, .setup-command-rail, .review-command-rail,
+  .manifest-command-rail, .selected-creative-panel, .export-panel,
+  .recipe-summary, .customize-panel, .winner-band, .qa-item, .toast,
+  .secondary-button, .primary-button, .credit-badge, .icon-action
+) {
+  border-radius: 12px;
+}
+
+.destination-card {
+  border-radius: 0;
+}
+
+@media (max-width: 560px) {
+  .app-header {
+    padding: 14px 14px 16px;
+  }
+
+  .top-command {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .workspace-title {
+    display: grid;
+    gap: 4px;
+    align-items: start;
+  }
+
+  .workspace-title .back-link {
+    padding: 0;
+    line-height: 1.1;
+  }
+
+  .workspace-title strong {
+    max-width: 22ch;
+    font-size: 12px;
+    line-height: 1.18;
+    white-space: normal;
+  }
+
+  .top-actions {
+    align-items: start;
+    gap: 8px;
+  }
+
+  .stage-strip {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 8px 10px;
+  }
+
+  .stage-strip i,
+  .stage-strip small {
+    grid-column: 1 / -1;
+  }
+}

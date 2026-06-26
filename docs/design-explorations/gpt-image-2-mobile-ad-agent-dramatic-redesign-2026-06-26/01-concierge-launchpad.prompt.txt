@@ -1,0 +1,13 @@
+
+PRODUCT: Mobile Ad Agent, a premium SaaS prototype for growth teams making proof-backed mobile app ads.
+CORE FLOW: Launchpad -> Proof Review -> Draft Pack Setup -> Review Drafts -> QA & Export.
+MVP RULES: top-level outputs are only Image Ads and UGC Videos. Story crops, thumbnails, and first frames are derived later, not selected up front. No sample pack preview before proof/output approval. Credits are not spent until the user approves proof and clicks Generate drafts. Export means download/share/ad-inbox handoff only; no live paid-network publishing. Keep provider_mutations: 0 as a small audit rail.
+UX GOAL: simple, purposeful, elegant progressive disclosure. The user should always know the current choice, the next action, and what happens after it.
+DESIGN QUALITY: high-end modern SaaS product interface, crisp hierarchy, dense enough for an operator but never overwhelming, calm expert tone, strong whitespace rhythm, polished component system, restrained depth, non-generic palette with at least two accent families. Avoid beige/green monotony, purple AI gradients, generic admin dashboard cards, overdecorated glassmorphism, tiny unreadable labels, lorem ipsum, charts that are not meaningful, provider publishing controls, and marketing landing-page hero treatment.
+TEXT: keep in-image text short and product-specific. Some imperfect generated UI text is acceptable; prioritize layout, hierarchy, states, and component ideas.
+OUTPUT: a single high-fidelity 1536x1024 desktop web app mockup, no browser chrome, no watermark.
+
+DIRECTION 01 - Concierge Launchpad.
+Create the best possible first-run Launchpad screen. Visual thesis: the app feels like a calm guided command center, closer to Linear/Stripe craft than a typical AI tool.
+Required visible structure: compact app portfolio strip with multiple apps, selected app summary, proof readiness, one expanded step called Choose outputs, two large selectable output tiles for Image Ads and UGC Videos, a clear primary CTA Review proof, and a right-side next-action inspector that explains the sequence without clutter.
+Make the design dramatically more elegant than a plain sidebar/cards prototype: use a refined top command bar, an airy canvas, a precise step rail, tasteful color accents, and purpose-built proof/output components.
