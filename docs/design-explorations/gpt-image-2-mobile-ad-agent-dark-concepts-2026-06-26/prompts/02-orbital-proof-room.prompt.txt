@@ -1,0 +1,30 @@
+Use case: ui-mockup
+Asset type: high-fidelity web SaaS interface concept, 16:10 desktop screen
+
+Primary request:
+Create a dark, modern interface concept for Mobile Ad Agent focused on the Proof Review state. The user is reviewing app screenshots, store assets, and approved claims before any creative generation cost is spent.
+
+Product rules to show:
+- Five-step flow: Launchpad, Proof Review, Draft Pack Setup, Review Drafts, QA & Export.
+- Proof Review lets the user approve, edit, ignore, or attach raw proof.
+- Store art must be visually separate from actual proof.
+- The next sequence is clear: approve enough proof, then continue to Draft Pack Setup.
+- Include both eventual outputs somewhere in context: Image Ads and UGC Videos.
+- Include "Provider mutations: 0" as a small audit/safety cue.
+
+Direction name: Orbital Proof Room
+Design thesis:
+A futuristic proof verification workspace, like an orbital operations room: dark graphite surfaces, floating proof thumbnails, claim ledger, status rings, and precise green approval signals.
+
+Layout:
+- Left dark navigation rail.
+- Top stage rail and app switcher.
+- Central two-column workspace: large proof gallery on the left, claim ledger/review queue on the right.
+- Right-side inspector explains the current proof readiness and the next step.
+- No generated ad preview; only source proof and claims.
+
+Visual style:
+Modern dark SaaS, sophisticated, high-contrast, glass panels over matte charcoal, emerald verification accents, small amber warnings, subtle grid texture.
+
+Constraints:
+Make the UI purposeful and easy to parse, not sci-fi clutter. Keep labels short and product-specific. No watermarks, no brand logos, no fake metrics that look like live spend.

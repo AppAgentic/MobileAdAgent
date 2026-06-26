@@ -1,0 +1,30 @@
+Use case: ui-mockup
+Asset type: high-fidelity web SaaS interface concept, 16:10 desktop screen
+
+Primary request:
+Create a dark, modern interface concept for Mobile Ad Agent focused on QA & Export. The user has approved drafts, QA has run, and the pack is ready for download/share handoff.
+
+Product rules to show:
+- Five-step flow: Launchpad, Proof Review, Draft Pack Setup, Review Drafts, QA & Export.
+- QA checks should include proof match, text readability, brand fit, formats, cost/credits.
+- Export options should be download zip and share link; paid network launch should not be primary and should appear disabled or absent.
+- Include "Provider mutations: 0" clearly.
+- Show both Image Ads and UGC Videos in pack contents.
+
+Direction name: Command Export Vault
+Design thesis:
+A premium dark export room: secure, calm, final. It feels like a vault/checkpoint where every creative is packaged after proof, not a noisy publishing dashboard.
+
+Layout:
+- Left rail and top five-step rail.
+- Main hero status: "Ready to export" with all checks passed.
+- QA checklist cards in the center.
+- Export packet panel on the right with Download ZIP and Share link options.
+- Pack contents row shows Image Ads and UGC Videos.
+- Small safety ledger says provider mutations stay at zero.
+
+Visual style:
+Dark matte black and graphite, deep green pass states, cool blue action button, thin silver hairlines, soft shadow, premium security/operations feel, very polished.
+
+Constraints:
+No fake live campaign launch, no ad-network provider mutation, no unnecessary sections. Keep the screen simple, purposeful, and high-end.

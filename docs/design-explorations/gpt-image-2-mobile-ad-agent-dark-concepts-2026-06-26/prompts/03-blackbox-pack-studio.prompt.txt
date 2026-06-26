@@ -1,0 +1,29 @@
+Use case: ui-mockup
+Asset type: high-fidelity web SaaS interface concept, 16:10 desktop screen
+
+Primary request:
+Create a dark, modern interface concept for Mobile Ad Agent focused on Draft Pack Setup. The user has approved proof and is confirming how many Image Ads and UGC Videos to generate before credits are used.
+
+Product rules to show:
+- Five-step flow: Launchpad, Proof Review, Draft Pack Setup, Review Drafts, QA & Export.
+- Only two output choices: Image Ads and UGC Videos.
+- Do not include stories or thumbnail choices.
+- Show credit estimate, approved proof count, and a proof-gated generate button.
+- No provider publishing or paid ad launch.
+
+Direction name: Blackbox Pack Studio
+Design thesis:
+A sleek AI production studio with black panels, neon ink controls, modular output cards, and a visible cost/safety ledger. It should feel powerful but not overwhelming.
+
+Layout:
+- Dark sidebar and a top command strip.
+- Central setup panel with two hero output modules: Image Ads and UGC Videos.
+- Each output module has format chips, count controls, and estimated credits.
+- A slim expandable "advanced" line is collapsed, showing progressive disclosure.
+- Right summary panel with "what happens next" and safety checks.
+
+Visual style:
+Dark graphite and near-black, vivid blue-violet primary action, emerald proof-ready badges, orange cost highlights, modern type, clean spacing, crisp borders, subtle depth.
+
+Constraints:
+Make all primary choices obvious at a glance. Avoid decorative fluff and avoid a marketing landing page. Keep generated UI text short and legible. No sample generated creatives on this screen.

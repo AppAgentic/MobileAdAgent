@@ -1,0 +1,29 @@
+Use case: ui-mockup
+Asset type: high-fidelity web SaaS interface concept, 16:10 desktop screen
+
+Primary request:
+Create a dark, modern interface concept for Mobile Ad Agent, an AI-assisted mobile ad creative generation tool. The screen is the Launchpad where a user chooses an app, confirms proof readiness, selects outputs, and understands the next steps.
+
+Product rules to show:
+- Five-step flow: Launchpad, Proof Review, Draft Pack Setup, Review Drafts, QA & Export.
+- Only two top-level output choices: Image Ads and UGC Videos.
+- Do not show stories, thumbnails, or sample pack previews before proof approval.
+- Make it obvious nothing publishes live; include a small "Provider mutations: 0" safety signal.
+- Progressive disclosure: the user should see the next single action, not every advanced setting.
+
+Direction name: Midnight Launch Deck
+Design thesis:
+A dramatic black-glass control deck with a cinematic app-launch feel, crisp white text, cobalt/cyan focus states, tiny amber safety cues, and elegant sparse panels.
+
+Layout:
+- Left vertical navigation rail, very dark navy/black.
+- Wide central launchpad with a horizontal five-step rail at the top.
+- Main card asks "Start the next ad pack" with selected app, proof readiness meter, and two large output tiles for Image Ads and UGC Videos.
+- Right-side "Next steps" rail with the current step highlighted.
+- Bottom area hints at proof-gated next action, not generated previews.
+
+Visual style:
+Sharp product UI, premium enterprise SaaS, dark theme, glassmorphism used sparingly, crisp hairlines, subtle inner glow, dense but calm spacing, no cartoon art.
+
+Constraints:
+Make this look like a real interactive SaaS product UI, not a landing page or poster. Keep text short and mostly legible. No watermarks, no device brand logos, no app-store badges, no fake ad network launch buttons.

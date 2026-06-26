@@ -1,0 +1,29 @@
+Use case: ui-mockup
+Asset type: high-fidelity web SaaS interface concept, 16:10 desktop screen
+
+Primary request:
+Create a dark, modern interface concept for Mobile Ad Agent focused on Review Drafts. The user is reviewing generated Image Ads and UGC Videos after generation, approving or holding drafts before QA.
+
+Product rules to show:
+- Five-step flow: Launchpad, Proof Review, Draft Pack Setup, Review Drafts, QA & Export.
+- Show both Image Ads and UGC Videos as separate tabs or lanes.
+- Every draft should connect to approved proof and a QA/preflight state.
+- User can approve selected drafts and then run QA.
+- No live provider publishing from this screen.
+
+Direction name: Neon Review Wall
+Design thesis:
+A dark creative review wall with polished ad cards, proof-match badges, QA chips, and a premium gallery feel inspired by high-end creative tools.
+
+Layout:
+- Left rail, top step rail.
+- Main area has tabs for Image Ads and UGC Videos.
+- A grid of draft cards on the left/center, with one selected draft shown large on the right.
+- Selected draft panel includes proof match, claim source, readable copy area, and approve/hold actions.
+- Right inspector shows next step: Run QA.
+
+Visual style:
+Deep black, charcoal cards, electric cyan and magenta accents used sparingly, emerald approved badges, high-resolution creative thumbnails represented as abstract app-ad cards, sharp premium SaaS polish.
+
+Constraints:
+Do not make it a generic image gallery. The UI must clearly be about proof-backed mobile ad drafts. Keep text short and mostly legible. No watermarks or fake social platform logos.
