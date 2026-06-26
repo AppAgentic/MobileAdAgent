@@ -1,0 +1,32 @@
+Use case: ui-mockup
+Asset type: high-fidelity web SaaS interface concept, 16:10 desktop screen
+
+Reference images:
+- The provided screenshots are style references from the current xAI Grok public website, especially the "Imagine" section: black page, large prompt box, mode dropdown, attach button, and one clear send action.
+- Do not copy xAI or Grok logos, marks, navigation, names, or exact text.
+
+Primary request:
+Design a Grok-inspired Mobile Ad Agent Draft Pack Setup screen. The user has approved proof and is ready to generate Image Ads and UGC Videos.
+
+Product rules to show:
+- Five-step flow: Launchpad, Proof Review, Draft Pack Setup, Review Drafts, QA & Export.
+- Only Image Ads and UGC Videos are top-level choices.
+- Show count/credit controls without overwhelming the user.
+- The generate action must be proof-gated and show the credit estimate.
+- Include "Provider mutations: 0".
+
+Direction name: Imagine Pack Composer
+Design thesis:
+Instead of a settings-heavy setup page, the user composes an ad pack like a prompt: selected app, approved proof, output modes, credit estimate, generate.
+
+Layout:
+- Huge central composer/work area styled like Grok's prompt panel.
+- Inside the composer: selected app, approved proof count, Image Ads chip, UGC Videos chip, format chips, credit estimate, and a single Generate Drafts arrow/button.
+- Collapsed advanced settings line below.
+- A slim step rail and next-step explanation.
+
+Visual style:
+Extremely minimal black UI, soft rounded charcoal composer, crisp labels, white primary text, graphite secondary text, a single luminous action accent.
+
+Constraints:
+No sample pack previews, no stories/thumbnails, no fake ad platform publish action. No xAI/Grok logos or copy.

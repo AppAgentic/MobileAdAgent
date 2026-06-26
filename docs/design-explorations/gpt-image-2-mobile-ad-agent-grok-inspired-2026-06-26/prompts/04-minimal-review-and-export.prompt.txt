@@ -1,0 +1,33 @@
+Use case: ui-mockup
+Asset type: high-fidelity web SaaS interface concept, 16:10 desktop screen
+
+Reference images:
+- The provided screenshots are style references from the current xAI Grok public website: sparse black surface, oversized text hierarchy, rounded product demo panels, pill controls, and minimal borders.
+- Do not copy xAI or Grok logos, marks, navigation, names, or exact text.
+
+Primary request:
+Design a Grok-inspired Mobile Ad Agent Review Drafts plus QA/Export screen. It should feel like a minimal AI workspace after generation, where the user approves drafts and exports a proof-backed pack.
+
+Product rules to show:
+- Five-step flow with current step near Review Drafts or QA & Export.
+- Show both Image Ads and UGC Videos.
+- Each draft connects to approved proof and QA status.
+- Export options are Download ZIP and Share Link only; no live ad network launch.
+- Include "Provider mutations: 0".
+
+Direction name: Minimal Review And Export
+Design thesis:
+The generated pack is reviewed inside a sparse AI conversation workspace: drafts as responses, proof/QA as citations, export as the final action.
+
+Layout:
+- Top minimal nav and small step rail.
+- Large central black rounded panel, like a product demo/composer result area.
+- Left side has draft response cards for Image Ads and UGC Videos.
+- Right side has proof citations, QA checks, and export actions.
+- A bottom composer lets the user ask for a revision, but approval/export remains explicit.
+
+Visual style:
+Grok-like black and charcoal, huge clean typography, sparse cards, pill status tags, high contrast, restrained glow, lots of negative space.
+
+Constraints:
+Do not make it a generic chat app; it must be a real ad creative review and export workspace. No xAI/Grok logos, no fake brand ads, no provider publishing.

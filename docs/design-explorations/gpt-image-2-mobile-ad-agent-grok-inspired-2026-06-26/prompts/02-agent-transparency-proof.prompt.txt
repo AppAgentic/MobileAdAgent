@@ -1,0 +1,34 @@
+Use case: ui-mockup
+Asset type: high-fidelity web SaaS interface concept, 16:10 desktop screen
+
+Reference images:
+- The provided screenshots are style references from the current xAI Grok public website, especially the "Multi-agent" section: black canvas, left-side explanatory copy, a large rounded work area, and visible reasoning/audit emphasis.
+- Do not copy xAI or Grok logos, marks, navigation, names, or exact text.
+
+Primary request:
+Design a Grok-inspired Mobile Ad Agent Proof Review screen. The goal is to make proof checking and agent transparency feel central and trustworthy.
+
+Product rules to show:
+- Five-step flow: Launchpad, Proof Review, Draft Pack Setup, Review Drafts, QA & Export.
+- Proof Review lets the user approve, edit, ignore, or attach raw proof.
+- Store art must be separate from actual proof.
+- Show proof agents or audit rows working in parallel: Proof Agent, Claim Agent, Creative Director, QA Agent.
+- Include Image Ads and UGC Videos as eventual outputs, but no generated preview yet.
+- Include "Provider mutations: 0".
+
+Direction name: Agent Transparency Proof
+Design thesis:
+A calm black proof lab where multiple agents show their work before any credits are used.
+
+Layout:
+- Sparse top navigation and compact five-step rail.
+- Left side: short section title and proof rules/checklist.
+- Center/right: large rounded proof workspace with source proof thumbnails, claim rows, and small transparent agent status lanes.
+- Bottom composer: "Ask agents to check this claim..." with attach/source controls.
+- The current action should be approve proof or attach proof.
+
+Visual style:
+Grok-inspired black/charcoal, large simple typography, subtle gray dividers, pill status tags, white/green proof approvals, minimal accent color, no noisy dashboard chrome.
+
+Constraints:
+Avoid fake live campaign metrics and avoid clutter. No watermarks, no xAI/Grok branding, no sample generated ads.

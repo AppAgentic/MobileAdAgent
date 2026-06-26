@@ -1,0 +1,33 @@
+Use case: ui-mockup
+Asset type: high-fidelity web SaaS interface concept, 16:10 desktop screen
+
+Reference images:
+- The provided screenshots are style references from the current xAI Grok public website: stark black background, minimal nav, huge centered typography, pill CTAs, and a large prompt/composer object.
+- Do not copy xAI or Grok logos, marks, navigation, names, or exact text.
+
+Primary request:
+Design a Grok-inspired Mobile Ad Agent Launchpad screen. Mobile Ad Agent is an AI-assisted workspace that helps app teams generate proof-backed mobile ad creative.
+
+Product rules to show:
+- Five-step flow: Launchpad, Proof Review, Draft Pack Setup, Review Drafts, QA & Export.
+- Only two top-level output choices: Image Ads and UGC Videos.
+- No stories or thumbnail selections.
+- No sample pack preview before proof approval.
+- Include a small "Provider mutations: 0" safety cue.
+
+Direction name: Prompt-First Launchpad
+Design thesis:
+The whole product starts from one commanding composer: "What ad pack should we build?" The screen feels like an AI-native product, not a traditional dashboard.
+
+Layout:
+- Minimal black page with sparse top nav and a tiny Mobile Ad Agent wordmark.
+- Huge centered headline: "Build proof-backed ads from one prompt" or similar.
+- Large rounded composer box in the center, with attachment icon, selected app chip, output mode chips for Image Ads and UGC Videos, and a single submit arrow.
+- Below the composer, a quiet proof-readiness strip and the five-step flow.
+- Keep all controls obvious but minimal.
+
+Visual style:
+Near-black background, white and graphite text, pill buttons, soft charcoal composer, thin gray borders, one restrained electric accent, lots of negative space, very modern.
+
+Constraints:
+Do not create a marketing landing page; this must still look like a real product workspace. Generated text can be approximate but should be short. No watermarks, no device brand logos, no xAI/Grok branding.
