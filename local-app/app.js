@@ -201,6 +201,7 @@ function onChange(event) {
 }
 
 function render() {
+  document.body.dataset.step = state.currentStep;
   renderRail();
   renderHeader();
   renderView();
@@ -229,6 +230,12 @@ function renderHeader() {
         <div class="credit-badge"><span>Credits</span><strong>${state.portfolio.credits.toLocaleString()}</strong></div>
         <button class="icon-action" type="button" aria-label="Notifications"><span></span></button>
       </div>
+    </div>
+    <div class="stage-strip" style="--readiness:${counts?.readiness || 0}%">
+      <span>Stage ${stepIndex(state.currentStep) + 1} of ${STEPS.length}</span>
+      <strong>${escapeHtml(activeStep?.label || 'Launchpad')}</strong>
+      <i aria-hidden="true"><b></b></i>
+      <small>Provider mutations: 0</small>
     </div>
     <div class="workspace-switcher">
       ${app ? `
@@ -347,6 +354,30 @@ function renderLaunchpad(app) {
       <button class="secondary-button" type="button" data-quick="new-pack">New pack</button>
     </section>
 
+    <section class="launch-console" style="--app-hue:${app.hue}; --readiness:${counts.readiness}%">
+      <div class="launch-prime">
+        <span class="app-icon-xl">${escapeHtml(app.icon)}</span>
+        <div>
+          <p class="eyebrow">Selected app</p>
+          <h2>${escapeHtml(app.name)}</h2>
+          <small>${escapeHtml(app.category)} - ${counts.rawProof} raw proof assets - ${counts.approvedClaims}/${counts.claims} claims approved</small>
+        </div>
+      </div>
+      <div class="launch-proof-meter">
+        <span>Proof readiness</span>
+        <strong>${counts.readiness}%</strong>
+        <i aria-hidden="true"><b></b></i>
+      </div>
+      <div class="launch-sequence" aria-label="Launch sequence">
+        ${STEPS.map((step, index) => `<span class="${index <= stepIndex(state.currentStep) ? 'is-lit' : ''}">${index + 1}</span>`).join('')}
+      </div>
+      <div class="launch-next">
+        <span>Next</span>
+        <strong>Review proof before any credits are used</strong>
+        <button class="primary-button" type="button" data-action="continue-proof">Review proof</button>
+      </div>
+    </section>
+
     <section class="flow-panel primary-panel launch-accordion">
       ${accordionRow(1, 'Choose app', `${app.name} selected - ${counts.rawProof} raw proof assets`, 'complete')}
       <article class="accordion-row is-open">
@@ -386,6 +417,12 @@ function renderProofReview(app) {
         <p>Claims without raw app proof stay locked until proof is attached.</p>
       </div>
       <button class="primary-button" type="button" data-action="approve-supported-claims">Approve supported claims</button>
+    </section>
+    <section class="proof-command-rail">
+      ${miniStat('Raw proof', rawProof.length)}
+      ${miniStat('Store art excluded', storeArt.length)}
+      ${miniStat('Supported claims', supportedClaims.length)}
+      ${miniStat('Locked claims', unsupportedClaims.length)}
     </section>
     <section class="work-surface proof-layout">
       <div class="flow-panel">
@@ -448,6 +485,24 @@ function renderDraftSetup(app) {
       <div>
         <h1>Confirm generation</h1>
         <p>Defaults are ready. Open customize only if this pack needs a different recipe.</p>
+      </div>
+    </section>
+    <section class="setup-command-rail">
+      <div>
+        <span>Spend gate</span>
+        <strong>${estimate.total} credits only after generate</strong>
+      </div>
+      <div>
+        <span>Image plan</span>
+        <strong>${state.config.outputs.imageAds ? `${estimate.imageCount} drafts` : 'Disabled'}</strong>
+      </div>
+      <div>
+        <span>UGC plan</span>
+        <strong>${state.config.outputs.ugcVideos ? `${state.config.ugcSetup.count} videos` : 'Disabled'}</strong>
+      </div>
+      <div>
+        <span>Proof gate</span>
+        <strong>${counts.approvedClaims}/${counts.claims} approved</strong>
       </div>
     </section>
     <section class="work-surface setup-layout">
@@ -562,6 +617,12 @@ function renderDraftReview() {
       <button class="secondary-button small" type="button">All formats</button>
       <span class="sort-note">Sorted by proof match</span>
     </section>
+    <section class="review-command-rail">
+      ${miniStat('Drafts generated', pack?.summary.total || 0)}
+      ${miniStat('Approved', approvedDrafts)}
+      ${miniStat('Top proof match', selectedDraft ? `${proofMatch(selectedDraft)}%` : '0%')}
+      <div class="review-ledger-note">Approve at least one creative before QA unlocks export.</div>
+    </section>
     <section class="work-surface review-layout">
       <div class="flow-panel primary-panel">
         ${pack ? draftGrid(pack) : emptyDrafts()}
@@ -589,6 +650,12 @@ function renderQaExport() {
         <p>Your pack passed the checks needed to hand off.</p>
       </div>
       <span class="qa-pass-pill" data-status="${escapeAttr(qa?.verdict || 'empty')}">${qa ? (qa.verdict === 'pass' ? 'All checks passed' : 'Review warnings') : 'QA not run'}</span>
+    </section>
+    <section class="manifest-command-rail">
+      ${miniStat('Approved creatives', pack?.drafts.filter((draft) => draft.status === 'approved').length || 0)}
+      ${miniStat('QA verdict', qa?.verdict || 'Not run')}
+      ${miniStat('Destination', state.destination.replaceAll('_', ' '))}
+      ${miniStat('Provider mutations', 0)}
     </section>
     <section class="work-surface export-layout">
       <div class="flow-panel primary-panel">
