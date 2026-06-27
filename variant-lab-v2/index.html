@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en" data-variant="a">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Mobile Ad Agent — Variant Lab V2</title>
+  <meta name="description" content="Clean-sheet V2 design exploration for Mobile Ad Agent: a URL-first control plane for proof-backed mobile ad creative." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip" href="#stage">Skip to content</a>
+
+  <!-- ============ GLOBAL SHELL ============ -->
+  <header class="shell" role="banner">
+    <div class="shell__brand">
+      <span class="mark" aria-hidden="true"></span>
+      <span class="brand__name">Mobile Ad Agent</span>
+      <span class="brand__tag">Variant Lab · V2</span>
+    </div>
+
+    <nav class="switch" role="tablist" aria-label="Design variants">
+      <button class="switch__btn is-active" role="tab" aria-selected="true" data-go="a">
+        <span class="switch__key">A</span>
+        <span class="switch__label">Launchpad OS</span>
+      </button>
+      <button class="switch__btn" role="tab" aria-selected="false" data-go="b">
+        <span class="switch__key">B</span>
+        <span class="switch__label">Proof Room</span>
+      </button>
+      <button class="switch__btn" role="tab" aria-selected="false" data-go="c">
+        <span class="switch__key">C</span>
+        <span class="switch__label">Creative Desk</span>
+      </button>
+    </nav>
+
+    <div class="shell__meta">
+      <span class="pill pill--safe" title="No ad-network spend is ever touched">
+        <span class="pill__dot"></span> Provider mutations <strong>0</strong>
+      </span>
+    </div>
+  </header>
+
+  <main id="stage" class="stage">
+
+    <!-- ================================================================= -->
+    <!-- VARIANT A — LAUNCHPAD OS                                          -->
+    <!-- ================================================================= -->
+    <section class="variant variant--a is-active" id="variant-a" aria-label="Variant A — Launchpad OS">
+
+      <!-- Quiet workspace rail -->
+      <aside class="rail" aria-label="Workspaces">
+        <div class="rail__top">
+          <div class="rail__title">AppAgentic Studio</div>
+          <button class="rail__add" data-add-app aria-label="Add app">+</button>
+        </div>
+
+        <ul class="apps" role="listbox" aria-label="Apps">
+          <li><button class="app is-active" data-app="Lumina Habits" data-src="apps.apple.com/app/lumina-habits">
+            <span class="ico ico--violet">Lu</span>
+            <span class="app__meta"><span class="app__name">Lumina Habits</span><span class="app__sub">iOS · 6 proof items</span></span>
+            <span class="app__live"></span>
+          </button></li>
+          <li><button class="app" data-app="Formroom Fitness" data-src="play.google.com/store/apps/formroom">
+            <span class="ico ico--ember">Fr</span>
+            <span class="app__meta"><span class="app__name">Formroom Fitness</span><span class="app__sub">Android · 9 proof items</span></span>
+          </button></li>
+          <li><button class="app" data-app="Nomadly Travel" data-src="nomadly.app">
+            <span class="ico ico--teal">No</span>
+            <span class="app__meta"><span class="app__name">Nomadly Travel</span><span class="app__sub">Website · 4 proof items</span></span>
+          </button></li>
+          <li><button class="app" data-app="Sift Budget" data-src="apps.apple.com/app/sift-budget">
+            <span class="ico ico--gold">Si</span>
+            <span class="app__meta"><span class="app__name">Sift Budget</span><span class="app__sub">iOS · draft pack</span></span>
+          </button></li>
+        </ul>
+
+        <div class="rail__foot">
+          <div class="rail__usr"><span class="ico ico--mute">JR</span><span>Joe · Ruvix Labs</span></div>
+        </div>
+      </aside>
+
+      <!-- Dominant launch surface -->
+      <div class="launch">
+        <header class="launch__head">
+          <p class="eyebrow">Launchpad</p>
+          <h1 class="launch__title">Start with a link.</h1>
+          <p class="launch__lede">Paste an App Store, Play Store, or website URL for <strong data-app-name>Lumina Habits</strong>. We pull the real proof first — every ad is built from what we can verify.</p>
+        </header>
+
+        <form class="dropzone" data-import-form>
+          <div class="dropzone__chips" role="tablist" aria-label="Detected source">
+            <span class="srcchip is-on" data-src-chip="appstore">App&nbsp;Store</span>
+            <span class="srcchip" data-src-chip="play">Play&nbsp;Store</span>
+            <span class="srcchip" data-src-chip="web">Website</span>
+          </div>
+          <div class="dropzone__field">
+            <span class="dropzone__glyph" aria-hidden="true">↳</span>
+            <input class="dropzone__input" type="text" inputmode="url" autocomplete="off" spellcheck="false"
+                   placeholder="https://apps.apple.com/app/lumina-habits" data-url-input aria-label="App URL" />
+            <button class="btn btn--primary dropzone__go" type="submit" data-import-go>Import proof</button>
+          </div>
+          <p class="dropzone__hint" data-import-hint>Source auto-detected as <strong>App Store</strong>. We never post to ad networks.</p>
+        </form>
+
+        <div class="recents">
+          <span class="recents__label">Recent imports</span>
+          <button class="recents__item"><span class="ico ico--violet sm">Lu</span> Lumina Habits <em>· today</em></button>
+          <button class="recents__item"><span class="ico ico--ember sm">Fr</span> Formroom Fitness <em>· 2d</em></button>
+          <button class="recents__item"><span class="ico ico--teal sm">No</span> Nomadly Travel <em>· 5d</em></button>
+        </div>
+
+        <!-- Sequence strip -->
+        <ol class="flow" aria-label="Pipeline">
+          <li class="flow__step is-current"><span class="flow__n">1</span> Launchpad</li>
+          <li class="flow__step"><span class="flow__n">2</span> Proof Review</li>
+          <li class="flow__step"><span class="flow__n">3</span> Draft Pack</li>
+          <li class="flow__step"><span class="flow__n">4</span> Review Drafts</li>
+          <li class="flow__step"><span class="flow__n">5</span> QA &amp; Export</li>
+        </ol>
+
+        <!-- What you'll make (no sample preview before proof) -->
+        <div class="outputs">
+          <p class="outputs__label">This workspace makes</p>
+          <div class="outputs__pair">
+            <article class="otype">
+              <span class="otype__art otype__art--img" aria-hidden="true"></span>
+              <span class="otype__name">Image Ads</span>
+              <span class="otype__desc">Proof-backed static creative for feed &amp; placements.</span>
+            </article>
+            <article class="otype">
+              <span class="otype__art otype__art--ugc" aria-hidden="true"><span class="otype__play">▶</span></span>
+              <span class="otype__name">UGC Videos</span>
+              <span class="otype__desc">9:16 creator-style video built on real app moments.</span>
+            </article>
+          </div>
+          <p class="outputs__note">Drafts unlock after proof is reviewed and approved.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- VARIANT B — PROOF ROOM                                            -->
+    <!-- ================================================================= -->
+    <section class="variant variant--b" id="variant-b" aria-label="Variant B — Proof Room" hidden>
+
+      <header class="proof__top">
+        <div class="proof__app">
+          <span class="ico ico--violet">Lu</span>
+          <div>
+            <h1 class="proof__title">Lumina Habits</h1>
+            <div class="proof__src">
+              <span class="srctag srctag--apple">App Store</span>
+              <span class="proof__url">apps.apple.com/app/lumina-habits</span>
+              <span class="proof__time">Imported 2m ago</span>
+            </div>
+          </div>
+        </div>
+        <div class="proof__appswitch" aria-label="Other apps">
+          <button class="miniapp is-active" title="Lumina Habits"><span class="ico ico--violet xs">Lu</span></button>
+          <button class="miniapp" title="Formroom Fitness"><span class="ico ico--ember xs">Fr</span></button>
+          <button class="miniapp" title="Nomadly Travel"><span class="ico ico--teal xs">No</span></button>
+          <button class="miniapp miniapp--add" title="Import another URL">＋</button>
+        </div>
+      </header>
+
+      <div class="proof__grid">
+
+        <!-- Source snapshots -->
+        <section class="snaps" aria-label="Source snapshots">
+          <h2 class="block__h">Source snapshots</h2>
+          <p class="block__sub">Pulled directly from the listing. Claims must trace back to one of these.</p>
+
+          <div class="snaps__row">
+            <figure class="snap">
+              <div class="snap__screen">
+                <div class="snap__status"><span></span><span></span><span></span></div>
+                <div class="snap__hero snap__hero--violet">
+                  <div class="snap__badge">★ 4.8</div>
+                  <div class="snap__headline">Build habits<br/>that actually stick</div>
+                </div>
+                <div class="snap__rows"><span></span><span></span><span class="w60"></span></div>
+              </div>
+              <figcaption>Listing hero · screenshot 1</figcaption>
+            </figure>
+
+            <figure class="snap">
+              <div class="snap__screen">
+                <div class="snap__status"><span></span><span></span><span></span></div>
+                <div class="snap__stat">
+                  <span class="snap__big">21</span>
+                  <span class="snap__statlbl">day streak</span>
+                </div>
+                <div class="snap__bars"><i style="--h:40%"></i><i style="--h:65%"></i><i style="--h:55%"></i><i style="--h:80%"></i><i style="--h:95%"></i><i style="--h:72%"></i></div>
+              </div>
+              <figcaption>Streak screen · screenshot 3</figcaption>
+            </figure>
+
+            <figure class="snap">
+              <div class="snap__screen">
+                <div class="snap__status"><span></span><span></span><span></span></div>
+                <div class="snap__reviewhd">Loved by 2M+ people</div>
+                <div class="snap__review"><span class="snap__stars">★★★★★</span><p>"The only tracker that stuck for me."</p></div>
+                <div class="snap__review snap__review--mute"><span class="snap__stars">★★★★★</span><p>"Clean, calm, and it just works."</p></div>
+              </div>
+              <figcaption>Reviews · screenshot 5</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <!-- Claims + confidence -->
+        <section class="claims" aria-label="Extracted claims">
+          <div class="claims__head">
+            <div>
+              <h2 class="block__h">What we can prove</h2>
+              <p class="block__sub">5 of 7 claims are cleared for creative. 2 are held until a source is confirmed.</p>
+            </div>
+            <div class="conf">
+              <svg class="conf__ring" viewBox="0 0 36 36" aria-hidden="true">
+                <circle class="conf__bg" cx="18" cy="18" r="15.5"></circle>
+                <circle class="conf__fg" cx="18" cy="18" r="15.5" data-ring="0.82"></circle>
+              </svg>
+              <div class="conf__txt"><strong>82%</strong><span>proof confidence</span></div>
+            </div>
+          </div>
+
+          <div class="claims__group">
+            <div class="claims__glabel claims__glabel--ok"><span class="dot"></span> Allowed in creative · <span data-allowed-count>5</span></div>
+            <ul class="clist" data-allowed>
+              <li class="claim is-allowed" data-claim>
+                <span class="claim__state" aria-hidden="true"></span>
+                <span class="claim__body"><span class="claim__text">Rated 4.8★ on the App Store</span><span class="claim__src">★ Listing hero · shot 1</span></span>
+                <span class="claim__conf"><i style="--c:96%"></i><b>96%</b></span>
+                <button class="claim__toggle" data-toggle aria-pressed="true">Included</button>
+              </li>
+              <li class="claim is-allowed" data-claim>
+                <span class="claim__state" aria-hidden="true"></span>
+                <span class="claim__body"><span class="claim__text">Loved by 2M+ people</span><span class="claim__src">★ Reviews · shot 5</span></span>
+                <span class="claim__conf"><i style="--c:90%"></i><b>90%</b></span>
+                <button class="claim__toggle" data-toggle aria-pressed="true">Included</button>
+              </li>
+              <li class="claim is-allowed" data-claim>
+                <span class="claim__state" aria-hidden="true"></span>
+                <span class="claim__body"><span class="claim__text">Track streaks up to 21 days</span><span class="claim__src">★ Streak screen · shot 3</span></span>
+                <span class="claim__conf"><i style="--c:88%"></i><b>88%</b></span>
+                <button class="claim__toggle" data-toggle aria-pressed="true">Included</button>
+              </li>
+              <li class="claim is-allowed" data-claim>
+                <span class="claim__state" aria-hidden="true"></span>
+                <span class="claim__body"><span class="claim__text">Syncs across all your devices</span><span class="claim__src">★ Listing copy · verified</span></span>
+                <span class="claim__conf"><i style="--c:79%"></i><b>79%</b></span>
+                <button class="claim__toggle" data-toggle aria-pressed="true">Included</button>
+              </li>
+              <li class="claim is-allowed" data-claim>
+                <span class="claim__state" aria-hidden="true"></span>
+                <span class="claim__body"><span class="claim__text">Calm, distraction-free design</span><span class="claim__src">★ Listing hero · shot 1</span></span>
+                <span class="claim__conf"><i style="--c:71%"></i><b>71%</b></span>
+                <button class="claim__toggle" data-toggle aria-pressed="true">Included</button>
+              </li>
+            </ul>
+
+            <div class="claims__glabel claims__glabel--held"><span class="dot"></span> Held — needs a source · <span>2</span></div>
+            <ul class="clist clist--held">
+              <li class="claim is-held" data-claim-held>
+                <span class="claim__state" aria-hidden="true"></span>
+                <span class="claim__body"><span class="claim__text">#1 Health app of the year</span><span class="claim__src">No source in current snapshots</span></span>
+                <span class="claim__why" data-why>Why held?</span>
+              </li>
+              <li class="claim is-held" data-claim-held>
+                <span class="claim__state" aria-hidden="true"></span>
+                <span class="claim__body"><span class="claim__text">Doctor recommended</span><span class="claim__src">Unverifiable third-party claim</span></span>
+                <span class="claim__why" data-why>Why held?</span>
+              </li>
+            </ul>
+          </div>
+
+          <footer class="claims__foot">
+            <p class="claims__footnote"><span class="pill pill--safe pill--xs"><span class="pill__dot"></span> Provider mutations 0</span> Nothing leaves this room until you approve it.</p>
+            <button class="btn btn--primary" data-approve-proof>Approve proof → set up drafts</button>
+          </footer>
+        </section>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- VARIANT C — CREATIVE DESK                                         -->
+    <!-- ================================================================= -->
+    <section class="variant variant--c" id="variant-c" aria-label="Variant C — Creative Desk" hidden>
+
+      <header class="desk__top">
+        <div class="desk__appwrap">
+          <h1 class="desk__title">Creative Desk</h1>
+          <div class="desk__apps" aria-label="Apps">
+            <button class="apppill is-active"><span class="ico ico--violet xs">Lu</span> Lumina Habits</button>
+            <button class="apppill"><span class="ico ico--ember xs">Fr</span> Formroom</button>
+            <button class="apppill"><span class="ico ico--teal xs">No</span> Nomadly</button>
+          </div>
+        </div>
+        <form class="desk__import" data-import-form>
+          <span class="desk__import-glyph" aria-hidden="true">↳</span>
+          <input class="desk__import-input" type="text" placeholder="Paste another app URL to start a pack…" aria-label="Import another app URL" data-url-input />
+          <button class="btn btn--ghost" type="submit">Import</button>
+        </form>
+      </header>
+
+      <div class="desk">
+        <!-- Output filter -->
+        <aside class="desk__rail" aria-label="Output filters">
+          <button class="seg is-active" data-filter="all">All drafts <em>8</em></button>
+          <button class="seg" data-filter="image">Image Ads <em>5</em></button>
+          <button class="seg" data-filter="ugc">UGC Videos <em>3</em></button>
+          <hr class="desk__rule" />
+          <div class="desk__statwrap">
+            <div class="desk__stat"><b>5</b><span>Ready to export</span></div>
+            <div class="desk__stat desk__stat--hold"><b>2</b><span>Held by QA</span></div>
+            <div class="desk__stat desk__stat--prog"><b>1</b><span>In QA</span></div>
+          </div>
+        </aside>
+
+        <!-- Review queue -->
+        <section class="queue" aria-label="Review queue" data-queue>
+          <!-- IMAGE ADS -->
+          <article class="card card--img is-selected" data-card data-type="image" data-status="ready"
+                   data-title="“Streaks that stick”" data-format="Image · 1080×1350">
+            <div class="thumb thumb--img thumb--violet">
+              <span class="thumb__kicker">4.8★ · App Store</span>
+              <span class="thumb__hl">Streaks that<br/>finally stick</span>
+              <span class="thumb__app"><span class="ico ico--violet xs">Lu</span></span>
+            </div>
+            <div class="card__bar"><span class="tag tag--ready">Ready</span><span class="card__name">“Streaks that stick”</span><span class="card__fmt">1080×1350</span></div>
+          </article>
+
+          <article class="card card--ugc" data-card data-type="ugc" data-status="ready"
+                   data-title="“I tried it for 21 days”" data-format="UGC · 9:16 · 0:18">
+            <div class="thumb thumb--ugc thumb--ember">
+              <span class="thumb__play">▶</span>
+              <span class="thumb__dur">0:18</span>
+              <span class="thumb__cap">"i tried it for 21 days…"</span>
+              <span class="thumb__wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+            </div>
+            <div class="card__bar"><span class="tag tag--ready">Ready</span><span class="card__name">“21 days”</span><span class="card__fmt">9:16 · 0:18</span></div>
+          </article>
+
+          <article class="card card--img" data-card data-type="image" data-status="qa"
+                   data-title="“2M people”" data-format="Image · 1080×1080">
+            <div class="thumb thumb--img thumb--teal">
+              <span class="thumb__kicker">Loved by 2M+</span>
+              <span class="thumb__hl">Join 2 million<br/>calm minds</span>
+              <span class="thumb__app"><span class="ico ico--violet xs">Lu</span></span>
+            </div>
+            <div class="card__bar"><span class="tag tag--qa">In QA</span><span class="card__name">“2M people”</span><span class="card__fmt">1080×1080</span></div>
+          </article>
+
+          <article class="card card--ugc" data-card data-type="ugc" data-status="hold"
+                   data-title="“#1 health app”" data-format="UGC · 9:16 · 0:22">
+            <div class="thumb thumb--ugc thumb--gold">
+              <span class="thumb__play">▶</span>
+              <span class="thumb__dur">0:22</span>
+              <span class="thumb__cap">"the #1 health app…"</span>
+              <span class="thumb__wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+            </div>
+            <div class="card__bar"><span class="tag tag--hold">Held</span><span class="card__name">“#1 health app”</span><span class="card__fmt">9:16 · 0:22</span></div>
+          </article>
+
+          <article class="card card--img" data-card data-type="image" data-status="ready"
+                   data-title="“Calm by design”" data-format="Image · 1080×1350">
+            <div class="thumb thumb--img thumb--ember">
+              <span class="thumb__kicker">Calm, distraction-free</span>
+              <span class="thumb__hl">A tracker that<br/>feels quiet</span>
+              <span class="thumb__app"><span class="ico ico--violet xs">Lu</span></span>
+            </div>
+            <div class="card__bar"><span class="tag tag--ready">Ready</span><span class="card__name">“Calm by design”</span><span class="card__fmt">1080×1350</span></div>
+          </article>
+
+          <article class="card card--ugc" data-card data-type="ugc" data-status="ready"
+                   data-title="“Sync everywhere”" data-format="UGC · 9:16 · 0:15">
+            <div class="thumb thumb--ugc thumb--violet">
+              <span class="thumb__play">▶</span>
+              <span class="thumb__dur">0:15</span>
+              <span class="thumb__cap">"it syncs to everything"</span>
+              <span class="thumb__wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+            </div>
+            <div class="card__bar"><span class="tag tag--ready">Ready</span><span class="card__name">“Sync everywhere”</span><span class="card__fmt">9:16 · 0:15</span></div>
+          </article>
+
+          <article class="card card--img" data-card data-type="image" data-status="hold"
+                   data-title="“Doctor recommended”" data-format="Image · 1080×1080">
+            <div class="thumb thumb--img thumb--gold">
+              <span class="thumb__kicker">held claim</span>
+              <span class="thumb__hl">Doctor<br/>recommended</span>
+              <span class="thumb__app"><span class="ico ico--violet xs">Lu</span></span>
+            </div>
+            <div class="card__bar"><span class="tag tag--hold">Held</span><span class="card__name">“Doctor rec.”</span><span class="card__fmt">1080×1080</span></div>
+          </article>
+
+          <article class="card card--img" data-card data-type="image" data-status="ready"
+                   data-title="“Day 1 vs Day 21”" data-format="Image · 1080×1350">
+            <div class="thumb thumb--img thumb--violet">
+              <span class="thumb__kicker">21-day streak</span>
+              <span class="thumb__hl">Day 1 → Day 21</span>
+              <span class="thumb__app"><span class="ico ico--violet xs">Lu</span></span>
+            </div>
+            <div class="card__bar"><span class="tag tag--ready">Ready</span><span class="card__name">“Day 1 vs 21”</span><span class="card__fmt">1080×1350</span></div>
+          </article>
+        </section>
+
+        <!-- QA + Export detail -->
+        <aside class="detail" aria-label="QA &amp; export" data-detail>
+          <div class="detail__head">
+            <span class="tag tag--ready" data-detail-status>Ready</span>
+            <h2 class="detail__name" data-detail-title>“Streaks that stick”</h2>
+            <p class="detail__fmt" data-detail-fmt>Image · 1080×1350</p>
+          </div>
+
+          <div class="detail__preview" data-detail-preview>
+            <div class="thumb thumb--img thumb--violet detail__art">
+              <span class="thumb__kicker">4.8★ · App Store</span>
+              <span class="thumb__hl">Streaks that<br/>finally stick</span>
+            </div>
+          </div>
+
+          <div class="detail__sec">
+            <h3 class="detail__h">Proof behind this</h3>
+            <ul class="prooflinks">
+              <li><span class="prooflinks__star">★</span> Rated 4.8★ <em>· shot 1</em></li>
+              <li><span class="prooflinks__star">★</span> 21-day streak <em>· shot 3</em></li>
+            </ul>
+          </div>
+
+          <div class="detail__sec">
+            <h3 class="detail__h">QA checks</h3>
+            <ul class="qa">
+              <li class="qa__row is-pass"><span class="qa__k">Proof fidelity</span><span class="qa__v">Pass</span></li>
+              <li class="qa__row is-pass"><span class="qa__k">Claim trace</span><span class="qa__v">Pass</span></li>
+              <li class="qa__row is-pass"><span class="qa__k">Text / OCR legibility</span><span class="qa__v">Pass</span></li>
+              <li class="qa__row is-pass"><span class="qa__k">Safe-area &amp; spec</span><span class="qa__v">Pass</span></li>
+            </ul>
+          </div>
+
+          <div class="detail__sec detail__export">
+            <h3 class="detail__h">Export vault</h3>
+            <p class="detail__safe"><span class="pill pill--safe pill--xs"><span class="pill__dot"></span> Provider mutations <strong>0</strong></span> Export &amp; share only — no ad-network launch.</p>
+            <div class="detail__actions">
+              <button class="btn btn--primary" data-export>Download asset</button>
+              <button class="btn btn--ghost" data-export>Copy share link</button>
+              <button class="btn btn--ghost" data-export>Send to export inbox</button>
+            </div>
+            <p class="detail__count">Exports this session: <strong data-export-count>0</strong></p>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <!-- Toast -->
+  <div class="toast" data-toast role="status" aria-live="polite" hidden></div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
