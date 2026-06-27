@@ -1,0 +1,34 @@
+Use case: ui-mockup
+Asset type: high-fidelity web SaaS interface concept, 16:10 desktop screen
+
+Reference images:
+- The attached reference screenshots show the current xAI Grok public website style: stark black surface, sparse typography, minimal chrome, rounded demo panels, and focused section composition.
+- Use the style language only. Do not copy xAI or Grok logos, names, navigation, exact copy, or proprietary layout.
+
+Primary request:
+Design the Mobile Ad Agent state immediately after the user pasted an app URL. The product is scanning the URL and extracting proof before generation.
+
+Product behavior:
+- URL-first flow: user pasted an App Store / Play Store / website URL.
+- Show app identity detected, screenshots/store assets found, claims extracted, and proof readiness.
+- Store art must be labeled separately from actual proof.
+- Current next action is "Review proof", not generate drafts.
+- Include eventual output chips for Image Ads and UGC Videos, but no generated preview yet.
+- Include "Provider mutations: 0".
+
+Direction name: URL Scan And Proof Extraction
+Design thesis:
+A stark Grok-like scan result: one imported URL becomes a clean proof inventory, with transparent evidence before credits are used.
+
+Layout:
+- Minimal black shell, small top five-step rail.
+- Left/top area shows the imported URL and detected app.
+- Large rounded central panel: "Proof found from URL" with source cards: app store listing, screenshots, website claims, privacy/support page.
+- Right side: proof readiness score and next action "Review proof".
+- Bottom strip: Image Ads and UGC Videos are locked until proof is approved.
+
+Visual style:
+Black background, dark graphite panels, soft white typography, gray secondary text, green proof states, subtle blue focus accent, lots of negative space, no busy dashboard clutter.
+
+Constraints:
+No freeform prompt box. No sample pack previews. No fake live ad network action. No xAI/Grok branding or exact copy.

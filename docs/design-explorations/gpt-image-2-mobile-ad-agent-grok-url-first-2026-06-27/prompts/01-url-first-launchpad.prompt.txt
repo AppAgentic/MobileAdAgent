@@ -1,0 +1,35 @@
+Use case: ui-mockup
+Asset type: high-fidelity web SaaS interface concept, 16:10 desktop screen
+
+Reference images:
+- The attached reference screenshots show the current xAI Grok public website style: stark black surface, sparse top chrome, giant clean typography, rounded pill controls, and a large central product input surface.
+- Use the style language only. Do not copy xAI or Grok logos, names, navigation, exact copy, or proprietary layout.
+
+Primary request:
+Design a Grok-style Mobile Ad Agent Launchpad where the first action is URL import, not a prompt.
+
+Product behavior:
+- User starts by pasting an App Store URL, Google Play URL, or app website URL.
+- The system imports the app, finds proof, and prepares the user to choose Image Ads and UGC Videos.
+- Five-step flow remains: URL Import, Proof Review, Draft Pack Setup, Review Drafts, QA & Export.
+- Only two top-level output choices: Image Ads and UGC Videos.
+- No stories, no thumbnails, no sample pack preview before proof approval.
+- Include a small "Provider mutations: 0" safety cue.
+
+Direction name: URL-First Launchpad
+Design thesis:
+The product opens like a stark AI search/import surface: paste one URL and Mobile Ad Agent turns it into a proof-backed ad pack workflow.
+
+Layout:
+- Minimal black page with tiny Mobile Ad Agent identity and sparse top controls.
+- Large headline: "Start with your app URL" or similar.
+- Central rounded URL field, not a chat prompt. It should say something like "Paste App Store, Play Store, or website URL..."
+- URL input includes a link icon, app-source chips, Import App button/arrow, and a provider mutations safety pill.
+- Beneath it: three quiet cards showing what happens next: "Extract proof", "Choose outputs", "Review drafts".
+- A slim five-step rail sits below, with URL Import highlighted.
+
+Visual style:
+Near-black, white type, graphite secondary text, charcoal input panel, thin hairlines, pill controls, one restrained electric accent, very spacious, confident, modern.
+
+Constraints:
+This must not look like a generic chatbot. It must clearly be URL-first app import for ad creative generation. No xAI/Grok branding. No generated ad previews on the first screen.

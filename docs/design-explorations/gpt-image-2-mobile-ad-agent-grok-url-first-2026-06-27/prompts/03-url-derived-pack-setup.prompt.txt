@@ -1,0 +1,35 @@
+Use case: ui-mockup
+Asset type: high-fidelity web SaaS interface concept, 16:10 desktop screen
+
+Reference images:
+- The attached reference screenshots show the current xAI Grok public website style: black canvas, sparse top navigation, pill controls, large rounded product panels, and very restrained visual hierarchy.
+- Use the style language only. Do not copy xAI or Grok logos, names, navigation, exact copy, or proprietary layout.
+
+Primary request:
+Design Mobile Ad Agent Draft Pack Setup after the app URL has been imported and proof has been approved.
+
+Product behavior:
+- The URL import produced an app profile and proof inventory.
+- User now chooses output quantities for Image Ads and UGC Videos.
+- Show credit estimate, proof approved count, and one clear proof-gated Generate Drafts action.
+- Five-step flow remains visible.
+- No stories, no thumbnails, no sample pack preview before generation.
+- Include "Provider mutations: 0".
+
+Direction name: URL-Derived Pack Setup
+Design thesis:
+Grok style applied to a deterministic setup workspace: the imported URL has become a clean app profile, and the user chooses exactly what to generate.
+
+Layout:
+- Minimal black top bar.
+- Left side: imported URL/app profile summary in a compact evidence card.
+- Main central rounded panel with two large output modules: Image Ads and UGC Videos.
+- Each output module has count control, format chips, and estimated credits.
+- Right side or lower rail: "What happens after generate" in three short steps.
+- Primary action is "Generate drafts" with credit estimate.
+
+Visual style:
+Near-black, precise white typography, dark input cards, pill controls, thin borders, subtle luminous action button, restrained green proof signal.
+
+Constraints:
+No open prompt field. No fake campaign launch. No irrelevant dashboard charts. No xAI/Grok branding.

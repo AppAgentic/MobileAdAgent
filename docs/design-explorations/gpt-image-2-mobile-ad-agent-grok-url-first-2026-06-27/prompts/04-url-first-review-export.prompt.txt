@@ -1,0 +1,34 @@
+Use case: ui-mockup
+Asset type: high-fidelity web SaaS interface concept, 16:10 desktop screen
+
+Reference images:
+- The attached reference screenshots show the current xAI Grok public website style: stark black UI, huge clean typography, sparse panels, rounded demo areas, pill controls, and minimal visual noise.
+- Use the style language only. Do not copy xAI or Grok logos, names, navigation, exact copy, or proprietary layout.
+
+Primary request:
+Design Mobile Ad Agent Review Drafts / QA & Export after a URL-first app import and draft generation.
+
+Product behavior:
+- The source app came from a pasted URL.
+- Show both Image Ads and UGC Videos.
+- Every draft ties back to approved proof discovered from the URL.
+- QA checks include proof match, text readability, brand fit, formats, and cost/credits.
+- Export options are Download ZIP and Share Link. No live ad network launch.
+- Include "Provider mutations: 0".
+
+Direction name: URL-Backed Review And Export
+Design thesis:
+The final workspace feels like a sparse AI product review room: drafts are organized by output type, and every item cites proof from the original URL.
+
+Layout:
+- Minimal black top chrome and compact step rail.
+- Main large rounded panel with tabs/lane headers: Image Ads and UGC Videos.
+- Draft cards are clean and understated, not colorful fake ads.
+- Right proof/QA citation rail shows source URL, approved proof, QA pass checks, export actions.
+- Export actions are Download ZIP and Share Link only.
+
+Visual style:
+Grok-like black and charcoal, large quiet headings, small proof citations, pill status tags, precise spacing, very modern and restrained.
+
+Constraints:
+No freeform prompt UI. No fake ad platform publish action. No xAI/Grok branding. No X-shaped logo, xAI-like mark, Grok-like wordmark, or copied navigation. The top-left identity must be plain text reading "Mobile Ad Agent" or a simple generic square mark plus "Mobile Ad Agent". No invented brand logos or fake live spend numbers.
