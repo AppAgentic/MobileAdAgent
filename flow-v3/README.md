@@ -1,6 +1,7 @@
 # Mobile Ad Agent Flow V3
 
 Flow V3 is the first-principles UX pass based on the Claude Code critique of V2.
+The current visual treatment was reworked directly by Codex after Joe's feedback on June 28, 2026, using the public xAI/Grok surface at `https://x.ai/` as mood inspiration only: stark black canvas, large type, one dominant input/work surface, white primary actions, and restrained spectral accents. It does not copy xAI logos, copy, claims, or layout.
 
 ## Product Shape
 

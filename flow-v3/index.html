@@ -15,7 +15,7 @@
       <span class="mark" aria-hidden="true">A</span>
       <div>
         <strong>Mobile Ad Agent</strong>
-        <span>Single flow V3</span>
+        <span>URL-first studio</span>
       </div>
     </div>
 
@@ -39,8 +39,8 @@
 
     <div class="safety" title="This prototype never touches ad networks">
       <span class="dot" aria-hidden="true"></span>
-      <span>No ad spend</span>
-      <strong>Provider mutations 0</strong>
+      <span>No spend</span>
+      <strong>0 provider mutations</strong>
     </div>
   </header>
 
@@ -81,8 +81,8 @@
 
         <div class="launch-copy">
           <p class="eyebrow">Launchpad</p>
-          <h1 id="launch-title">Start with a link.</h1>
-          <p class="lede">Paste an App Store, Play Store, or website URL. Mobile Ad Agent pulls proof first, then helps you choose what to generate.</p>
+          <h1 id="launch-title">Paste the app. Verify the proof.</h1>
+          <p class="lede">Start from an App Store, Play Store, or website URL. The first output is truth, not ads.</p>
 
           <form class="url-box" data-import-form>
             <div class="detected">
@@ -92,9 +92,9 @@
             <div class="url-row">
               <span aria-hidden="true">-></span>
               <input type="url" inputmode="url" autocomplete="off" spellcheck="false" aria-label="App URL" data-url-input placeholder="https://apps.apple.com/app/lumina-habits" />
-              <button class="btn btn--primary" type="submit" data-import-go>Import proof</button>
+              <button class="btn btn--primary" type="submit" data-import-go>Pull proof</button>
             </div>
-            <p class="microcopy">Import is local in this prototype. Nothing posts to ad networks.</p>
+            <p class="microcopy">Local prototype. No spend, no publishing, no provider mutation.</p>
           </form>
         </div>
       </div>
@@ -107,13 +107,16 @@
           <h1 id="proof-title"><span data-current-app>Lumina Habits</span></h1>
           <p>Review what can be proven before any draft is generated.</p>
         </div>
-        <div class="proof-score" aria-label="Proof confidence">
-          <svg viewBox="0 0 36 36" aria-hidden="true">
-            <circle class="ring-bg" cx="18" cy="18" r="15.5"></circle>
-            <circle class="ring-fg" cx="18" cy="18" r="15.5" data-ring></circle>
-          </svg>
-          <strong>82%</strong>
-          <span>confidence</span>
+        <div class="proof-side">
+          <div class="proof-score" aria-label="Proof confidence">
+            <svg viewBox="0 0 36 36" aria-hidden="true">
+              <circle class="ring-bg" cx="18" cy="18" r="15.5"></circle>
+              <circle class="ring-fg" cx="18" cy="18" r="15.5" data-ring></circle>
+            </svg>
+            <strong>82%</strong>
+            <span>confidence</span>
+          </div>
+          <button class="btn btn--primary" type="button" data-approve-proof>Approve proof</button>
         </div>
       </header>
 
@@ -216,7 +219,7 @@
       <header class="screen-head">
         <div>
           <p class="eyebrow">Draft Pack Setup</p>
-          <h1 id="setup-title">Choose what to build.</h1>
+          <h1 id="setup-title">Choose the pack.</h1>
           <p>Only approved proof is available here. Pick output types and quantity before generation.</p>
         </div>
       </header>
@@ -262,7 +265,7 @@
       <header class="screen-head">
         <div>
           <p class="eyebrow">Review Drafts</p>
-          <h1 id="drafts-title"><span data-draft-count>6</span> drafts built from approved proof.</h1>
+          <h1 id="drafts-title"><span data-draft-count>6</span> proof-backed drafts.</h1>
           <p>Filter, inspect, and send the strongest draft into final QA.</p>
         </div>
         <button class="btn btn--primary" type="button" data-review-qa>Review QA & export</button>

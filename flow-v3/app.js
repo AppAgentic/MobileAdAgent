@@ -231,11 +231,11 @@ function handleImport(event) {
 
   const button = $("[data-import-go]");
   button.disabled = true;
-  button.textContent = "Pulling proof...";
+    button.textContent = "Reading proof...";
 
   setTimeout(() => {
     button.disabled = false;
-    button.textContent = "Import proof";
+    button.textContent = "Pull proof";
     unlock(2);
     showStep(2);
     showToast("Proof imported. Review claims before generation.");
@@ -340,7 +340,9 @@ function init() {
     });
   });
 
-  $("[data-approve-proof]").addEventListener("click", handleProofApproval);
+  $$("[data-approve-proof]").forEach((button) => {
+    button.addEventListener("click", handleProofApproval);
+  });
 
   $$("[data-output]").forEach((button) => {
     button.addEventListener("click", () => {
