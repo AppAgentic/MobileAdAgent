@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mobile Ad Agent — Variant Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- ============================================================= -->
+  <!-- Global variant switcher (fixed top chrome)                    -->
+  <!-- ============================================================= -->
+  <header class="lab-bar">
+    <div class="lab-bar__brand">
+      <span class="lab-bar__mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M4 12h7l2-4 3 8 2-4h2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="lab-bar__name">Mobile Ad Agent</span>
+      <span class="lab-bar__tag">variant lab</span>
+    </div>
+
+    <nav class="variant-switch" role="tablist" aria-label="Choose a UI variant">
+      <button class="variant-switch__btn is-active" role="tab" aria-selected="true" data-variant="a">
+        <span class="variant-switch__key">A</span> Stark Intake
+      </button>
+      <button class="variant-switch__btn" role="tab" aria-selected="false" data-variant="b">
+        <span class="variant-switch__key">B</span> Proof Cockpit
+      </button>
+      <button class="variant-switch__btn" role="tab" aria-selected="false" data-variant="c">
+        <span class="variant-switch__key">C</span> Review &amp; Export
+      </button>
+    </nav>
+
+    <div class="lab-bar__meta">
+      <span class="dot dot--ok"></span> provider mutations <strong>0</strong>
+    </div>
+  </header>
+
+  <!-- ============================================================= -->
+  <!-- VARIANT A — Stark URL intake surface                          -->
+  <!-- ============================================================= -->
+  <main class="stage stage--a is-active" data-variant="a">
+    <section class="a-hero">
+      <p class="a-kicker">URL-first creative control plane</p>
+      <h1 class="a-title">Paste a link.<br/><span>Ship proof-backed ad creative.</span></h1>
+      <p class="a-sub">Start from any App Store, Play Store, or app website URL. We extract real proof, then build Image Ads and UGC Videos you can review, QA, and export. Nothing is launched to any network.</p>
+
+      <!-- URL intake pill -->
+      <form class="a-intake" id="aIntake" autocomplete="off">
+        <div class="seg" role="group" aria-label="Source type">
+          <button type="button" class="seg__opt is-active" data-source="appstore">App Store</button>
+          <button type="button" class="seg__opt" data-source="play">Play Store</button>
+          <button type="button" class="seg__opt" data-source="web">Website</button>
+        </div>
+
+        <div class="a-field">
+          <svg class="a-field__icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1" stroke-linecap="round"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1" stroke-linecap="round"/></svg>
+          <input id="aUrl" class="a-field__input" type="text" placeholder="https://apps.apple.com/app/focushabit/id000000000" value="https://apps.apple.com/app/focushabit/id482910337" />
+          <button class="a-field__go" type="submit" id="aImport">Import</button>
+        </div>
+      </form>
+
+      <!-- Detected app card (revealed after import) -->
+      <div class="a-detected" id="aDetected">
+        <div class="appchip">
+          <span class="appchip__icon" style="--c1:#5b8cff;--c2:#7b5bff">FH</span>
+          <span class="appchip__body">
+            <strong>FocusHabit</strong>
+            <span>Productivity · iOS · 4.7★ · 12.4k ratings</span>
+          </span>
+          <span class="appchip__state"><span class="dot dot--ok"></span> imported</span>
+        </div>
+        <div class="a-detected__proof">
+          <span class="prooftag">9 screenshots</span>
+          <span class="prooftag">App Store metadata</span>
+          <span class="prooftag">Icon + brand color</span>
+          <span class="prooftag">Ratings snapshot</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Horizontal step flow -->
+    <section class="a-flow">
+      <ol class="flow">
+        <li class="flow__step is-done">
+          <span class="flow__num">1</span>
+          <span class="flow__label">Import URL</span>
+          <span class="flow__hint">FocusHabit detected</span>
+        </li>
+        <li class="flow__step is-current">
+          <span class="flow__num">2</span>
+          <span class="flow__label">Review proof</span>
+          <span class="flow__hint">9 objects, approve to lock</span>
+        </li>
+        <li class="flow__step">
+          <span class="flow__num">3</span>
+          <span class="flow__label">Set up outputs</span>
+          <span class="flow__hint">Image Ads · UGC Videos</span>
+        </li>
+        <li class="flow__step">
+          <span class="flow__num">4</span>
+          <span class="flow__label">Review drafts</span>
+          <span class="flow__hint">proof-backed</span>
+        </li>
+        <li class="flow__step">
+          <span class="flow__num">5</span>
+          <span class="flow__label">QA &amp; export</span>
+          <span class="flow__hint">download / share</span>
+        </li>
+      </ol>
+    </section>
+
+    <!-- Two-up: proof readiness + output setup -->
+    <section class="a-grid">
+      <div class="panel">
+        <div class="panel__head">
+          <h2>Proof readiness</h2>
+          <span class="badge">step 2</span>
+        </div>
+        <div class="readybar">
+          <div class="readybar__track"><div class="readybar__fill" style="width:78%"></div></div>
+          <div class="readybar__num">78%</div>
+        </div>
+        <ul class="checklist">
+          <li class="is-ok"><span></span> 9 screenshots classified</li>
+          <li class="is-ok"><span></span> Metadata &amp; ratings parsed</li>
+          <li class="is-ok"><span></span> Icon + brand color extracted</li>
+          <li class="is-warn"><span></span> 2 claims need source confirmation</li>
+        </ul>
+        <button class="btn btn--ghost">Review &amp; approve proof</button>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head">
+          <h2>Set up outputs</h2>
+          <span class="badge">step 3</span>
+        </div>
+        <div class="outputs" id="aOutputs">
+          <label class="output is-on" data-out="image" data-each="2" data-credit="6">
+            <input type="checkbox" checked />
+            <span class="output__main">
+              <strong>Image Ads</strong>
+              <em>Static, proof-backed layouts</em>
+            </span>
+            <span class="stepper" data-stepper>
+              <button type="button" data-dir="-1">–</button><b data-count>4</b><button type="button" data-dir="1">+</button>
+            </span>
+          </label>
+          <label class="output is-on" data-out="ugc" data-each="20" data-credit="20">
+            <input type="checkbox" checked />
+            <span class="output__main">
+              <strong>UGC Videos</strong>
+              <em>Creator-style talking head + app proof</em>
+            </span>
+            <span class="stepper" data-stepper>
+              <button type="button" data-dir="-1">–</button><b data-count>2</b><button type="button" data-dir="1">+</button>
+            </span>
+          </label>
+        </div>
+        <div class="estimate">
+          <span>Estimated credits</span>
+          <strong id="aCredits">64</strong>
+        </div>
+        <button class="btn btn--solid">Generate drafts</button>
+      </div>
+    </section>
+
+    <footer class="a-foot">
+      <span><span class="dot dot--ok"></span> Provider mutations 0 — nothing launched to any ad network</span>
+      <span>Download &amp; share only · QA gate before export</span>
+    </footer>
+  </main>
+
+  <!-- ============================================================= -->
+  <!-- VARIANT B — Proof-first operations cockpit                    -->
+  <!-- ============================================================= -->
+  <main class="stage stage--b" data-variant="b">
+    <!-- Left step rail -->
+    <aside class="b-rail">
+      <div class="b-rail__brand">
+        <span class="appchip__icon" style="--c1:#39d98a;--c2:#2bb673">TP</span>
+        <span>
+          <strong>TrailPeak</strong>
+          <em>Health &amp; Fitness</em>
+        </span>
+      </div>
+      <ol class="vrail" id="bRail">
+        <li class="vrail__step is-done" data-step="import"><span class="vrail__dot"></span><div><strong>Import URL</strong><em>play.google.com/…/trailpeak</em></div></li>
+        <li class="vrail__step is-current" data-step="proof"><span class="vrail__dot"></span><div><strong>Scan &amp; extract proof</strong><em>14 objects found</em></div></li>
+        <li class="vrail__step" data-step="setup"><span class="vrail__dot"></span><div><strong>Configure outputs</strong><em>Image Ads · UGC</em></div></li>
+        <li class="vrail__step" data-step="review"><span class="vrail__dot"></span><div><strong>Review drafts</strong><em>awaiting build</em></div></li>
+        <li class="vrail__step" data-step="export"><span class="vrail__dot"></span><div><strong>QA &amp; export</strong><em>vault locked</em></div></li>
+      </ol>
+      <div class="b-rail__foot">
+        <span class="dot dot--ok"></span> provider mutations 0
+      </div>
+    </aside>
+
+    <!-- Center scan hero -->
+    <section class="b-main">
+      <header class="b-head">
+        <div>
+          <p class="b-head__kicker">Proof extraction</p>
+          <h1 class="b-head__title">Scanning the source for usable proof</h1>
+        </div>
+        <div class="b-urlchip">
+          <span class="seg__opt is-active">Play Store</span>
+          <code>play.google.com/store/apps/details?id=com.trailpeak.app</code>
+          <button class="btn btn--ghost btn--sm">Re-scan</button>
+        </div>
+      </header>
+
+      <div class="b-scan">
+        <!-- readiness ring -->
+        <div class="ring">
+          <svg viewBox="0 0 120 120" width="160" height="160">
+            <circle cx="60" cy="60" r="52" class="ring__bg"/>
+            <circle cx="60" cy="60" r="52" class="ring__fg" id="bRing" />
+          </svg>
+          <div class="ring__center">
+            <strong>86%</strong>
+            <span>proof ready</span>
+          </div>
+        </div>
+        <div class="b-scan__stats">
+          <div class="stat"><strong>14</strong><span>proof objects extracted</span></div>
+          <div class="stat"><strong>11</strong><span>high-confidence</span></div>
+          <div class="stat"><strong>3</strong><span>need review</span></div>
+          <div class="stat"><strong>0</strong><span>fabricated claims</span></div>
+        </div>
+      </div>
+
+      <!-- proof object grid -->
+      <h2 class="b-sec">Extracted proof objects</h2>
+      <div class="proofgrid">
+        <div class="pobj is-high"><span class="pobj__type">SCREEN</span><strong>Route map view</strong><em>UI screenshot · conf 0.96</em></div>
+        <div class="pobj is-high"><span class="pobj__type">SCREEN</span><strong>Live stats overlay</strong><em>UI screenshot · conf 0.94</em></div>
+        <div class="pobj is-high"><span class="pobj__type">RATING</span><strong>4.8★ · 38k ratings</strong><em>store metadata · conf 0.99</em></div>
+        <div class="pobj is-high"><span class="pobj__type">FACT</span><strong>Offline GPS tracking</strong><em>description · conf 0.92</em></div>
+        <div class="pobj is-warn"><span class="pobj__type">CLAIM</span><strong>“#1 hiking app”</strong><em>needs source · conf 0.41</em></div>
+        <div class="pobj is-warn"><span class="pobj__type">CLAIM</span><strong>“2M+ trails”</strong><em>needs source · conf 0.55</em></div>
+        <div class="pobj is-high"><span class="pobj__type">BRAND</span><strong>Icon + #2BB673</strong><em>asset · conf 0.98</em></div>
+        <div class="pobj is-warn"><span class="pobj__type">SCREEN</span><strong>Achievements</strong><em>low res · conf 0.62</em></div>
+      </div>
+
+      <!-- output config -->
+      <h2 class="b-sec">Configure outputs</h2>
+      <div class="b-outputs" id="bOutputs">
+        <div class="b-out is-on" data-out="image" data-each="6" data-credit="6">
+          <div class="b-out__top"><strong>Image Ads</strong><span class="b-out__qty"><button data-dir="-1">–</button><b data-count>5</b><button data-dir="1">+</button></span></div>
+          <p>Static proof layouts from classified screenshots.</p>
+          <div class="b-out__meta">proof-backed · OCR-checked</div>
+        </div>
+        <div class="b-out is-on" data-out="ugc" data-each="20" data-credit="20">
+          <div class="b-out__top"><strong>UGC Videos</strong><span class="b-out__qty"><button data-dir="-1">–</button><b data-count>3</b><button data-dir="1">+</button></span></div>
+          <p>Creator talking-head with verified app cutaways.</p>
+          <div class="b-out__meta">claim-gated · duration-checked</div>
+        </div>
+        <div class="b-out b-out--est">
+          <span>Credit estimate</span>
+          <strong id="bCredits">90</strong>
+          <em>no spend until you export</em>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right citation rail -->
+    <aside class="b-cite">
+      <h3>Proof &amp; citations</h3>
+      <p class="b-cite__note">Every generated asset links back to one of these sources. Unsourced claims are blocked at QA.</p>
+      <ul class="citelist">
+        <li><span class="citelist__k">S1</span><div><strong>Play Store listing</strong><em>screenshots 1–8, metadata, ratings</em></div></li>
+        <li><span class="citelist__k">S2</span><div><strong>App icon asset</strong><em>brand color #2BB673</em></div></li>
+        <li><span class="citelist__k">S3</span><div><strong>Description text</strong><em>feature facts</em></div></li>
+        <li class="is-blocked"><span class="citelist__k">!</span><div><strong>2 unverified claims</strong><em>excluded until sourced</em></div></li>
+      </ul>
+      <div class="b-cite__lock">
+        <span class="dot dot--ok"></span>
+        <div><strong>Source inventory locked</strong><em>read-only until proof approved</em></div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ============================================================= -->
+  <!-- VARIANT C — Premium creative review & export workspace        -->
+  <!-- ============================================================= -->
+  <main class="stage stage--c" data-variant="c">
+    <header class="c-top">
+      <div class="c-top__ctx">
+        <span class="appchip__icon" style="--c1:#ff6b5b;--c2:#ff8f5b">FT</span>
+        <div>
+          <strong>FitTrack</strong>
+          <span class="c-top__url">apps.apple.com/app/fittrack · proof approved</span>
+        </div>
+      </div>
+      <ol class="ministep">
+        <li class="is-done">Import</li>
+        <li class="is-done">Proof</li>
+        <li class="is-done">Setup</li>
+        <li class="is-current">Review</li>
+        <li>Export</li>
+      </ol>
+      <div class="c-top__est">
+        <span>credits</span><strong>58</strong>
+      </div>
+    </header>
+
+    <div class="c-body">
+      <!-- Drafts gallery -->
+      <section class="c-drafts">
+        <div class="c-drafts__head">
+          <h2>Draft review</h2>
+          <div class="c-tabs">
+            <button class="c-tab is-active" data-filter="all">All <b>6</b></button>
+            <button class="c-tab" data-filter="image">Image Ads <b>4</b></button>
+            <button class="c-tab" data-filter="ugc">UGC Videos <b>2</b></button>
+          </div>
+        </div>
+
+        <div class="cardgrid" id="cCards">
+          <!-- cards injected by app.js -->
+        </div>
+      </section>
+
+      <!-- Detail + proof rail -->
+      <aside class="c-detail" id="cDetail">
+        <!-- injected by app.js -->
+      </aside>
+    </div>
+
+    <!-- Export vault -->
+    <section class="c-vault">
+      <div class="c-vault__head">
+        <h2>QA &amp; export vault</h2>
+        <span class="badge">2 approved · 4 in review</span>
+      </div>
+      <div class="vaultrow">
+        <div class="vaultitem is-approved">
+          <span class="vaultitem__name">FitTrack_image_03.png</span>
+          <span class="vaultitem__qa">QA passed</span>
+          <span class="vaultitem__acts"><button class="btn btn--ghost btn--sm">Download</button><button class="btn btn--ghost btn--sm">Share link</button></span>
+        </div>
+        <div class="vaultitem is-approved">
+          <span class="vaultitem__name">FitTrack_ugc_01.mp4</span>
+          <span class="vaultitem__qa">QA passed</span>
+          <span class="vaultitem__acts"><button class="btn btn--ghost btn--sm">Download</button><button class="btn btn--ghost btn--sm">Share link</button></span>
+        </div>
+        <div class="vaultitem is-hold">
+          <span class="vaultitem__name">FitTrack_image_01.png</span>
+          <span class="vaultitem__qa vaultitem__qa--hold">Hold · claim unsourced</span>
+          <span class="vaultitem__acts"><button class="btn btn--ghost btn--sm" disabled>Download</button><button class="btn btn--ghost btn--sm">Repair</button></span>
+        </div>
+      </div>
+      <div class="c-vault__foot">
+        <span><span class="dot dot--ok"></span> Provider mutations 0 · export = download / share only</span>
+        <button class="btn btn--solid">Export approved (2) + manifest</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
