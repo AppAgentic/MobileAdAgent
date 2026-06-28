@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Mobile Ad Agent - Flow V3</title>
-  <meta name="description" content="A URL-first, proof-first Mobile Ad Agent SaaS prototype with one guided five-step flow." />
+  <title>Mobile Ad Agent - App Memory Prototype</title>
+  <meta name="description" content="An app-home-first Mobile Ad Agent prototype built around proof memory, creative packs, and learning loops." />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -15,26 +15,15 @@
       <span class="mark" aria-hidden="true">A</span>
       <div>
         <strong>Mobile Ad Agent</strong>
-        <span>URL-first studio</span>
+        <span>App memory studio</span>
       </div>
     </div>
 
-    <nav class="steps" aria-label="Workflow">
-      <button class="step is-current" type="button" data-step-jump="1">
-        <span>1</span><b>Launchpad</b>
-      </button>
-      <button class="step" type="button" data-step-jump="2">
-        <span>2</span><b>Proof</b>
-      </button>
-      <button class="step" type="button" data-step-jump="3">
-        <span>3</span><b>Setup</b>
-      </button>
-      <button class="step" type="button" data-step-jump="4">
-        <span>4</span><b>Drafts</b>
-      </button>
-      <button class="step" type="button" data-step-jump="5">
-        <span>5</span><b>Export</b>
-      </button>
+    <nav class="main-nav" aria-label="Workspace">
+      <button class="nav-item is-active" type="button" data-nav="home">Home</button>
+      <button class="nav-item" type="button" data-nav="proof">Proof</button>
+      <button class="nav-item" type="button" data-nav="pack">Packs</button>
+      <button class="nav-item" type="button" data-nav="learnings">Learnings</button>
     </nav>
 
     <div class="safety" title="This prototype never touches ad networks">
@@ -45,321 +34,286 @@
   </header>
 
   <div class="app-strip" aria-label="Apps">
-    <button class="app-pill is-active" type="button" data-app="Lumina Habits" data-platform="iOS" data-proof="6" data-src="apps.apple.com/app/lumina-habits" data-tone="violet">
-      <span class="ico ico--violet">Lu</span>
-      <span><b>Lumina Habits</b><em>iOS - 6 proof items</em></span>
+    <button class="app-pill is-active" type="button" data-app="Lumina Habits" data-platform="iOS" data-proof="12" data-held="3">
+      <span class="ico">Lu</span>
+      <span><b>Lumina Habits</b><em>iOS - memory ready</em></span>
     </button>
-    <button class="app-pill" type="button" data-app="Formroom Fitness" data-platform="Android" data-proof="9" data-src="play.google.com/store/apps/formroom" data-tone="ember">
-      <span class="ico ico--ember">Fr</span>
-      <span><b>Formroom Fitness</b><em>Android - 9 proof items</em></span>
+    <button class="app-pill" type="button" data-app="Formroom Fitness" data-platform="Android" data-proof="9" data-held="5">
+      <span class="ico ico--pink">Fr</span>
+      <span><b>Formroom Fitness</b><em>Android - proof gaps</em></span>
     </button>
-    <button class="app-pill" type="button" data-app="Nomadly Travel" data-platform="Web" data-proof="4" data-src="nomadly.app" data-tone="teal">
-      <span class="ico ico--teal">No</span>
-      <span><b>Nomadly Travel</b><em>Website - 4 proof items</em></span>
+    <button class="app-pill" type="button" data-app="Nomadly Travel" data-platform="Web" data-proof="4" data-held="1">
+      <span class="ico ico--blue">No</span>
+      <span><b>Nomadly Travel</b><em>Website - first pack</em></span>
     </button>
-    <button class="app-add" type="button" data-add-app aria-label="Import another app">+</button>
+    <button class="app-add" type="button" data-open-empty aria-label="Import another app">+</button>
   </div>
 
   <main id="main" class="main">
-    <section class="screen screen--launch is-active" data-screen="1" aria-labelledby="launch-title">
-      <div class="launch-grid">
-        <aside class="context-panel" aria-label="Current workspace">
-          <p class="eyebrow">Workspace</p>
-          <h2 data-current-app>Lumina Habits</h2>
-          <dl>
-            <div><dt>Source</dt><dd data-current-source>App Store</dd></div>
-            <div><dt>Proof</dt><dd><span data-current-proof>6</span> items ready</dd></div>
-            <div><dt>Status</dt><dd>Waiting for URL import</dd></div>
+    <section class="view view--empty" data-view="empty" aria-labelledby="empty-title" hidden>
+      <div class="empty-stage">
+        <p class="eyebrow">New app</p>
+        <h1 id="empty-title">Add the app once. Build the memory forever.</h1>
+        <p class="lede">Paste an App Store, Play Store, or website URL. Mobile Ad Agent builds the reusable proof memory before any creative job starts.</p>
+
+        <form class="url-box" data-import-form>
+          <div class="url-row">
+            <span aria-hidden="true">-></span>
+            <input type="url" inputmode="url" autocomplete="off" spellcheck="false" aria-label="App URL" data-url-input placeholder="https://apps.apple.com/app/lumina-habits" />
+            <button class="btn btn--primary" type="submit">Import app</button>
+          </div>
+          <p class="microcopy">Local prototype. Import creates app memory only.</p>
+        </form>
+      </div>
+    </section>
+
+    <section class="view view--home is-active" data-view="home" aria-labelledby="home-title">
+      <div class="home-hero">
+        <div class="app-title">
+          <p class="eyebrow">App Home</p>
+          <h1 id="home-title" data-current-app>Lumina Habits</h1>
+          <p>Proof memory is ready. There is one pack waiting for review and enough verified proof to create the next one.</p>
+        </div>
+        <div class="memory-score" aria-label="App memory score">
+          <strong>84</strong>
+          <span>memory score</span>
+        </div>
+      </div>
+
+      <div class="home-grid">
+        <section class="next-action" aria-labelledby="next-title">
+          <div>
+            <p class="eyebrow">Next best action</p>
+            <h2 id="next-title">Create the next pack from 12 verified proof items.</h2>
+            <p>Mobile Ad Agent will inherit allowed claims, rejected language, winning hooks, and QA rules from this app memory.</p>
+          </div>
+          <div class="action-row">
+            <button class="btn btn--primary" type="button" data-open-pack>Create next pack</button>
+            <button class="btn" type="button" data-show-view="pack">Review ready drafts</button>
+          </div>
+        </section>
+
+        <aside class="memory-panel" aria-label="Proof memory summary">
+          <div class="panel-heading">
+            <h2>Proof memory</h2>
+            <button class="text-btn" type="button" data-show-view="proof">Open</button>
+          </div>
+          <dl class="memory-stats">
+            <div><dt>Allowed claims</dt><dd data-proof-count>12</dd></div>
+            <div><dt>Held claims</dt><dd data-held-count>3</dd></div>
+            <div><dt>Proof assets</dt><dd>18</dd></div>
+            <div><dt>Last refresh</dt><dd>2h ago</dd></div>
           </dl>
-          <div class="recent-list">
-            <p>Recent imports</p>
-            <button type="button" data-recent="Lumina Habits">Lumina Habits - today</button>
-            <button type="button" data-recent="Formroom Fitness">Formroom Fitness - 2d</button>
-            <button type="button" data-recent="Nomadly Travel">Nomadly Travel - 5d</button>
-          </div>
+          <button class="btn btn--wide" type="button" data-show-view="proof">Refresh proof</button>
         </aside>
 
-        <div class="launch-copy">
-          <p class="eyebrow">Launchpad</p>
-          <h1 id="launch-title">Paste the app. Verify the proof.</h1>
-          <p class="lede">Start from an App Store, Play Store, or website URL. The first output is truth, not ads.</p>
-
-          <form class="url-box" data-import-form>
-            <div class="detected">
-              <span class="detected__label">Detected source</span>
-              <strong data-source-label>App Store</strong>
-            </div>
-            <div class="url-row">
-              <span aria-hidden="true">-></span>
-              <input type="url" inputmode="url" autocomplete="off" spellcheck="false" aria-label="App URL" data-url-input placeholder="https://apps.apple.com/app/lumina-habits" />
-              <button class="btn btn--primary" type="submit" data-import-go>Pull proof</button>
-            </div>
-            <p class="microcopy">Local prototype. No spend, no publishing, no provider mutation.</p>
-          </form>
-        </div>
-      </div>
-    </section>
-
-    <section class="screen screen--proof" data-screen="2" aria-labelledby="proof-title" hidden>
-      <header class="screen-head">
-        <div>
-          <p class="eyebrow">Proof Review</p>
-          <h1 id="proof-title"><span data-current-app>Lumina Habits</span></h1>
-          <p>Review what can be proven before any draft is generated.</p>
-        </div>
-        <div class="proof-side">
-          <div class="proof-score" aria-label="Proof confidence">
-            <svg viewBox="0 0 36 36" aria-hidden="true">
-              <circle class="ring-bg" cx="18" cy="18" r="15.5"></circle>
-              <circle class="ring-fg" cx="18" cy="18" r="15.5" data-ring></circle>
-            </svg>
-            <strong>82%</strong>
-            <span>confidence</span>
+        <section class="queue-panel" aria-labelledby="queue-title">
+          <div class="panel-heading">
+            <h2 id="queue-title">Creative packs</h2>
+            <span>3 active</span>
           </div>
-          <button class="btn btn--primary" type="button" data-approve-proof>Approve proof</button>
-        </div>
-      </header>
-
-      <div class="proof-grid">
-        <section class="proof-sources" aria-labelledby="sources-title">
-          <h2 id="sources-title">Source snapshots</h2>
-          <p>Pulled from the listing. Every claim needs a traceable source.</p>
-          <div class="snap-row">
-            <figure class="snap snap--hero">
-              <div class="snap-screen">
-                <span class="snap-badge">4.8 rating</span>
-                <b>Build habits that actually stick</b>
-                <i></i><i></i><i class="short"></i>
-              </div>
-              <figcaption>Listing hero - shot 1</figcaption>
-            </figure>
-            <figure class="snap">
-              <div class="snap-screen snap-screen--bars">
-                <strong>21</strong>
-                <span>day streak</span>
-                <div><i style="--h:38%"></i><i style="--h:64%"></i><i style="--h:52%"></i><i style="--h:82%"></i><i style="--h:94%"></i></div>
-              </div>
-              <figcaption>Streak screen - shot 3</figcaption>
-            </figure>
-            <figure class="snap">
-              <div class="snap-screen snap-screen--review">
-                <b>Loved by 2M+ people</b>
-                <span>Clean, calm, and it just works.</span>
-                <span>The only tracker that stuck for me.</span>
-              </div>
-              <figcaption>Reviews - shot 5</figcaption>
-            </figure>
+          <div class="pack-list">
+            <button class="pack-row is-ready" type="button" data-show-view="pack">
+              <span><b>Habit proof refresh</b><em>6 drafts ready for review</em></span>
+              <strong>Ready</strong>
+            </button>
+            <button class="pack-row" type="button" data-open-pack>
+              <span><b>Weekend retargeting</b><em>Brief ready from existing memory</em></span>
+              <strong>Draft</strong>
+            </button>
+            <button class="pack-row is-hold" type="button" data-show-view="proof">
+              <span><b>Doctor recommended angle</b><em>Blocked by missing proof</em></span>
+              <strong>Held</strong>
+            </button>
           </div>
         </section>
 
-        <section class="claim-panel" aria-labelledby="claims-title">
-          <div class="panel-head">
-            <div>
-              <h2 id="claims-title">What we can prove</h2>
-              <p><span data-approved-count>5</span> claims allowed. 2 held until a source is attached.</p>
-            </div>
+        <section class="learning-panel" aria-labelledby="learn-title">
+          <div class="panel-heading">
+            <h2 id="learn-title">Creative learnings</h2>
+            <button class="text-btn" type="button" data-show-view="learnings">Open</button>
           </div>
-
-          <div class="claim-group">
-            <h3><span class="dot dot--safe"></span>Allowed in creative</h3>
-            <ul class="claim-list" data-claims>
-              <li class="claim" data-claim>
-                <span class="check" aria-hidden="true"></span>
-                <span><b>Rated 4.8 on the App Store</b><em>Listing hero - shot 1</em></span>
-                <button type="button" class="claim-toggle" aria-pressed="true" data-toggle-claim>Included</button>
-              </li>
-              <li class="claim" data-claim>
-                <span class="check" aria-hidden="true"></span>
-                <span><b>Loved by 2M+ people</b><em>Reviews - shot 5</em></span>
-                <button type="button" class="claim-toggle" aria-pressed="true" data-toggle-claim>Included</button>
-              </li>
-              <li class="claim" data-claim>
-                <span class="check" aria-hidden="true"></span>
-                <span><b>Track streaks up to 21 days</b><em>Streak screen - shot 3</em></span>
-                <button type="button" class="claim-toggle" aria-pressed="true" data-toggle-claim>Included</button>
-              </li>
-              <li class="claim" data-claim>
-                <span class="check" aria-hidden="true"></span>
-                <span><b>Syncs across devices</b><em>Listing copy - verified</em></span>
-                <button type="button" class="claim-toggle" aria-pressed="true" data-toggle-claim>Included</button>
-              </li>
-              <li class="claim" data-claim>
-                <span class="check" aria-hidden="true"></span>
-                <span><b>Calm, distraction-free design</b><em>Listing hero - shot 1</em></span>
-                <button type="button" class="claim-toggle" aria-pressed="true" data-toggle-claim>Included</button>
-              </li>
-            </ul>
-          </div>
-
-          <div class="claim-group">
-            <h3><span class="dot dot--hold"></span>Held - needs a source</h3>
-            <ul class="claim-list">
-              <li class="claim claim--held">
-                <span class="warn" aria-hidden="true"></span>
-                <span><b>#1 health app of the year</b><em>No source in current snapshots</em></span>
-                <button type="button" class="why" data-why-held data-reason="No snapshot in this import supports an award ranking. Add a source screenshot or App Store badge to release it.">Why held?</button>
-              </li>
-              <li class="claim claim--held">
-                <span class="warn" aria-hidden="true"></span>
-                <span><b>Doctor recommended</b><em>Unverifiable third-party claim</em></span>
-                <button type="button" class="why" data-why-held data-reason="Third-party endorsements cannot be auto-verified. Attach documented proof before using this claim.">Why held?</button>
-              </li>
-            </ul>
-          </div>
-
-          <footer class="panel-actions">
-            <span>No ad spend - export and share only</span>
-            <button class="btn btn--primary" type="button" data-approve-proof>Approve proof & choose outputs</button>
-          </footer>
-        </section>
-      </div>
-    </section>
-
-    <section class="screen screen--setup" data-screen="3" aria-labelledby="setup-title" hidden>
-      <header class="screen-head">
-        <div>
-          <p class="eyebrow">Draft Pack Setup</p>
-          <h1 id="setup-title">Choose the pack.</h1>
-          <p>Only approved proof is available here. Pick output types and quantity before generation.</p>
-        </div>
-      </header>
-
-      <div class="setup-grid">
-        <section class="output-choice" aria-labelledby="outputs-title">
-          <h2 id="outputs-title">Output types</h2>
-          <button class="output-card is-selected" type="button" aria-pressed="true" data-output="image">
-            <span class="output-art output-art--image">Aa</span>
-            <span><b>Image Ads</b><em>Static proof-backed feed creative</em></span>
-          </button>
-          <button class="output-card is-selected" type="button" aria-pressed="true" data-output="ugc">
-            <span class="output-art output-art--ugc">Play</span>
-            <span><b>UGC Videos</b><em>9:16 creator-style scripts and cuts</em></span>
-          </button>
-        </section>
-
-        <section class="pack-builder" aria-labelledby="pack-title">
-          <h2 id="pack-title">Pack shape</h2>
-          <div class="quantity">
-            <span>Draft quantity</span>
-            <button type="button" data-qty="-1" aria-label="Decrease quantity">-</button>
-            <strong data-qty-value>6</strong>
-            <button type="button" data-qty="1" aria-label="Increase quantity">+</button>
-          </div>
-          <fieldset class="angle-list">
-            <legend>Angles from approved proof</legend>
-            <label><input type="checkbox" checked data-angle /> Ratings and social proof</label>
-            <label><input type="checkbox" checked data-angle /> 21-day streak progress</label>
-            <label><input type="checkbox" checked data-angle /> Calm, distraction-free design</label>
-            <label><input type="checkbox" data-angle /> Cross-device sync</label>
-          </fieldset>
-          <div class="build-summary">
-            <p><strong data-build-count>6</strong> drafts from <strong data-build-outputs>Image Ads + UGC Videos</strong></p>
-            <span>Held claims stay locked. No sample pack exists until you build.</span>
-          </div>
-          <button class="btn btn--primary btn--wide" type="button" data-build-drafts>Generate draft pack</button>
-        </section>
-      </div>
-    </section>
-
-    <section class="screen screen--drafts" data-screen="4" aria-labelledby="drafts-title" hidden>
-      <header class="screen-head">
-        <div>
-          <p class="eyebrow">Review Drafts</p>
-          <h1 id="drafts-title"><span data-draft-count>6</span> proof-backed drafts.</h1>
-          <p>Filter, inspect, and send the strongest draft into final QA.</p>
-        </div>
-        <button class="btn btn--primary" type="button" data-review-qa>Review QA & export</button>
-      </header>
-
-      <div class="desk">
-        <aside class="draft-rail" aria-label="Draft filters">
-          <button class="filter is-active" type="button" data-filter="all">All drafts <em>6</em></button>
-          <button class="filter" type="button" data-filter="image">Image Ads <em>4</em></button>
-          <button class="filter" type="button" data-filter="ugc">UGC Videos <em>2</em></button>
-          <div class="stat"><b>4</b><span>Ready</span></div>
-          <div class="stat stat--hold"><b>1</b><span>Held</span></div>
-          <div class="stat stat--qa"><b>1</b><span>In QA</span></div>
-        </aside>
-
-        <section class="draft-grid" aria-label="Draft queue">
-          <button class="draft-card is-selected" type="button" data-draft data-type="image" data-status="ready" data-title="Streaks that stick" data-format="Image - 1080x1350">
-            <span class="creative creative--violet"><i>4.8 rating</i><b>Streaks that finally stick</b></span>
-            <span class="draft-meta"><em>Ready</em><b>Streaks that stick</b></span>
-          </button>
-          <button class="draft-card" type="button" data-draft data-type="ugc" data-status="ready" data-title="I tried it for 21 days" data-format="UGC - 9:16 - 0:18">
-            <span class="creative creative--ember creative--video"><i>0:18</i><b>I tried it for 21 days...</b></span>
-            <span class="draft-meta"><em>Ready</em><b>21-day proof cut</b></span>
-          </button>
-          <button class="draft-card" type="button" data-draft data-type="image" data-status="qa" data-title="Join 2 million calm minds" data-format="Image - 1080x1080">
-            <span class="creative creative--teal"><i>Loved by 2M+</i><b>Join 2 million calm minds</b></span>
-            <span class="draft-meta"><em>In QA</em><b>Social proof square</b></span>
-          </button>
-          <button class="draft-card" type="button" data-draft data-type="ugc" data-status="hold" data-title="#1 health app claim" data-format="UGC - held claim">
-            <span class="creative creative--gold creative--video"><i>Held claim</i><b>The #1 health app...</b></span>
-            <span class="draft-meta"><em>Held</em><b>Unsupported claim</b></span>
-          </button>
-          <button class="draft-card" type="button" data-draft data-type="image" data-status="ready" data-title="A tracker that feels quiet" data-format="Image - 1080x1350">
-            <span class="creative creative--ember"><i>Calm design</i><b>A tracker that feels quiet</b></span>
-            <span class="draft-meta"><em>Ready</em><b>Calm by design</b></span>
-          </button>
-          <button class="draft-card" type="button" data-draft data-type="image" data-status="ready" data-title="Day 1 to Day 21" data-format="Image - 1080x1350">
-            <span class="creative creative--violet"><i>21-day streak</i><b>Day 1 to Day 21</b></span>
-            <span class="draft-meta"><em>Ready</em><b>Progress proof</b></span>
-          </button>
-        </section>
-
-        <aside class="draft-detail" aria-live="polite">
-          <span class="tag tag--ready" data-detail-status>Ready</span>
-          <h2 data-detail-title>Streaks that stick</h2>
-          <p data-detail-format>Image - 1080x1350</p>
-          <div class="detail-preview" data-detail-preview>
-            <span class="creative creative--violet"><i>4.8 rating</i><b>Streaks that finally stick</b></span>
-          </div>
-          <ul class="prooflinks">
-            <li>Rated 4.8 <em>shot 1</em></li>
-            <li>21-day streak <em>shot 3</em></li>
+          <ul class="learning-list" data-home-learnings>
+            <li><span>Winning hook</span><b>"21 days without overthinking"</b></li>
+            <li><span>Rejected claim</span><b>"#1 health app"</b></li>
+            <li><span>Style note</span><b>Quiet UI, high-contrast captions</b></li>
           </ul>
+        </section>
+      </div>
+    </section>
+
+    <section class="view view--proof" data-view="proof" aria-labelledby="proof-title" hidden>
+      <header class="section-head">
+        <div>
+          <p class="eyebrow">Proof Memory</p>
+          <h1 id="proof-title">Only approved truth becomes creative.</h1>
+          <p>Claims, assets, gaps, and held language are stored at the app level so every future pack starts safer.</p>
+        </div>
+        <button class="btn btn--primary" type="button" data-open-pack>Create pack from proof</button>
+      </header>
+
+      <div class="proof-layout">
+        <section class="proof-column">
+          <h2>Allowed claims</h2>
+          <ul class="claim-stack">
+            <li><b>Rated 4.8 on the App Store</b><span>Listing hero - shot 1</span></li>
+            <li><b>Loved by 2M+ people</b><span>Review set - verified</span></li>
+            <li><b>Track streaks up to 21 days</b><span>App screenshot - shot 3</span></li>
+            <li><b>Syncs across devices</b><span>Store copy - verified</span></li>
+          </ul>
+        </section>
+
+        <section class="proof-column">
+          <h2>Held claims</h2>
+          <ul class="claim-stack claim-stack--hold">
+            <li><b>#1 health app of the year</b><span>No award source attached</span></li>
+            <li><b>Doctor recommended</b><span>Third-party endorsement missing</span></li>
+            <li><b>Guaranteed habit change</b><span>Outcome claim blocked</span></li>
+          </ul>
+        </section>
+
+        <section class="asset-bank">
+          <h2>Asset bank</h2>
+          <div class="asset-grid">
+            <span>Store hero</span>
+            <span>Streak screen</span>
+            <span>Review pull</span>
+            <span>Settings sync</span>
+            <span>Onboarding</span>
+            <span>Subscription</span>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="view view--pack" data-view="pack" aria-labelledby="pack-title" hidden>
+      <header class="section-head section-head--compact">
+        <div>
+          <p class="eyebrow">Creative Pack</p>
+          <h1 id="pack-title">Habit proof refresh</h1>
+          <p>6 drafts generated from approved memory. Review choices update future pack behavior.</p>
+        </div>
+        <button class="btn" type="button" data-show-view="home">Back to App Home</button>
+      </header>
+
+      <div class="job-shell">
+        <aside class="job-rail">
+          <span class="job-step is-done">Brief</span>
+          <span class="job-step is-done">Proof constraints</span>
+          <span class="job-step is-done">Generate</span>
+          <span class="job-step is-current">Review</span>
+          <span class="job-step">QA/export</span>
+        </aside>
+
+        <section class="draft-board" aria-label="Draft review">
+          <button class="draft-card is-selected" type="button" data-draft="Streaks that finally stick">
+            <span class="creative creative--white"><i>4.8 rating</i><b>Streaks that finally stick</b></span>
+            <span><em>Ready</em><b>Static image</b></span>
+          </button>
+          <button class="draft-card" type="button" data-draft="I tried it for 21 days">
+            <span class="creative creative--pink"><i>0:18</i><b>I tried it for 21 days...</b></span>
+            <span><em>Ready</em><b>UGC video</b></span>
+          </button>
+          <button class="draft-card" type="button" data-draft="Join 2 million calm minds">
+            <span class="creative creative--blue"><i>Loved by 2M+</i><b>Join 2 million calm minds</b></span>
+            <span><em>In QA</em><b>Static image</b></span>
+          </button>
+          <button class="draft-card is-held" type="button" data-draft="#1 health app claim">
+            <span class="creative creative--gold"><i>Held claim</i><b>The #1 health app...</b></span>
+            <span><em>Held</em><b>Unsupported claim</b></span>
+          </button>
+        </section>
+
+        <aside class="review-panel" aria-live="polite">
+          <span class="tag">Ready</span>
+          <h2 data-selected-draft>Streaks that finally stick</h2>
+          <p>Use review feedback to teach this app memory what belongs in future packs.</p>
+          <div class="feedback-grid">
+            <button type="button" data-feedback="Saved as winning hook">Save as winner</button>
+            <button type="button" data-feedback="Rejected: too generic">Reject generic</button>
+            <button type="button" data-feedback="Style note: keep calm UI closeups">Save style note</button>
+            <button type="button" data-feedback="Claim issue: needs stronger trace">Flag claim issue</button>
+          </div>
+          <div class="qa-box">
+            <span>QA</span>
+            <b>Proof fidelity passed</b>
+            <b>Safe-area passed</b>
+            <b>0 provider mutations</b>
+          </div>
+          <button class="btn btn--primary btn--wide" type="button" data-export>Export approved draft</button>
         </aside>
       </div>
     </section>
 
-    <section class="screen screen--export" data-screen="5" aria-labelledby="export-title" hidden>
-      <header class="screen-head">
+    <section class="view view--learnings" data-view="learnings" aria-labelledby="learning-title" hidden>
+      <header class="section-head">
         <div>
-          <p class="eyebrow">QA & Export</p>
-          <h1 id="export-title">Export only what passed.</h1>
-          <p>Final packaging stays local in this prototype. Provider mutations remain zero.</p>
+          <p class="eyebrow">Learning Events</p>
+          <h1 id="learning-title">Every review makes the next pack smarter.</h1>
+          <p>Approvals, rejects, style notes, and outcome tags are stored against the app profile.</p>
         </div>
+        <button class="btn btn--primary" type="button" data-open-pack>Create pack with learnings</button>
       </header>
 
-      <div class="export-grid">
-        <section class="final-card">
-          <span class="tag tag--ready" data-final-status>Ready</span>
-          <h2 data-final-title>Streaks that stick</h2>
-          <p data-final-format>Image - 1080x1350</p>
-          <div class="final-preview" data-final-preview>
-            <span class="creative creative--violet"><i>4.8 rating</i><b>Streaks that finally stick</b></span>
-          </div>
-        </section>
-
-        <section class="qa-panel">
-          <h2>QA checks</h2>
-          <ul class="qa-list" data-qa-list>
-            <li><span>Proof fidelity</span><b>Pass</b></li>
-            <li><span>Claim trace</span><b>Pass</b></li>
-            <li><span>Text legibility</span><b>Pass</b></li>
-            <li><span>Safe-area and spec</span><b>Pass</b></li>
+      <div class="learning-grid">
+        <section>
+          <h2>Recent memory updates</h2>
+          <ul class="event-list" data-learning-events>
+            <li><span>Winning hook</span><b>"21 days without overthinking"</b><em>Used in 3 future briefs</em></li>
+            <li><span>Rejected claim</span><b>"#1 health app"</b><em>Blocked until source attached</em></li>
+            <li><span>Style note</span><b>Quiet UI, high-contrast captions</b><em>Applied to UGC templates</em></li>
           </ul>
-          <div class="export-actions">
-            <button class="btn btn--primary" type="button" data-export>Download asset</button>
-            <button class="btn" type="button" data-export>Copy share link</button>
-            <button class="btn" type="button" data-export>Send to export inbox</button>
-          </div>
-          <p class="microcopy">Exports this session: <strong data-export-count>0</strong>. No ad-network launch controls exist.</p>
         </section>
+        <aside class="memory-delta">
+          <strong data-learning-count>3</strong>
+          <span>learning events saved</span>
+          <p>The next pack will inherit these preferences automatically.</p>
+        </aside>
       </div>
     </section>
   </main>
+
+  <aside class="drawer" data-pack-drawer hidden aria-labelledby="drawer-title" aria-modal="true" role="dialog">
+    <div class="drawer-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Create Pack</p>
+          <h2 id="drawer-title">Only choose what changed.</h2>
+        </div>
+        <button class="icon-btn" type="button" data-close-pack aria-label="Close create pack">x</button>
+      </div>
+
+      <div class="drawer-section">
+        <label for="pack-goal">Goal</label>
+        <select id="pack-goal" data-pack-goal>
+          <option>Find new angles</option>
+          <option>Promote a feature</option>
+          <option>Retarget warm users</option>
+          <option>Localize winners</option>
+        </select>
+      </div>
+
+      <div class="drawer-section">
+        <span>Outputs</span>
+        <button class="output-toggle is-selected" type="button" aria-pressed="true" data-output="image">Image Ads</button>
+        <button class="output-toggle is-selected" type="button" aria-pressed="true" data-output="ugc">UGC Videos</button>
+      </div>
+
+      <div class="drawer-section quantity-row">
+        <span>Quantity</span>
+        <button type="button" data-qty="-1" aria-label="Decrease quantity">-</button>
+        <strong data-qty-value>6</strong>
+        <button type="button" data-qty="1" aria-label="Increase quantity">+</button>
+      </div>
+
+      <div class="cost-note">
+        <b data-pack-summary>6 drafts from Image Ads + UGC Videos</b>
+        <span>Uses 12 approved claims, 18 proof assets, and 3 learning events.</span>
+      </div>
+
+      <button class="btn btn--primary btn--wide" type="button" data-start-pack>Start pack</button>
+    </div>
+  </aside>
 
   <div class="toast" hidden data-toast role="status" aria-live="polite"></div>
   <script src="app.js"></script>

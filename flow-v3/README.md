@@ -1,23 +1,29 @@
 # Mobile Ad Agent Flow V3
 
-Flow V3 is the first-principles UX pass based on the Claude Code critique of V2.
-The current visual treatment was reworked directly by Codex after Joe's feedback on June 28, 2026, using the public xAI/Grok surface at `https://x.ai/` as mood inspiration only: stark black canvas, large type, one dominant input/work surface, white primary actions, and restrained spectral accents. It does not copy xAI logos, copy, claims, or layout.
+Flow V3 is now app-home-first. The main product is the app memory workspace, not a one-shot generation wizard.
+
+## Core Loop
+
+```text
+Add app once -> build proof memory -> create packs -> review/teach system -> next pack gets faster and better
+```
 
 ## Product Shape
 
-The prototype is one guided SaaS workflow instead of a variant gallery:
+- App Home is the default returning surface.
+- Launchpad is only the empty/add-app state.
+- Proof Memory stores allowed claims, held claims, proof assets, and gaps.
+- Create Pack is progressive disclosure: goal, Image Ads / UGC Videos, quantity.
+- Creative Pack review is a job detail inside the app workspace.
+- Review feedback creates learning events that improve future packs.
 
-1. Launchpad - paste an App Store, Play Store, or website URL.
-2. Proof Review - inspect allowed and held claims before generation.
-3. Draft Pack Setup - choose Image Ads, UGC Videos, quantity, and proof-backed angles.
-4. Review Drafts - filter and inspect generated draft candidates.
-5. QA & Export - export only drafts that passed local QA.
+## Visual Direction
 
-The shell supports multiple apps, but keeps app switching in one persistent strip so the user never has to reconcile duplicate navigation systems.
+The visual treatment uses the public xAI/Grok surface at `https://x.ai/` as mood inspiration only: stark black canvas, large type, white primary actions, thin-line chrome, and restrained spectral accents. It does not copy xAI logos, copy, claims, or exact layouts.
 
 ## Local Preview
 
-From this directory:
+From the project checkout:
 
 ```bash
 python3 -m http.server 3116 --bind 0.0.0.0 --directory flow-v3
@@ -34,4 +40,5 @@ http://127.0.0.1:3116/
 - All interactions are local DOM state.
 - No network calls are made.
 - No ad-network launch controls exist.
-- Export actions only increment a local session counter.
+- Export actions only update local session state.
+- Provider mutations remain zero.

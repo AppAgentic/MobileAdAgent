@@ -2,53 +2,22 @@ const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
 const state = {
-  step: 1,
-  maxUnlocked: 1,
-  app: "Lumina Habits",
-  source: "App Store",
-  qty: 6,
+  view: "home",
+  currentApp: "Lumina Habits",
+  quantity: 6,
   outputs: { image: true, ugc: true },
-  selectedDraft: null,
+  learningCount: 3,
   exports: 0
-};
-
-const sourceLabels = [
-  { match: "apps.apple.com", label: "App Store" },
-  { match: "play.google.com", label: "Google Play" }
-];
-
-const draftCopy = {
-  ready: {
-    label: "Ready",
-    qa: [
-      ["Proof fidelity", "Pass"],
-      ["Claim trace", "Pass"],
-      ["Text legibility", "Pass"],
-      ["Safe-area and spec", "Pass"]
-    ]
-  },
-  qa: {
-    label: "In QA",
-    qa: [
-      ["Proof fidelity", "Pass"],
-      ["Claim trace", "Pass"],
-      ["Text legibility", "Review"],
-      ["Safe-area and spec", "Review"]
-    ]
-  },
-  hold: {
-    label: "Held",
-    qa: [
-      ["Proof fidelity", "Blocked"],
-      ["Claim trace", "Missing source"],
-      ["Text legibility", "Not checked"],
-      ["Safe-area and spec", "Not checked"]
-    ]
-  }
 };
 
 const toastEl = $("[data-toast]");
 let toastTimer;
+
+function setText(selector, value) {
+  $$(selector).forEach((node) => {
+    node.textContent = value;
+  });
+}
 
 function showToast(message) {
   clearTimeout(toastTimer);
@@ -60,288 +29,121 @@ function showToast(message) {
     setTimeout(() => {
       toastEl.hidden = true;
     }, 240);
-  }, 2400);
+  }, 2300);
 }
 
-function labelSource(value) {
-  const normalized = value.toLowerCase();
-  const matched = sourceLabels.find((item) => normalized.includes(item.match));
-  if (matched) return matched.label;
-  if (!normalized.trim()) return state.source;
-  return "Website";
-}
-
-function setText(selector, text) {
-  $$(selector).forEach((node) => {
-    node.textContent = text;
-  });
-}
-
-function unlock(step) {
-  state.maxUnlocked = Math.max(state.maxUnlocked, step);
-}
-
-function showStep(nextStep) {
-  if (nextStep > state.maxUnlocked) {
-    showToast("Finish the current step first.");
-    return;
-  }
-
-  state.step = nextStep;
-  $$("[data-screen]").forEach((screen) => {
-    const isActive = Number(screen.dataset.screen) === nextStep;
-    screen.hidden = !isActive;
-    screen.classList.toggle("is-active", isActive);
+function showView(view) {
+  state.view = view;
+  $$("[data-view]").forEach((screen) => {
+    const active = screen.dataset.view === view;
+    screen.hidden = !active;
+    screen.classList.toggle("is-active", active);
   });
 
-  $$("[data-step-jump]").forEach((stepButton) => {
-    const number = Number(stepButton.dataset.stepJump);
-    stepButton.classList.toggle("is-current", number === nextStep);
-    stepButton.classList.toggle("is-done", number < nextStep);
-    stepButton.disabled = number > state.maxUnlocked;
-    stepButton.setAttribute("aria-disabled", String(number > state.maxUnlocked));
+  $$("[data-nav]").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.nav === view);
   });
 
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function updateSource(value) {
-  state.source = labelSource(value);
-  setText("[data-source-label]", state.source);
-  setText("[data-current-source]", state.source);
+function openDrawer() {
+  $("[data-pack-drawer]").hidden = false;
+  $("[data-pack-goal]").focus();
 }
 
-function selectApp(button) {
-  state.app = button.dataset.app;
-  state.source = button.dataset.platform === "Android" ? "Google Play" : button.dataset.platform === "Web" ? "Website" : "App Store";
-
-  $$(".app-pill").forEach((pill) => pill.classList.toggle("is-active", pill === button));
-  setText("[data-current-app]", state.app);
-  setText("[data-current-proof]", button.dataset.proof);
-  setText("[data-source-label]", state.source);
-  setText("[data-current-source]", state.source);
-
-  const input = $("[data-url-input]");
-  input.placeholder = `https://${button.dataset.src}`;
-  input.value = "";
-  showToast(`${state.app} selected.`);
-}
-
-function includedClaimCount() {
-  return $$("[data-claim]").filter((claim) => !claim.classList.contains("is-excluded")).length;
-}
-
-function updateClaims() {
-  setText("[data-approved-count]", String(includedClaimCount()));
+function closeDrawer() {
+  $("[data-pack-drawer]").hidden = true;
 }
 
 function updatePackSummary() {
-  const selectedOutputs = [];
-  if (state.outputs.image) selectedOutputs.push("Image Ads");
-  if (state.outputs.ugc) selectedOutputs.push("UGC Videos");
+  const selected = [];
+  if (state.outputs.image) selected.push("Image Ads");
+  if (state.outputs.ugc) selected.push("UGC Videos");
+  const label = selected.join(" + ");
 
-  setText("[data-qty-value]", String(state.qty));
-  setText("[data-build-count]", String(state.qty));
-  setText("[data-draft-count]", String(state.qty));
-  setText("[data-build-outputs]", selectedOutputs.join(" + "));
+  setText("[data-qty-value]", String(state.quantity));
+  setText("[data-pack-summary]", `${state.quantity} drafts from ${label}`);
 
   $$("[data-output]").forEach((button) => {
-    const isSelected = state.outputs[button.dataset.output];
-    button.classList.toggle("is-selected", isSelected);
-    button.setAttribute("aria-pressed", String(isSelected));
+    const active = state.outputs[button.dataset.output];
+    button.classList.toggle("is-selected", active);
+    button.setAttribute("aria-pressed", String(active));
   });
 }
 
-function selectedAngles() {
-  return $$("[data-angle]").filter((input) => input.checked).length;
+function selectApp(button) {
+  state.currentApp = button.dataset.app;
+  $$(".app-pill").forEach((pill) => pill.classList.toggle("is-active", pill === button));
+  setText("[data-current-app]", state.currentApp);
+  setText("[data-proof-count]", button.dataset.proof);
+  setText("[data-held-count]", button.dataset.held);
+  showView("home");
+  showToast(`${state.currentApp} memory opened.`);
 }
 
-function statusLabel(status) {
-  return draftCopy[status]?.label || "Ready";
-}
+function addLearning(message) {
+  state.learningCount += 1;
+  setText("[data-learning-count]", String(state.learningCount));
 
-function cloneCreative(draft) {
-  return $(".creative", draft).cloneNode(true);
-}
+  const homeList = $("[data-home-learnings]");
+  const homeItem = document.createElement("li");
+  const homeLabel = document.createElement("span");
+  const homeText = document.createElement("b");
+  homeLabel.textContent = "New review signal";
+  homeText.textContent = message;
+  homeItem.append(homeLabel, homeText);
+  homeList.prepend(homeItem);
 
-function setPreview(targetSelector, draft) {
-  const target = $(targetSelector);
-  target.replaceChildren(cloneCreative(draft));
-}
+  const events = $("[data-learning-events]");
+  const item = document.createElement("li");
+  const label = document.createElement("span");
+  const title = document.createElement("b");
+  const detail = document.createElement("em");
+  label.textContent = "Just saved";
+  title.textContent = message;
+  detail.textContent = "Will be inherited by the next pack";
+  item.append(label, title, detail);
+  events.prepend(item);
 
-function updateStatusTag(node, status) {
-  node.textContent = statusLabel(status);
-  node.classList.remove("tag--ready", "tag--qa", "tag--hold");
-  node.classList.add(`tag--${status}`);
-}
-
-function updateQaList(status) {
-  const list = $("[data-qa-list]");
-  const rows = draftCopy[status]?.qa || draftCopy.ready.qa;
-  list.replaceChildren();
-  rows.forEach(([label, result]) => {
-    const item = document.createElement("li");
-    const labelEl = document.createElement("span");
-    const resultEl = document.createElement("b");
-    labelEl.textContent = label;
-    resultEl.textContent = result;
-    if (result !== "Pass") resultEl.classList.add("is-warning");
-    item.append(labelEl, resultEl);
-    list.append(item);
-  });
-}
-
-function selectDraft(draft) {
-  state.selectedDraft = draft;
-  $$("[data-draft]").forEach((card) => card.classList.toggle("is-selected", card === draft));
-
-  const status = draft.dataset.status;
-  updateStatusTag($("[data-detail-status]"), status);
-  updateStatusTag($("[data-final-status]"), status);
-  setText("[data-detail-title]", draft.dataset.title);
-  setText("[data-final-title]", draft.dataset.title);
-  setText("[data-detail-format]", draft.dataset.format);
-  setText("[data-final-format]", draft.dataset.format);
-  setPreview("[data-detail-preview]", draft);
-  setPreview("[data-final-preview]", draft);
-  updateQaList(status);
-
-  const canExport = status === "ready";
-  $$("[data-export]").forEach((button) => {
-    button.disabled = !canExport;
-  });
-}
-
-function applyDraftFilter(filter) {
-  $$(".filter").forEach((button) => {
-    button.classList.toggle("is-active", button.dataset.filter === filter);
-  });
-
-  $$("[data-draft]").forEach((draft) => {
-    const isVisible = filter === "all" || draft.dataset.type === filter;
-    draft.classList.toggle("is-hidden", !isVisible);
-  });
-}
-
-function handleImport(event) {
-  event.preventDefault();
-  const input = $("[data-url-input]");
-  const url = input.value.trim() || input.placeholder;
-  updateSource(url);
-
-  const button = $("[data-import-go]");
-  button.disabled = true;
-    button.textContent = "Reading proof...";
-
-  setTimeout(() => {
-    button.disabled = false;
-    button.textContent = "Pull proof";
-    unlock(2);
-    showStep(2);
-    showToast("Proof imported. Review claims before generation.");
-  }, 520);
-}
-
-function handleProofApproval() {
-  if (includedClaimCount() === 0) {
-    showToast("Keep at least one approved claim before continuing.");
-    return;
-  }
-  unlock(3);
-  showStep(3);
-  showToast("Proof approved. Choose output types.");
-}
-
-function handleBuildDrafts() {
-  if (!state.outputs.image && !state.outputs.ugc) {
-    showToast("Choose at least one output type.");
-    return;
-  }
-  if (selectedAngles() === 0) {
-    showToast("Choose at least one approved-proof angle.");
-    return;
-  }
-
-  const button = $("[data-build-drafts]");
-  button.disabled = true;
-  button.textContent = "Generating...";
-
-  setTimeout(() => {
-    button.disabled = false;
-    button.textContent = "Generate draft pack";
-    unlock(4);
-    showStep(4);
-    selectDraft($("[data-draft].is-selected") || $("[data-draft]"));
-    showToast(`${state.qty} proof-backed drafts are ready to review.`);
-  }, 640);
-}
-
-function handleExport(event) {
-  if (!state.selectedDraft || state.selectedDraft.dataset.status !== "ready") {
-    showToast("Only ready drafts can export.");
-    return;
-  }
-  state.exports += 1;
-  setText("[data-export-count]", String(state.exports));
-  showToast(`${event.currentTarget.textContent} prepared locally.`);
+  showToast("Learning saved to app memory.");
 }
 
 function init() {
-  $$("[data-step-jump]").forEach((button) => {
-    button.addEventListener("click", () => showStep(Number(button.dataset.stepJump)));
+  $$("[data-nav]").forEach((button) => {
+    button.addEventListener("click", () => showView(button.dataset.nav));
+  });
+
+  $$("[data-show-view]").forEach((button) => {
+    button.addEventListener("click", () => showView(button.dataset.showView));
+  });
+
+  $$("[data-open-pack]").forEach((button) => {
+    button.addEventListener("click", openDrawer);
+  });
+
+  $("[data-close-pack]").addEventListener("click", closeDrawer);
+  $("[data-pack-drawer]").addEventListener("click", (event) => {
+    if (event.target === event.currentTarget) closeDrawer();
+  });
+
+  $$("[data-open-empty]").forEach((button) => {
+    button.addEventListener("click", () => showView("empty"));
   });
 
   $$(".app-pill").forEach((button) => {
     button.addEventListener("click", () => selectApp(button));
   });
 
-  $("[data-add-app]").addEventListener("click", () => {
-    showStep(1);
-    $("[data-url-input]").focus();
-    showToast("Paste a URL to import another app.");
-  });
-
-  $$("[data-recent]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const app = button.dataset.recent;
-      const target = $(`.app-pill[data-app="${app}"]`);
-      if (target) selectApp(target);
-    });
-  });
-
-  $("[data-import-form]").addEventListener("submit", handleImport);
-  $("[data-url-input]").addEventListener("input", (event) => updateSource(event.target.value));
-
-  $$("[data-toggle-claim]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const claim = button.closest("[data-claim]");
-      const isIncluded = button.getAttribute("aria-pressed") === "true";
-      button.setAttribute("aria-pressed", String(!isIncluded));
-      button.textContent = isIncluded ? "Excluded" : "Included";
-      claim.classList.toggle("is-excluded", isIncluded);
-      updateClaims();
-    });
-  });
-
-  $$("[data-why-held]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const claim = button.closest(".claim");
-      const existing = $(".held-note", claim);
-      if (existing) {
-        existing.remove();
-        button.textContent = "Why held?";
-        return;
-      }
-      const note = document.createElement("p");
-      note.className = "held-note";
-      note.textContent = button.dataset.reason;
-      claim.append(note);
-      button.textContent = "Hide";
-    });
-  });
-
-  $$("[data-approve-proof]").forEach((button) => {
-    button.addEventListener("click", handleProofApproval);
+  $("[data-import-form]").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const input = $("[data-url-input]");
+    const value = input.value.trim() || input.placeholder;
+    const importedName = value.includes("formroom") ? "Formroom Fitness" : value.includes("nomad") ? "Nomadly Travel" : "Lumina Habits";
+    state.currentApp = importedName;
+    setText("[data-current-app]", importedName);
+    showView("home");
+    showToast("App profile and proof memory created.");
   });
 
   $$("[data-output]").forEach((button) => {
@@ -349,7 +151,7 @@ function init() {
       const type = button.dataset.output;
       const selectedCount = Number(state.outputs.image) + Number(state.outputs.ugc);
       if (state.outputs[type] && selectedCount === 1) {
-        showToast("Keep at least one output type selected.");
+        showToast("Keep at least one output selected.");
         return;
       }
       state.outputs[type] = !state.outputs[type];
@@ -359,45 +161,43 @@ function init() {
 
   $$("[data-qty]").forEach((button) => {
     button.addEventListener("click", () => {
-      state.qty = Math.min(12, Math.max(2, state.qty + Number(button.dataset.qty)));
+      state.quantity = Math.min(12, Math.max(2, state.quantity + Number(button.dataset.qty)));
       updatePackSummary();
     });
   });
 
-  $$("[data-angle]").forEach((input) => {
-    input.addEventListener("change", () => {
-      if (selectedAngles() === 0) {
-        input.checked = true;
-        showToast("Keep at least one angle selected.");
-      }
+  $("[data-start-pack]").addEventListener("click", () => {
+    closeDrawer();
+    showView("pack");
+    showToast(`${state.quantity} draft pack started from app memory.`);
+  });
+
+  $$("[data-draft]").forEach((card) => {
+    card.addEventListener("click", () => {
+      $$("[data-draft]").forEach((draft) => draft.classList.toggle("is-selected", draft === card));
+      setText("[data-selected-draft]", card.dataset.draft);
     });
   });
 
-  $("[data-build-drafts]").addEventListener("click", handleBuildDrafts);
-
-  $$(".filter").forEach((button) => {
-    button.addEventListener("click", () => applyDraftFilter(button.dataset.filter));
+  $$("[data-feedback]").forEach((button) => {
+    button.addEventListener("click", () => {
+      addLearning(button.dataset.feedback);
+      showView("learnings");
+    });
   });
 
-  $$("[data-draft]").forEach((draft) => {
-    draft.addEventListener("click", () => selectDraft(draft));
+  $("[data-export]").addEventListener("click", () => {
+    state.exports += 1;
+    addLearning("Exported draft marked as approved style reference");
+    showToast(`Export ${state.exports} prepared locally.`);
   });
 
-  $("[data-review-qa]").addEventListener("click", () => {
-    if (!state.selectedDraft) selectDraft($("[data-draft]"));
-    unlock(5);
-    showStep(5);
-    showToast("Final QA is ready.");
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !$("[data-pack-drawer]").hidden) closeDrawer();
   });
 
-  $$("[data-export]").forEach((button) => {
-    button.addEventListener("click", handleExport);
-  });
-
-  updateClaims();
   updatePackSummary();
-  selectDraft($("[data-draft].is-selected"));
-  showStep(1);
+  showView("home");
 }
 
 init();
