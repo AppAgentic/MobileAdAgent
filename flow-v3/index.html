@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Mobile Ad Agent - App Memory Prototype</title>
-  <meta name="description" content="An app-home-first Mobile Ad Agent prototype built around proof memory, creative packs, and learning loops." />
+  <title>Mobile Ad Agent - App Memory OS</title>
+  <meta name="description" content="An app-home-first Mobile Ad Agent prototype: one App Memory (Proof, Claims, Style, Learnings), a readiness checklist, URL truth import, and a PR-style creative review console." />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -15,15 +15,14 @@
       <span class="mark" aria-hidden="true">A</span>
       <div>
         <strong>Mobile Ad Agent</strong>
-        <span>App memory studio</span>
+        <span>App Memory OS</span>
       </div>
     </div>
 
     <nav class="main-nav" aria-label="Workspace">
       <button class="nav-item is-active" type="button" data-nav="home">Home</button>
-      <button class="nav-item" type="button" data-nav="proof">Proof</button>
-      <button class="nav-item" type="button" data-nav="pack">Packs</button>
-      <button class="nav-item" type="button" data-nav="learnings">Learnings</button>
+      <button class="nav-item" type="button" data-nav="memory">App Memory</button>
+      <button class="nav-item" type="button" data-nav="pack">Review</button>
     </nav>
 
     <div class="safety" title="This prototype never touches ad networks">
@@ -50,23 +49,89 @@
   </div>
 
   <main id="main" class="main">
+    <!-- LAUNCHPAD / IMPORT — 3-step truth import -->
     <section class="view view--empty" data-view="empty" aria-labelledby="empty-title" hidden>
       <div class="empty-stage">
         <p class="eyebrow">New app</p>
         <h1 id="empty-title">Add the app once. Build the memory forever.</h1>
-        <p class="lede">Paste an App Store, Play Store, or website URL. Mobile Ad Agent builds the reusable proof memory before any creative job starts.</p>
+        <p class="lede">Paste an App Store, Play Store, or website URL. Mobile Ad Agent extracts the listing, screenshots, and reviews, then asks you to confirm what is true before any creative job starts.</p>
 
-        <form class="url-box" data-import-form>
-          <div class="url-row">
-            <span aria-hidden="true">-></span>
-            <input type="url" inputmode="url" autocomplete="off" spellcheck="false" aria-label="App URL" data-url-input placeholder="https://apps.apple.com/app/lumina-habits" />
-            <button class="btn btn--primary" type="submit">Import app</button>
-          </div>
-          <p class="microcopy">Local prototype. Import creates app memory only.</p>
-        </form>
+        <ol class="import-steps" data-import-steps>
+          <li class="import-step is-current" data-import-step="1">
+            <span class="step-index">1</span>
+            <div class="step-body">
+              <b>Paste the app URL</b>
+              <p>App Store, Play Store, or marketing site.</p>
+              <form class="url-box" data-import-form>
+                <div class="url-row">
+                  <span aria-hidden="true">URL</span>
+                  <input type="url" inputmode="url" autocomplete="off" spellcheck="false" aria-label="App URL" data-url-input placeholder="https://apps.apple.com/app/lumina-habits" />
+                  <button class="btn btn--primary" type="submit" data-extract>Extract</button>
+                </div>
+                <p class="microcopy">Local prototype. Extraction is simulated and never leaves your browser.</p>
+              </form>
+            </div>
+          </li>
+
+          <li class="import-step" data-import-step="2">
+            <span class="step-index">2</span>
+            <div class="step-body">
+              <b>Review what was extracted</b>
+              <p>Nothing is saved to memory yet. Scan for anything that is not true.</p>
+              <div class="extract-grid" data-extract-grid>
+                <div class="extract-card">
+                  <span class="extract-kind">Store listing</span>
+                  <b data-extract-name>Lumina Habits</b>
+                  <em>Title, subtitle, category, and store description copy.</em>
+                </div>
+                <div class="extract-card">
+                  <span class="extract-kind">Screenshots</span>
+                  <b>6 captured</b>
+                  <em>Streak screen, onboarding, settings sync, subscription.</em>
+                </div>
+                <div class="extract-card">
+                  <span class="extract-kind">Reviews</span>
+                  <b>2M+ ratings, 4.8 avg</b>
+                  <em>Top sentiment: calm, "21 days", no overthinking.</em>
+                </div>
+              </div>
+              <div class="step-actions">
+                <button class="btn btn--primary" type="button" data-goto-step="3">Looks right</button>
+                <button class="btn" type="button" data-goto-step="1">Re-paste URL</button>
+              </div>
+            </div>
+          </li>
+
+          <li class="import-step" data-import-step="3">
+            <span class="step-index">3</span>
+            <div class="step-body">
+              <b>Confirm the truth</b>
+              <p>Only confirmed items become reusable App Memory. Held items wait for a source.</p>
+              <ul class="truth-list" data-truth-list>
+                <li class="truth-row is-on" data-truth>
+                  <span><b>Rated 4.8 on the App Store</b><em>Source: review set</em></span>
+                  <button type="button" class="truth-toggle" aria-pressed="true">Confirmed</button>
+                </li>
+                <li class="truth-row is-on" data-truth>
+                  <span><b>Loved by 2M+ people</b><em>Source: ratings count</em></span>
+                  <button type="button" class="truth-toggle" aria-pressed="true">Confirmed</button>
+                </li>
+                <li class="truth-row" data-truth>
+                  <span><b>#1 health app of the year</b><em>No award source attached</em></span>
+                  <button type="button" class="truth-toggle" aria-pressed="false">Hold</button>
+                </li>
+              </ul>
+              <div class="step-actions">
+                <button class="btn btn--primary" type="button" data-confirm-truth>Confirm and build memory</button>
+                <button class="btn" type="button" data-goto-step="2">Back to extraction</button>
+              </div>
+            </div>
+          </li>
+        </ol>
       </div>
     </section>
 
+    <!-- HOME -->
     <section class="view view--home is-active" data-view="home" aria-labelledby="home-title">
       <div class="home-hero">
         <div class="app-title">
@@ -81,11 +146,48 @@
       </div>
 
       <div class="home-grid">
+        <section class="readiness" aria-labelledby="ready-title">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">App readiness</p>
+              <h2 id="ready-title">Get this app to its first export.</h2>
+            </div>
+            <span data-ready-count>1 / 5 done</span>
+          </div>
+          <ol class="checklist" data-checklist>
+            <li class="check-row is-done" data-step="import">
+              <span class="check-mark" aria-hidden="true"></span>
+              <span class="check-body"><b>Import app</b><em>Listing, screenshots, and reviews extracted.</em></span>
+              <button class="check-go" type="button" data-open-empty>Re-import</button>
+            </li>
+            <li class="check-row is-current" data-step="proof">
+              <span class="check-mark" aria-hidden="true"></span>
+              <span class="check-body"><b>Confirm proof</b><em>Approve the claims and assets that are true.</em></span>
+              <button class="check-go" type="button" data-do-step="proof">Confirm</button>
+            </li>
+            <li class="check-row" data-step="pack">
+              <span class="check-mark" aria-hidden="true"></span>
+              <span class="check-body"><b>Create first pack</b><em>Generate drafts from confirmed memory.</em></span>
+              <button class="check-go" type="button" data-open-pack>Create</button>
+            </li>
+            <li class="check-row" data-step="review">
+              <span class="check-mark" aria-hidden="true"></span>
+              <span class="check-body"><b>Review</b><em>Approve, tweak, or reject each draft.</em></span>
+              <button class="check-go" type="button" data-show-view="pack">Review</button>
+            </li>
+            <li class="check-row" data-step="export">
+              <span class="check-mark" aria-hidden="true"></span>
+              <span class="check-body"><b>Export</b><em>Send approved drafts out of the studio.</em></span>
+              <button class="check-go" type="button" data-show-view="pack">Export</button>
+            </li>
+          </ol>
+        </section>
+
         <section class="next-action" aria-labelledby="next-title">
           <div>
             <p class="eyebrow">Next best action</p>
-            <h2 id="next-title">Create the next pack from 12 verified proof items.</h2>
-            <p>Mobile Ad Agent will inherit allowed claims, rejected language, winning hooks, and QA rules from this app memory.</p>
+            <h2 id="next-title">Create the next pack from 12 confirmed proof items.</h2>
+            <p>Mobile Ad Agent will inherit confirmed claims, held language, winning hooks, and QA rules from this app memory.</p>
           </div>
           <div class="action-row">
             <button class="btn btn--primary" type="button" data-open-pack>Create next pack</button>
@@ -93,18 +195,18 @@
           </div>
         </section>
 
-        <aside class="memory-panel" aria-label="Proof memory summary">
+        <aside class="memory-panel" aria-label="App memory summary">
           <div class="panel-heading">
-            <h2>Proof memory</h2>
-            <button class="text-btn" type="button" data-show-view="proof">Open</button>
+            <h2>App Memory</h2>
+            <button class="text-btn" type="button" data-show-view="memory">Open</button>
           </div>
           <dl class="memory-stats">
-            <div><dt>Allowed claims</dt><dd data-proof-count>12</dd></div>
-            <div><dt>Held claims</dt><dd data-held-count>3</dd></div>
-            <div><dt>Proof assets</dt><dd>18</dd></div>
-            <div><dt>Last refresh</dt><dd>2h ago</dd></div>
+            <div><dt>Proof - confirmed claims</dt><dd data-proof-count>12</dd></div>
+            <div><dt>Claims - held</dt><dd data-held-count>3</dd></div>
+            <div><dt>Style notes</dt><dd>5</dd></div>
+            <div><dt>Learnings saved</dt><dd data-learning-count-mirror>3</dd></div>
           </dl>
-          <button class="btn btn--wide" type="button" data-show-view="proof">Refresh proof</button>
+          <button class="btn btn--wide" type="button" data-show-view="memory">Open App Memory</button>
         </aside>
 
         <section class="queue-panel" aria-labelledby="queue-title">
@@ -121,8 +223,8 @@
               <span><b>Weekend retargeting</b><em>Brief ready from existing memory</em></span>
               <strong>Draft</strong>
             </button>
-            <button class="pack-row is-hold" type="button" data-show-view="proof">
-              <span><b>Doctor recommended angle</b><em>Blocked by missing proof</em></span>
+            <button class="pack-row is-hold" type="button" data-show-view="memory">
+              <span><b>Doctor recommended angle</b><em>Blocked by held claim</em></span>
               <strong>Held</strong>
             </button>
           </div>
@@ -130,8 +232,8 @@
 
         <section class="learning-panel" aria-labelledby="learn-title">
           <div class="panel-heading">
-            <h2 id="learn-title">Creative learnings</h2>
-            <button class="text-btn" type="button" data-show-view="learnings">Open</button>
+            <h2 id="learn-title">Recent learnings</h2>
+            <button class="text-btn" type="button" data-show-view="memory" data-mem-target="learnings">Open</button>
           </div>
           <ul class="learning-list" data-home-learnings>
             <li><span>Winning hook</span><b>"21 days without overthinking"</b></li>
@@ -142,38 +244,28 @@
       </div>
     </section>
 
-    <section class="view view--proof" data-view="proof" aria-labelledby="proof-title" hidden>
+    <!-- APP MEMORY — single concept, subtype sections -->
+    <section class="view view--memory" data-view="memory" aria-labelledby="memory-title" hidden>
       <header class="section-head">
         <div>
-          <p class="eyebrow">Proof Memory</p>
-          <h1 id="proof-title">Only approved truth becomes creative.</h1>
-          <p>Claims, assets, gaps, and held language are stored at the app level so every future pack starts safer.</p>
+          <p class="eyebrow">App Memory</p>
+          <h1 id="memory-title">One memory. Four kinds of truth.</h1>
+          <p>Proof, Claims, Style, and Learnings are stored at the app level so every future pack starts safer and faster.</p>
         </div>
-        <button class="btn btn--primary" type="button" data-open-pack>Create pack from proof</button>
+        <button class="btn btn--primary" type="button" data-open-pack>Create pack from memory</button>
       </header>
 
-      <div class="proof-layout">
-        <section class="proof-column">
-          <h2>Allowed claims</h2>
-          <ul class="claim-stack">
-            <li><b>Rated 4.8 on the App Store</b><span>Listing hero - shot 1</span></li>
-            <li><b>Loved by 2M+ people</b><span>Review set - verified</span></li>
-            <li><b>Track streaks up to 21 days</b><span>App screenshot - shot 3</span></li>
-            <li><b>Syncs across devices</b><span>Store copy - verified</span></li>
-          </ul>
-        </section>
+      <div class="memory-shell">
+        <div class="mem-tabs" role="tablist" aria-label="App memory sections">
+          <button class="mem-tab is-active" type="button" role="tab" aria-selected="true" data-mem-tab="proof">Proof</button>
+          <button class="mem-tab" type="button" role="tab" aria-selected="false" data-mem-tab="claims">Claims</button>
+          <button class="mem-tab" type="button" role="tab" aria-selected="false" data-mem-tab="style">Style</button>
+          <button class="mem-tab" type="button" role="tab" aria-selected="false" data-mem-tab="learnings">Learnings</button>
+        </div>
 
-        <section class="proof-column">
-          <h2>Held claims</h2>
-          <ul class="claim-stack claim-stack--hold">
-            <li><b>#1 health app of the year</b><span>No award source attached</span></li>
-            <li><b>Doctor recommended</b><span>Third-party endorsement missing</span></li>
-            <li><b>Guaranteed habit change</b><span>Outcome claim blocked</span></li>
-          </ul>
-        </section>
-
-        <section class="asset-bank">
-          <h2>Asset bank</h2>
+        <!-- PROOF -->
+        <div class="mem-panel is-active" role="tabpanel" data-mem-panel="proof">
+          <p class="mem-lede">Verified assets extracted from the store listing and confirmed during import.</p>
           <div class="asset-grid">
             <span>Store hero</span>
             <span>Streak screen</span>
@@ -182,22 +274,84 @@
             <span>Onboarding</span>
             <span>Subscription</span>
           </div>
-        </section>
+        </div>
+
+        <!-- CLAIMS -->
+        <div class="mem-panel" role="tabpanel" data-mem-panel="claims" hidden>
+          <div class="claims-layout">
+            <section class="proof-column">
+              <h2>Confirmed claims</h2>
+              <ul class="claim-stack">
+                <li><b>Rated 4.8 on the App Store</b><span>Listing hero - shot 1</span></li>
+                <li><b>Loved by 2M+ people</b><span>Review set - verified</span></li>
+                <li><b>Track streaks up to 21 days</b><span>App screenshot - shot 3</span></li>
+                <li><b>Syncs across devices</b><span>Store copy - verified</span></li>
+              </ul>
+            </section>
+            <section class="proof-column">
+              <h2>Held claims</h2>
+              <ul class="claim-stack claim-stack--hold">
+                <li><b>#1 health app of the year</b><span>No award source attached</span></li>
+                <li><b>Doctor recommended</b><span>Third-party endorsement missing</span></li>
+                <li><b>Guaranteed habit change</b><span>Outcome claim blocked</span></li>
+              </ul>
+            </section>
+          </div>
+        </div>
+
+        <!-- STYLE -->
+        <div class="mem-panel" role="tabpanel" data-mem-panel="style" hidden>
+          <p class="mem-lede">How creative should look and sound for this app. Applied to every new draft.</p>
+          <ul class="claim-stack">
+            <li><b>Quiet UI, high-contrast captions</b><span>From approved exports</span></li>
+            <li><b>Calm closeups over busy motion</b><span>Saved style note</span></li>
+            <li><b>First-person, no hype words</b><span>Voice rule</span></li>
+            <li><b>Spectral accent on dark canvas</b><span>Brand palette</span></li>
+            <li><b>Hook before logo, always</b><span>Pacing rule</span></li>
+          </ul>
+        </div>
+
+        <!-- LEARNINGS -->
+        <div class="mem-panel" role="tabpanel" data-mem-panel="learnings" hidden>
+          <div class="learning-grid">
+            <section>
+              <h2>Recent memory updates</h2>
+              <ul class="event-list" data-learning-events>
+                <li><span>Winning hook</span><b>"21 days without overthinking"</b><em>Used in 3 future briefs</em></li>
+                <li><span>Rejected claim</span><b>"#1 health app"</b><em>Blocked until source attached</em></li>
+                <li><span>Style note</span><b>Quiet UI, high-contrast captions</b><em>Applied to UGC templates</em></li>
+              </ul>
+            </section>
+            <aside class="memory-diff" aria-label="What changed in memory">
+              <div class="panel-heading">
+                <h2>What changed in memory</h2>
+                <strong data-learning-count>3</strong>
+              </div>
+              <p class="mem-lede">Every review action writes a diff here, then feeds the next pack.</p>
+              <ul class="diff-list" data-memory-diff>
+                <li class="diff-add"><span>+ winner</span><b>"21 days without overthinking" saved as a hook</b></li>
+                <li class="diff-block"><span>- blocked</span><b>"#1 health app" held until sourced</b></li>
+                <li class="diff-add"><span>+ style</span><b>Quiet UI, high-contrast captions</b></li>
+              </ul>
+            </aside>
+          </div>
+        </div>
       </div>
     </section>
 
+    <!-- REVIEW CONSOLE -->
     <section class="view view--pack" data-view="pack" aria-labelledby="pack-title" hidden>
       <header class="section-head section-head--compact">
         <div>
-          <p class="eyebrow">Creative Pack</p>
+          <p class="eyebrow">Review Console</p>
           <h1 id="pack-title">Habit proof refresh</h1>
-          <p>6 drafts generated from approved memory. Review choices update future pack behavior.</p>
+          <p>6 drafts generated from confirmed memory. Approve, tweak, or reject each one - every decision updates App Memory.</p>
         </div>
         <button class="btn" type="button" data-show-view="home">Back to App Home</button>
       </header>
 
       <div class="job-shell">
-        <aside class="job-rail">
+        <aside class="job-rail" aria-label="Pack progress">
           <span class="job-step is-done">Brief</span>
           <span class="job-step is-done">Proof constraints</span>
           <span class="job-step is-done">Generate</span>
@@ -206,34 +360,89 @@
         </aside>
 
         <section class="draft-board" aria-label="Draft review">
-          <button class="draft-card is-selected" type="button" data-draft="Streaks that finally stick">
+          <button class="draft-card is-selected" type="button"
+            data-draft="Streaks that finally stick"
+            data-why="Built from your top winning hook plus the 4.8 rating proof."
+            data-proof="4.8 rating - Streak screen"
+            data-kind="Static image">
             <span class="creative creative--white"><i>4.8 rating</i><b>Streaks that finally stick</b></span>
-            <span><em>Ready</em><b>Static image</b></span>
+            <span class="draft-meta">
+              <em>Ready</em>
+              <b>Static image</b>
+              <small class="draft-why">Why: top winning hook + 4.8 rating proof</small>
+              <small class="draft-proof">Proof: 4.8 rating, Streak screen</small>
+            </span>
           </button>
-          <button class="draft-card" type="button" data-draft="I tried it for 21 days">
+
+          <button class="draft-card" type="button"
+            data-draft="I tried it for 21 days"
+            data-why="UGC angle drawn from review sentiment about overthinking."
+            data-proof="Review pull - Onboarding"
+            data-kind="UGC video">
             <span class="creative creative--pink"><i>0:18</i><b>I tried it for 21 days...</b></span>
-            <span><em>Ready</em><b>UGC video</b></span>
+            <span class="draft-meta">
+              <em>Ready</em>
+              <b>UGC video</b>
+              <small class="draft-why">Why: review sentiment about overthinking</small>
+              <small class="draft-proof">Proof: Review pull, Onboarding</small>
+            </span>
           </button>
-          <button class="draft-card" type="button" data-draft="Join 2 million calm minds">
+
+          <button class="draft-card" type="button"
+            data-draft="Join 2 million calm minds"
+            data-why="Scale proof from the verified 2M+ review set."
+            data-proof="Loved by 2M+ claim"
+            data-kind="Static image">
             <span class="creative creative--blue"><i>Loved by 2M+</i><b>Join 2 million calm minds</b></span>
-            <span><em>In QA</em><b>Static image</b></span>
+            <span class="draft-meta">
+              <em class="is-qa">In QA</em>
+              <b>Static image</b>
+              <small class="draft-why">Why: scale proof from verified reviews</small>
+              <small class="draft-proof">Proof: Loved by 2M+ claim</small>
+            </span>
           </button>
-          <button class="draft-card is-held" type="button" data-draft="#1 health app claim">
+
+          <button class="draft-card is-held" type="button"
+            data-draft="The #1 health app"
+            data-why="Drafted but blocked - the claim has no attached source."
+            data-proof="None - held claim"
+            data-kind="Unsupported claim">
             <span class="creative creative--gold"><i>Held claim</i><b>The #1 health app...</b></span>
-            <span><em>Held</em><b>Unsupported claim</b></span>
+            <span class="draft-meta">
+              <em class="is-held">Held</em>
+              <b>Unsupported claim</b>
+              <small class="draft-why">Why: drafted from a held claim</small>
+              <small class="draft-proof">Proof: none - blocked until sourced</small>
+            </span>
           </button>
         </section>
 
         <aside class="review-panel" aria-live="polite">
-          <span class="tag">Ready</span>
+          <span class="tag" data-review-status>Ready</span>
           <h2 data-selected-draft>Streaks that finally stick</h2>
-          <p>Use review feedback to teach this app memory what belongs in future packs.</p>
-          <div class="feedback-grid">
-            <button type="button" data-feedback="Saved as winning hook">Save as winner</button>
-            <button type="button" data-feedback="Rejected: too generic">Reject generic</button>
-            <button type="button" data-feedback="Style note: keep calm UI closeups">Save style note</button>
-            <button type="button" data-feedback="Claim issue: needs stronger trace">Flag claim issue</button>
+
+          <dl class="review-facts">
+            <div><dt>Why this draft</dt><dd data-review-why>Built from your top winning hook plus the 4.8 rating proof.</dd></div>
+            <div><dt>Proof cited</dt><dd data-review-proof>4.8 rating - Streak screen</dd></div>
+            <div><dt>Output</dt><dd data-review-kind>Static image</dd></div>
+          </dl>
+
+          <div class="review-actions" role="group" aria-label="Review decision">
+            <button class="rev-btn rev-approve" type="button" data-review-action="approve">Approve</button>
+            <button class="rev-btn rev-tweak" type="button" data-review-action="tweak">Tweak</button>
+            <button class="rev-btn rev-reject" type="button" data-review-action="reject">Reject</button>
           </div>
+
+          <div class="reason-block" data-reason-block hidden>
+            <span class="reason-label" data-reason-label>Pick a reason</span>
+            <div class="reason-chips" data-reason-chips></div>
+          </div>
+
+          <aside class="review-diff" data-review-diff hidden aria-label="What changed in memory">
+            <span>What changed in memory</span>
+            <ul data-review-diff-list></ul>
+          </aside>
+
           <div class="qa-box">
             <span>QA</span>
             <b>Proof fidelity passed</b>
@@ -241,33 +450,6 @@
             <b>0 provider mutations</b>
           </div>
           <button class="btn btn--primary btn--wide" type="button" data-export>Export approved draft</button>
-        </aside>
-      </div>
-    </section>
-
-    <section class="view view--learnings" data-view="learnings" aria-labelledby="learning-title" hidden>
-      <header class="section-head">
-        <div>
-          <p class="eyebrow">Learning Events</p>
-          <h1 id="learning-title">Every review makes the next pack smarter.</h1>
-          <p>Approvals, rejects, style notes, and outcome tags are stored against the app profile.</p>
-        </div>
-        <button class="btn btn--primary" type="button" data-open-pack>Create pack with learnings</button>
-      </header>
-
-      <div class="learning-grid">
-        <section>
-          <h2>Recent memory updates</h2>
-          <ul class="event-list" data-learning-events>
-            <li><span>Winning hook</span><b>"21 days without overthinking"</b><em>Used in 3 future briefs</em></li>
-            <li><span>Rejected claim</span><b>"#1 health app"</b><em>Blocked until source attached</em></li>
-            <li><span>Style note</span><b>Quiet UI, high-contrast captions</b><em>Applied to UGC templates</em></li>
-          </ul>
-        </section>
-        <aside class="memory-delta">
-          <strong data-learning-count>3</strong>
-          <span>learning events saved</span>
-          <p>The next pack will inherit these preferences automatically.</p>
         </aside>
       </div>
     </section>
@@ -308,7 +490,7 @@
 
       <div class="cost-note">
         <b data-pack-summary>6 drafts from Image Ads + UGC Videos</b>
-        <span>Uses 12 approved claims, 18 proof assets, and 3 learning events.</span>
+        <span>Uses 12 confirmed claims, 18 proof assets, and 3 learnings.</span>
       </div>
 
       <button class="btn btn--primary btn--wide" type="button" data-start-pack>Start pack</button>
