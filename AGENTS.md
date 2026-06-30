@@ -24,7 +24,7 @@ The product is intended to be human-usable and agent-native. Claude Code, Codex,
   - V1 candidate: HeyGen HyperFrames Cloud
   - Portable self-host candidate: HyperFrames on GCP Cloud Run + Workflows
   - Benchmark/fallback: Remotion Lambda / custom Cloud Run render workers
-- **Workers**: Cloud Run services/jobs or equivalent container workers for heavy generation, render, OCR, ffmpeg, and multimodal QA
+- **Workers**: Cloud Run services/jobs or equivalent container workers for heavy generation, HyperFrames render/editing, media normalization/validation (`ffmpeg`/`ffprobe` only as utilities), OCR, and multimodal QA
 
 ## Core Workflow
 
@@ -52,15 +52,26 @@ Each stage should emit structured state and audit data. Intelligence is allowed 
 
 ## Commands
 
-This repository starts as a project shell and planning spine. Add concrete commands when the app scaffold is created.
+The repository now includes a zero-dependency local control-plane prototype plus the
+renderer benchmark scripts.
 
 ```bash
 # Development
-# To be added after scaffold selection
+pnpm run local:app
 
-# Tests
-# To be added after scaffold selection
+# Local workflow smoke test
+pnpm run smoke:local-app
+
+# Renderer benchmarks
+pnpm run benchmark:local-renderers
+pnpm run render:hyperframes-pepmod-ugc-copy
+pnpm run render:hyperframes-adrenderer-copy
 ```
+
+The local app defaults to `http://127.0.0.1:3107` and models the first product workflow
+without external providers: app intake, proof library, mock generation, HyperFrames-first
+timeline planning, QA, manifest preview, and pack export. It must keep
+`providerMutations: 0`.
 
 ## Environment Variables
 
