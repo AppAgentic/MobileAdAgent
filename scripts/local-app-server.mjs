@@ -59,7 +59,7 @@ server.listen(port, '127.0.0.1', () => {
 });
 
 async function serveStatic(pathname, response) {
-  const requested = pathname === '/' ? '/index.html' : pathname;
+  const requested = pathname.endsWith('/') ? `${pathname}index.html` : pathname;
   const safePath = normalize(requested).replace(/^(\.\.[/\\])+/, '');
   const filePath = join(publicDir, safePath);
   if (!filePath.startsWith(publicDir)) {

@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Mobile Ad Agent — Pops-inspired design variants</title>
+    <meta
+      name="description"
+      content="Three Pops-inspired design directions for Mobile Ad Agent: Launchpad, App Memory, and Review Console. Local prototype, no provider calls."
+    />
+    <link rel="stylesheet" href="/pops-variants/variants.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <!-- ============ MASTHEAD + VARIANT SWITCHER ============ -->
+      <header class="masthead">
+        <div class="masthead-row">
+          <div class="logo-mark">MA</div>
+          <div class="logo-text">
+            Mobile Ad Agent
+            <small>Pops-inspired design exploration · local</small>
+          </div>
+          <div class="masthead-spacer"></div>
+          <span class="safety-pill">Proof-safe · 0 provider mutations</span>
+        </div>
+
+        <nav class="variant-tabs" role="tablist" aria-label="Design variants">
+          <button class="variant-tab" role="tab" aria-selected="true" data-target="launchpad">
+            <b>1 · Launchpad</b><span>URL-first Home</span>
+          </button>
+          <button class="variant-tab" role="tab" aria-selected="false" data-target="memory">
+            <b>2 · App Memory</b><span>Proof · Claims · Style · Learnings</span>
+          </button>
+          <button class="variant-tab" role="tab" aria-selected="false" data-target="review">
+            <b>3 · Review Console</b><span>Approve · Tweak · Reject</span>
+          </button>
+        </nav>
+      </header>
+
+      <!-- ==================================================== -->
+      <!-- VARIANT 1 — LAUNCHPAD                                 -->
+      <!-- ==================================================== -->
+      <section class="screen" id="launchpad" role="tabpanel" data-active="true" aria-label="Launchpad variant">
+        <div class="hero">
+          <h1>Paste a URL.<br />Ship ads your app <span class="grad">can actually prove.</span></h1>
+          <p>
+            Import any App Store listing and Mobile Ad Agent pulls real screenshots, metadata, and
+            claims into a proof library — then builds image ads and UGC videos backed by it.
+          </p>
+        </div>
+
+        <!-- White QR-like import CTA card -->
+        <div class="import-card">
+          <div class="qr-block" aria-hidden="true"></div>
+          <div class="import-body">
+            <label for="urlInput">Import your app</label>
+            <div class="import-input">
+              <input id="urlInput" type="text" value="apps.apple.com/app/pepmod" autocomplete="off" spellcheck="false" />
+              <button class="import-go" id="importGo" type="button">Import</button>
+            </div>
+            <p class="import-note" id="importNote">Reads store proof only — no accounts connected, no spend touched.</p>
+          </div>
+        </div>
+
+        <div class="counters">
+          <div class="counter"><b>12</b><span>Proofs</span></div>
+          <div class="counter"><b>4</b><span>Claims verified</span></div>
+          <div class="counter"><b>6</b><span>Draft ads</span></div>
+          <div class="counter"><b>0</b><span>Provider calls</span></div>
+        </div>
+
+        <!-- Your apps rail -->
+        <div class="rail-head"><h2>Your apps</h2><span class="view-all">View all</span></div>
+        <div class="rail" id="appsRail"></div>
+
+        <!-- First output choices: Image Ads + UGC Videos -->
+        <div class="rail-head"><h2>Start a creative</h2><span class="view-all">All formats</span></div>
+        <div class="rail" id="outputsRail"></div>
+
+        <!-- Fresh proof rail -->
+        <div class="rail-head"><h2>Fresh proof</h2><span class="view-all">Proof library</span></div>
+        <div class="rail" id="proofRail"></div>
+
+        <!-- Bright accent callout -->
+        <div class="callout">
+          <h2>Every ad ships with a receipt.</h2>
+          <p>Claims link back to the exact screenshot that supports them. Nothing renders from an unproven statement.</p>
+          <span class="cta">See how proof-locking works</span>
+        </div>
+      </section>
+
+      <!-- ==================================================== -->
+      <!-- VARIANT 2 — APP MEMORY                                -->
+      <!-- ==================================================== -->
+      <section class="screen" id="memory" role="tabpanel" data-active="false" aria-label="App Memory variant">
+        <div class="memory-head">
+          <div class="kicker">App Memory · PepMod</div>
+          <h1>What we know,<br />and what we can prove.</h1>
+          <p>Everything the agent has learned about this app, kept in playful rails but held to serious proof rules.</p>
+          <div class="mem-seg">
+            <span class="seg" data-tone="proof">Proof</span>
+            <span class="seg">Claims</span>
+            <span class="seg">Style</span>
+            <span class="seg">Learnings</span>
+          </div>
+        </div>
+
+        <!-- Proof rail -->
+        <div class="rail-head"><h2>Proof</h2><span class="view-all">12 items</span></div>
+        <div class="rail" id="memProofRail"></div>
+
+        <!-- Claims rail -->
+        <div class="rail-head"><h2>Claims</h2><span class="view-all">Manage</span></div>
+        <div class="rail" id="claimsRail"></div>
+
+        <!-- Style rail -->
+        <div class="rail-head"><h2>Style</h2><span class="view-all">Brand kit</span></div>
+        <div class="rail" id="styleRail"></div>
+        <div class="tone-row" id="toneRow"></div>
+
+        <!-- Learnings rail -->
+        <div class="rail-head"><h2>Learnings</h2><span class="view-all">History</span></div>
+        <div class="rail" id="learnRail"></div>
+      </section>
+
+      <!-- ==================================================== -->
+      <!-- VARIANT 3 — REVIEW CONSOLE                            -->
+      <!-- ==================================================== -->
+      <section class="screen" id="review" role="tabpanel" data-active="false" aria-label="Review Console variant">
+        <div class="review-head">
+          <div>
+            <h1>Review queue</h1>
+            <p>Tap a draft to inspect its proof, then approve, tweak, or reject like a pull request.</p>
+          </div>
+          <span class="queue-count">3 awaiting review</span>
+        </div>
+
+        <div class="rail" id="draftRail"></div>
+
+        <div class="pr-grid">
+          <!-- Decision panel -->
+          <div class="pr-panel">
+            <h3 id="prTitle">Draft #A2 · UGC 9:16</h3>
+            <div class="pr-sub" id="prSub">“Log a dose in 2 taps” · 14s · PepMod</div>
+
+            <div id="qaList">
+              <div class="qa-line"><span class="qa-dot pass">✓</span><span class="grow">Proof fidelity — screens match app</span><span class="val">pass</span></div>
+              <div class="qa-line"><span class="qa-dot pass">✓</span><span class="grow">Claim support — every line has a source</span><span class="val">4/4</span></div>
+              <div class="qa-line"><span class="qa-dot warn">!</span><span class="grow">Caption timing — line 3 lingers 0.4s long</span><span class="val">warn</span></div>
+              <div class="qa-line"><span class="qa-dot pass">✓</span><span class="grow">Duration / codec — 9:16, 14s, H.264</span><span class="val">pass</span></div>
+            </div>
+
+            <div class="pr-actions">
+              <button class="pr-btn reject" data-decision="reject" type="button">Reject</button>
+              <button class="pr-btn tweak" data-decision="tweak" type="button">Tweak</button>
+              <button class="pr-btn approve" data-decision="approve" type="button">Approve</button>
+            </div>
+            <div class="decision-note" id="decisionNote">No decision yet · stays in source inventory.</div>
+          </div>
+
+          <!-- Memory diff panel -->
+          <div class="pr-panel">
+            <h3>Memory diff</h3>
+            <div class="pr-sub">What approving this draft writes back to App Memory</div>
+            <div class="diff">
+              <div class="diff-line ctx"><span class="sign"> </span>learnings/pepmod/hooks</div>
+              <div class="diff-line rem"><span class="sign">-</span>best_hook: "track your peptides"</div>
+              <div class="diff-line add"><span class="sign">+</span>best_hook: "log a dose in 2 taps"</div>
+              <div class="diff-line ctx"><span class="sign"> </span>claims/verified</div>
+              <div class="diff-line add"><span class="sign">+</span>"2-tap logging" ← proof #07 (home screen)</div>
+              <div class="diff-line ctx"><span class="sign"> </span>style/caption_pace</div>
+              <div class="diff-line rem"><span class="sign">-</span>hold_ms: 1600</div>
+              <div class="diff-line add"><span class="sign">+</span>hold_ms: 1200</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <script src="/pops-variants/variants.js"></script>
+  </body>
+</html>
