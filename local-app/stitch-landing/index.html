@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mobile Ad Agent</title>
+    <meta
+      name="description"
+      content="Mobile Ad Agent turns a real mobile app into a proof-backed ad creative engine for image ads and UGC videos."
+    >
+    <link rel="stylesheet" href="/stitch-landing/styles.css">
+  </head>
+  <body>
+    <header class="site-nav" aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="Mobile Ad Agent home">
+        <span class="brand-mark">MA</span>
+        <span>Mobile Ad Agent</span>
+      </a>
+      <nav class="nav-links" aria-label="Page sections">
+        <a href="#memory">App Memory</a>
+        <a href="#review">Review</a>
+        <a href="#system">System</a>
+      </nav>
+      <a class="nav-cta" href="#start">Join preview</a>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-canvas" aria-hidden="true">
+          <div class="grid-plane"></div>
+          <div class="canvas-card canvas-card-a">
+            <span class="card-label">Proof intake</span>
+            <strong>Store URL parsed</strong>
+            <span class="card-meta">12 screenshots, 4 claims, 0 provider calls</span>
+          </div>
+          <div class="canvas-card canvas-card-b">
+            <span class="card-label">App Memory</span>
+            <strong>Claim map locked</strong>
+            <span class="card-meta">Unsupported lines are blocked before render</span>
+          </div>
+          <div class="phone-artifact">
+            <div class="phone-topline"></div>
+            <div class="phone-shot shot-one"></div>
+            <div class="phone-copy"></div>
+            <div class="phone-copy short"></div>
+            <div class="proof-band">verified proof</div>
+          </div>
+          <div class="creative-tile">
+            <span>UGC 9:16</span>
+            <strong>Log a dose in 2 taps</strong>
+          </div>
+          <svg class="link-lines" viewBox="0 0 900 620" role="img" aria-label="">
+            <path d="M152 190 C280 102 390 104 492 180" />
+            <path d="M500 210 C650 210 724 292 754 390" />
+            <path d="M210 422 C358 514 545 504 704 424" />
+          </svg>
+        </div>
+
+        <div class="hero-copy">
+          <p class="eyebrow">AI creative factory for mobile apps</p>
+          <h1 id="hero-title"><span>Mobile Ad</span><span>Agent</span></h1>
+          <p class="hero-subtitle">
+            Paste an app URL. Build a proof memory. Generate image ads and UGC videos
+            that can show exactly why every claim is allowed.
+          </p>
+          <form class="url-composer" id="urlComposer" aria-label="Preview app import">
+            <label for="appUrl">Start from proof, not a prompt</label>
+            <div class="composer-row">
+              <input id="appUrl" value="apps.apple.com/app/pepmod" autocomplete="off" spellcheck="false">
+              <button type="submit">Build proof map</button>
+            </div>
+            <p id="composerStatus">No ad-network access. No spend mutations. Local preview only.</p>
+          </form>
+        </div>
+      </section>
+
+      <section class="signal-strip" aria-label="Product principles">
+        <div>
+          <span>01</span>
+          <strong>URL-first intake</strong>
+          <p>The first action is importing an app, not writing a prompt.</p>
+        </div>
+        <div>
+          <span>02</span>
+          <strong>Proof-backed claims</strong>
+          <p>Every output cites screenshots, recordings, or approved facts.</p>
+        </div>
+        <div>
+          <span>03</span>
+          <strong>Review before handoff</strong>
+          <p>Creative remains source inventory until QA and approval pass.</p>
+        </div>
+      </section>
+
+      <section class="section memory-section" id="memory" aria-labelledby="memory-title">
+        <div class="section-copy">
+          <p class="eyebrow">The product object</p>
+          <h2 id="memory-title">App Memory turns one import into a living creative system.</h2>
+          <p>
+            Mobile Ad Agent keeps proof, claims, style, and learnings together so every new
+            pack starts from what the team already approved.
+          </p>
+        </div>
+        <div class="memory-board" aria-label="App Memory preview">
+          <div class="memory-tabs" role="list">
+            <span class="active">Proof</span>
+            <span>Claims</span>
+            <span>Style</span>
+            <span>Learnings</span>
+          </div>
+          <div class="memory-grid">
+            <article>
+              <span>Screenshot 07</span>
+              <strong>Home flow confirms 2-tap logging</strong>
+              <small>Verified source</small>
+            </article>
+            <article>
+              <span>Claim rule</span>
+              <strong>"Doctor recommended" is blocked</strong>
+              <small>No supporting proof</small>
+            </article>
+            <article>
+              <span>Style note</span>
+              <strong>Plain, calm, health-safe captions</strong>
+              <small>Brand memory</small>
+            </article>
+            <article>
+              <span>Learning</span>
+              <strong>Proof-screen cutaways beat talking-head only</strong>
+              <small>Prior pack result</small>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section review-section" id="review" aria-labelledby="review-title">
+        <div class="review-console" aria-label="Review console preview">
+          <div class="draft-rail">
+            <article class="draft active">
+              <span>UGC 9:16</span>
+              <strong>Log a dose in 2 taps</strong>
+              <small>QA 3/4</small>
+            </article>
+            <article class="draft">
+              <span>Image ad</span>
+              <strong>Reminder proof card</strong>
+              <small>QA 4/4</small>
+            </article>
+            <article class="draft muted">
+              <span>Blocked</span>
+              <strong>Unsupported authority claim</strong>
+              <small>Needs proof</small>
+            </article>
+          </div>
+          <div class="decision-panel">
+            <span class="panel-kicker">Draft A2</span>
+            <h3>Approval writes a memory diff.</h3>
+            <div class="checkline pass">Proof fidelity passes</div>
+            <div class="checkline pass">All claims cite sources</div>
+            <div class="checkline warn">Caption timing needs a trim</div>
+            <div class="diff-block">
+              <span>+ best_hook: "log a dose in 2 taps"</span>
+              <span>+ claim_source: proof_07_home</span>
+              <span>- banned_claim: "doctor recommended"</span>
+            </div>
+            <div class="decision-actions">
+              <button type="button">Reject</button>
+              <button type="button">Tweak</button>
+              <button type="button">Approve</button>
+            </div>
+          </div>
+        </div>
+        <div class="section-copy">
+          <p class="eyebrow">The core loop</p>
+          <h2 id="review-title">Review creative like a pull request.</h2>
+          <p>
+            Approve, tweak, or reject with the evidence visible. The decision updates
+            App Memory so the next pack starts smarter and safer.
+          </p>
+        </div>
+      </section>
+
+      <section class="system-section" id="system" aria-labelledby="system-title">
+        <div class="system-head">
+          <p class="eyebrow">Agent-native, user-safe</p>
+          <h2 id="system-title">A human SaaS surface with an MCP-native operating layer.</h2>
+        </div>
+        <div class="stage-list" aria-label="Agent stages">
+          <div><span>Creative Director</span><strong>Plans angles and acceptance criteria.</strong></div>
+          <div><span>Proof Agent</span><strong>Verifies evidence and blocks unsupported claims.</strong></div>
+          <div><span>Script Agent</span><strong>Writes hooks, overlays, captions, and CTAs.</strong></div>
+          <div><span>Render Planner</span><strong>Turns the brief into exact render specs.</strong></div>
+          <div><span>QA Agent</span><strong>Checks OCR, claims, dimensions, duration, and quality.</strong></div>
+          <div><span>Handoff Agent</span><strong>Packages approved source inventory for export.</strong></div>
+        </div>
+        <div class="mcp-band" aria-label="MCP integration summary">
+          <div>
+            <span>MCP tools</span>
+            <strong>create_app_workspace</strong>
+            <strong>request_creative_pack</strong>
+            <strong>fetch_qa_report</strong>
+          </div>
+          <p>
+            Agents can operate the same workflow through guarded API/MCP tools:
+            attach proof, inspect memory, request packs, read manifests, and propose
+            edits. Approval, cost ceilings, QA, and provider handoff remain deterministic.
+          </p>
+        </div>
+      </section>
+
+      <section class="final-cta" id="start" aria-labelledby="start-title">
+        <p class="eyebrow">Preview program</p>
+        <h2 id="start-title">Turn your app into a proof-backed creative engine.</h2>
+        <a href="mailto:hello@appagentic.com?subject=Mobile%20Ad%20Agent%20preview">Request access</a>
+      </section>
+    </main>
+
+    <script src="/stitch-landing/landing.js"></script>
+  </body>
+</html>
