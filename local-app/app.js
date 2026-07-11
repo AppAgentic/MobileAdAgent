@@ -1379,7 +1379,7 @@ function renderPackPlan(app, stage) {
           ${packPlanEvidenceGroup(
             'From public feedback',
             'signal',
-            'Written App Store reviews and public conversations',
+            'Written store reviews and public conversations',
             marketSignals,
             'Public feedback could not be loaded for this plan. Refresh the plan to retry.',
           )}

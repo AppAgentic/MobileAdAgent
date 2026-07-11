@@ -5,9 +5,9 @@ import { fileURLToPath } from 'node:url';
 import { extractAppFromUrl } from '../lib/local-extraction.mjs';
 import { createDemoAppExtraction } from '../lib/demo-app-fixture.mjs';
 import {
-  appStoreReviewSignalsForPackPlan,
-  fetchAppStoreReviews,
-} from '../lib/app-store-review-adapter.mjs';
+  fetchStoreReviews,
+  storeReviewSignalsForPackPlan,
+} from '../lib/store-review-adapter.mjs';
 import { buildJobManifest } from '../lib/creative-job-model.mjs';
 import { researchMarketSignals } from '../lib/pack-plan-adapter.mjs';
 import {
@@ -326,19 +326,19 @@ const server = createServer(async (request, response) => {
           ? applyReviewedPlanPatch(currentApp, { ...body.appPlan, updatedAt: new Date().toISOString() })
           : currentApp;
         const locale = body.locale || 'en-US';
-        const [appStoreReviews, publicResearch] = await Promise.all([
-          fetchAppStoreReviews({ app: reviewedApp, locale }),
+        const [storeReviews, publicResearch] = await Promise.all([
+          fetchStoreReviews({ app: reviewedApp, locale }),
           researchMarketSignals({
             app: reviewedApp,
             priorLearnings: reviewedApp.learningEvents || [],
             locale,
           }),
         ]);
-        const directReviewSignals = appStoreReviewSignalsForPackPlan(appStoreReviews);
+        const directReviewSignals = storeReviewSignalsForPackPlan(storeReviews);
         const publicWebSignals = marketSignalsForPackPlan(publicResearch);
         const marketSignals = [...directReviewSignals, ...publicWebSignals].slice(0, 24);
         const researchLimitations = combinedResearchLimitations({
-          appStoreReviews,
+          storeReviews,
           publicResearch,
           hasDirectReviews: directReviewSignals.length > 0,
         });
@@ -661,15 +661,15 @@ function marketSignalsForPackPlan(research) {
   return rows;
 }
 
-function combinedResearchLimitations({ appStoreReviews, publicResearch, hasDirectReviews }) {
-  const direct = appStoreReviews?.limitations || [];
+function combinedResearchLimitations({ storeReviews, publicResearch, hasDirectReviews }) {
+  const direct = storeReviews?.limitations || [];
   const publicWeb = (publicResearch?.limitations || []).map((limitation) => {
     if (!hasDirectReviews) return limitation;
     if (/timed out/i.test(limitation)) {
-      return 'Additional community research timed out; direct App Store reviews are still included.';
+      return 'Additional community research timed out; direct store reviews are still included.';
     }
     if (/not configured/i.test(limitation)) {
-      return 'Additional community research is not configured; direct App Store reviews are still included.';
+      return 'Additional community research is not configured; direct store reviews are still included.';
     }
     return `Additional community research was limited: ${String(limitation).replace(/[.!]+$/g, '')}.`;
   });

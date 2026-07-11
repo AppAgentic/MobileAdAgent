@@ -16,7 +16,7 @@
     "test:firestore-rules": "node scripts/firestore-rules-static-test.mjs",
     "test:firestore-rules:emulator": "node scripts/run-firestore-rules-emulator-test.mjs",
     "test:tenant": "node scripts/tenant-store-test.mjs",
-    "test:pack-plan": "node scripts/pack-plan-model-test.mjs && node scripts/pack-plan-adapter-test.mjs && node scripts/app-store-review-adapter-test.mjs",
+    "test:pack-plan": "node scripts/pack-plan-model-test.mjs && node scripts/pack-plan-adapter-test.mjs && node scripts/app-store-review-adapter-test.mjs && node scripts/google-play-review-adapter-test.mjs",
     "test:pack-plan-flow": "node scripts/pack-plan-flow-test.mjs",
     "test:demo-flow": "node scripts/demo-app-flow-test.mjs",
     "test:hook-agent": "node scripts/hook-agent-test.mjs",
