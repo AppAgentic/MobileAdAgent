@@ -4,6 +4,10 @@ import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { extractAppFromUrl } from '../lib/local-extraction.mjs';
 import { createDemoAppExtraction } from '../lib/demo-app-fixture.mjs';
+import {
+  appStoreReviewSignalsForPackPlan,
+  fetchAppStoreReviews,
+} from '../lib/app-store-review-adapter.mjs';
 import { buildJobManifest } from '../lib/creative-job-model.mjs';
 import { researchMarketSignals } from '../lib/pack-plan-adapter.mjs';
 import {
@@ -305,11 +309,14 @@ const server = createServer(async (request, response) => {
         };
         const existing = await tenantStore.readPackPlanRequestForUser?.({ ...context, idempotencyKey: body.idempotencyKey });
         if (existing) {
+          const cachedSourceCount = Number(existing.plan?.research?.coverage?.sourceCount || 0);
           sendJson(response, {
             ok: true,
             ...existing,
-            researchStatus: 'cached',
-            researchLimitations: [],
+            researchStatus: cachedSourceCount ? 'cached' : 'limited',
+            researchLimitations: cachedSourceCount
+              ? []
+              : ['No public feedback was available when this saved plan was created. Refresh the plan to retry.'],
             providerMutations: 0,
           });
           return;
@@ -318,16 +325,31 @@ const server = createServer(async (request, response) => {
         const reviewedApp = body.appPlan
           ? applyReviewedPlanPatch(currentApp, { ...body.appPlan, updatedAt: new Date().toISOString() })
           : currentApp;
-        const publicResearch = await researchMarketSignals({
-          app: reviewedApp,
-          priorLearnings: reviewedApp.learningEvents || [],
-          locale: body.locale || 'en-US',
+        const locale = body.locale || 'en-US';
+        const [appStoreReviews, publicResearch] = await Promise.all([
+          fetchAppStoreReviews({ app: reviewedApp, locale }),
+          researchMarketSignals({
+            app: reviewedApp,
+            priorLearnings: reviewedApp.learningEvents || [],
+            locale,
+          }),
+        ]);
+        const directReviewSignals = appStoreReviewSignalsForPackPlan(appStoreReviews);
+        const publicWebSignals = marketSignalsForPackPlan(publicResearch);
+        const marketSignals = [...directReviewSignals, ...publicWebSignals].slice(0, 24);
+        const researchLimitations = combinedResearchLimitations({
+          appStoreReviews,
+          publicResearch,
+          hasDirectReviews: directReviewSignals.length > 0,
         });
+        const researchStatus = marketSignals.length
+          ? researchLimitations.length ? 'partial' : 'complete'
+          : 'limited';
         const researchSnapshot = buildPackPlanResearchSnapshot({
           productTruth: buildSelectedProductTruth(reviewedApp),
-          marketSignals: marketSignalsForPackPlan(publicResearch),
+          marketSignals,
           learningSignals: learningSignalsForPackPlan(reviewedApp.learningEvents || []),
-          capturedAt: publicResearch.capturedAt || new Date().toISOString(),
+          capturedAt: new Date().toISOString(),
         });
         const strategy = buildLearnedPackPlanStrategy({ reviewedApp, researchSnapshot, publicResearch });
         const result = await tenantStore.createPackPlanForUser({
@@ -344,8 +366,8 @@ const server = createServer(async (request, response) => {
         sendJson(response, {
           ok: true,
           ...result,
-          researchStatus: publicResearch.status,
-          researchLimitations: publicResearch.limitations || [],
+          researchStatus,
+          researchLimitations,
           providerMutations: 0,
         });
       } catch (error) {
@@ -637,6 +659,21 @@ function marketSignalsForPackPlan(research) {
     }
   }
   return rows;
+}
+
+function combinedResearchLimitations({ appStoreReviews, publicResearch, hasDirectReviews }) {
+  const direct = appStoreReviews?.limitations || [];
+  const publicWeb = (publicResearch?.limitations || []).map((limitation) => {
+    if (!hasDirectReviews) return limitation;
+    if (/timed out/i.test(limitation)) {
+      return 'Additional community research timed out; direct App Store reviews are still included.';
+    }
+    if (/not configured/i.test(limitation)) {
+      return 'Additional community research is not configured; direct App Store reviews are still included.';
+    }
+    return `Additional community research was limited: ${String(limitation).replace(/[.!]+$/g, '')}.`;
+  });
+  return [...new Set([...direct, ...publicWeb].filter(Boolean))].slice(0, 4);
 }
 
 function learningSignalsForPackPlan(events) {

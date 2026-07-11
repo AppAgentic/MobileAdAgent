@@ -1426,6 +1426,16 @@ p { margin: 0; }
   grid-template-columns: repeat(3, minmax(0, 1fr));
   border-top: 1px solid var(--line);
 }
+.evidence-grid.two-columns { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.evidence-research-note {
+  margin: 0;
+  padding: 11px 18px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-4);
+  background: rgba(226,181,62,.035);
+  font: 500 10px/1.45 var(--mono);
+}
+.evidence-research-note strong { color: var(--warn); }
 .evidence-group { min-width: 0; padding: 16px 18px 20px; }
 .evidence-group + .evidence-group { border-left: 1px solid var(--line); }
 .evidence-group-head { display: flex; align-items: flex-start; gap: 9px; min-height: 44px; }
@@ -2245,7 +2255,8 @@ p { margin: 0; }
   .screen-gallery.review-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .credit-rules { grid-template-columns: 1fr; }
   .plan-grid { grid-template-columns: 1fr; }
-  .evidence-grid { grid-template-columns: 1fr; }
+  .evidence-grid,
+  .evidence-grid.two-columns { grid-template-columns: 1fr; }
   .evidence-group + .evidence-group { border-left: 0; border-top: 1px solid var(--line); }
 }
 

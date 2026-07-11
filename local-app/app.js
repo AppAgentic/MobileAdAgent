@@ -795,7 +795,7 @@ function renderHome() {
     plan: ['Review the plan before we generate.', 'See the two openings and output mix. No credits are used until you approve.'],
     generating: ['Generating your pack.', 'Every ad follows the plan you approved and uses verified app information.'],
     ads: ['Review your new ads.', 'Approve, reject, or suggest a change. Your feedback shapes the next pack.'],
-    approved: ['Build your next creative plan.', 'We will use the latest app info, public feedback, and your previous reviews.'],
+    approved: ['Build your next creative plan.', 'We will use the latest app info, public feedback, and any creative decisions you made before.'],
   };
   $('#homeTitle').textContent = showImport
     ? 'Paste your app link. Get a launch pack today.'
@@ -1317,6 +1317,7 @@ function renderPackPlan(app, stage) {
   const marketSignals = research.marketSignals || [];
   const productTruth = research.productTruth || [];
   const learnings = [...(research.learningSignals || [])].sort((left, right) => Date.parse(right.createdAt) - Date.parse(left.createdAt));
+  const researchLimitations = (app.packPlanResearchLimitations || []).filter(Boolean);
   const plannedMix = plan.request?.outputMix || { image: 0, ugc: 0 };
   const pendingMix = { image: state.generate.imageCount, ugc: state.generate.videoCount };
   const mixChanged = Boolean(app.packPlanNeedsRefresh)
@@ -1370,10 +1371,21 @@ function renderPackPlan(app, stage) {
         <summary>
           <span>Why this plan?</span>
         </summary>
-        <div class="evidence-grid">
+        ${researchLimitations.length ? `
+          <p class="evidence-research-note"><strong>Research note:</strong> ${escapeHtml(researchLimitations.join(' '))}</p>
+        ` : ''}
+        <div class="evidence-grid ${learnings.length ? '' : 'two-columns'}">
           ${packPlanEvidenceGroup('From your app', 'claim', 'Facts and screens we can use', productTruth)}
-          ${packPlanEvidenceGroup('From public feedback', 'signal', 'Audience signals, not product claims', marketSignals)}
-          ${packPlanEvidenceGroup('From your reviews', 'learning', 'What you taught us before', learnings)}
+          ${packPlanEvidenceGroup(
+            'From public feedback',
+            'signal',
+            'Written App Store reviews and public conversations',
+            marketSignals,
+            'Public feedback could not be loaded for this plan. Refresh the plan to retry.',
+          )}
+          ${learnings.length
+            ? packPlanEvidenceGroup('From your feedback', 'learning', 'What your creative decisions taught us', learnings)
+            : ''}
         </div>
       </details>
 
@@ -1537,7 +1549,7 @@ function packPlanLaneMixLabel({ images = 0, ugc = 0 } = {}) {
   return parts.join(' + ') || 'No creatives assigned';
 }
 
-function packPlanEvidenceGroup(title, tone, helper, items) {
+function packPlanEvidenceGroup(title, tone, helper, items, emptyCopy = 'No evidence is available for this plan.') {
   const visible = (items || []).slice(0, 6);
   return `
     <section class="evidence-group ${tone}">
@@ -1548,7 +1560,7 @@ function packPlanEvidenceGroup(title, tone, helper, items) {
           const source = item.source || {};
           const sourceLabel = source.platform || source.label || (item.kind === 'screen' ? 'Reviewed screen' : 'Reviewed app info');
           return `<article><p>${escapeHtml(shorten(copy, 220))}</p>${source.url ? `<a href="${escapeHtml(source.url)}" target="_blank" rel="noreferrer">${escapeHtml(sourceLabel)} ↗</a>` : `<small>${escapeHtml(sourceLabel)}</small>`}</article>`;
-        }).join('') : '<p class="evidence-empty">Nothing yet.</p>'}
+        }).join('') : `<p class="evidence-empty">${escapeHtml(emptyCopy)}</p>`}
         ${(items || []).length > visible.length ? `<small class="evidence-more">${items.length - visible.length} more in the saved snapshot</small>` : ''}
       </div>
     </section>

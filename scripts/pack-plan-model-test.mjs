@@ -253,6 +253,18 @@ assert.equal(researched.coverage.observedItemCount, 13);
 assert.equal(researched.coverage.sourceCount, 3);
 assert.ok(researched.marketSignals.every((signal) => signal.canSupportProductClaim === false));
 
+// Public review language informs the rationale and evidence selection, but it
+// must not replace the two verified product messages with raw review titles.
+const automaticMarketStrategy = buildLearnedPackPlanStrategy({
+  reviewedApp: app,
+  researchSnapshot: researched,
+});
+assert.equal(automaticMarketStrategy.primary.angle, 'Review progress in one place');
+assert.equal(automaticMarketStrategy.challenger.angle, 'Plan a daily routine');
+assert.ok(automaticMarketStrategy.primary.evidenceRefs.some((ref) => ref.startsWith('signal-')));
+assert.ok(automaticMarketStrategy.challenger.evidenceRefs.some((ref) => ref.startsWith('signal-')));
+assert.notEqual(automaticMarketStrategy.primary.angle, researched.marketSignals[0].theme);
+
 const claimIds = researched.productTruth.filter((item) => item.canSupportProductClaim).map((item) => item.id);
 const proofIds = researched.productTruth.filter((item) => item.kind === 'screen').map((item) => item.id);
 const signalIds = researched.marketSignals.map((item) => item.id);
