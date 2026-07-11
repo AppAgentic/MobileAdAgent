@@ -232,6 +232,10 @@ check(
   appJsText.includes("startImport($('#importUrl').value, 'Proof-backed local demo', { demo: true })"),
   'the browser demo button must use the proof-backed demo import instead of the live preview path'
 );
+check(appJsText.includes("<p class=\"mono-label\">What we're testing</p>"), 'Pack Plan must present a neutral customer-facing test question');
+check(appJsText.includes('Which ${shortName} message resonates more?'), 'Pack Plan test question must name the selected app');
+check(!appJsText.includes('<p class="mono-label">Our idea</p>'), 'first Pack Plan must not imply the system already picked a winning idea');
+check(!appJsText.includes('escapeHtml(plan.hypothesis?.statement'), 'internal hypothesis prediction must not be rendered as the customer-facing winner');
 check(appJsText.includes('Create an account to continue'), 'first modal after preview CTA must be account creation');
 check(appJsText.includes('Continue to checkout'), 'account modal must continue to checkout after auth');
 check(appJsText.includes('No payment yet. Checkout appears after your account is created.'), 'account modal must clarify no payment happens before checkout');

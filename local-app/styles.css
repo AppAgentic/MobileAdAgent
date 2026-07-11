@@ -1332,25 +1332,12 @@ p { margin: 0; }
   font: 700 17px var(--mono);
 }
 .hypothesis-block h3 {
-  margin: 6px 0 8px;
+  margin: 6px 0 0;
   max-width: 50ch;
   color: var(--ink);
   font: 600 clamp(18px, 2.3vw, 25px)/1.24 var(--sans);
 }
 .hypothesis-block > div > p:not(.mono-label) { max-width: 78ch; }
-.hypothesis-learning {
-  margin-top: 14px;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 12px;
-  padding: 11px 13px;
-  border: 1px solid var(--line-2);
-  border-radius: 9px;
-  background: var(--panel-deep);
-}
-.hypothesis-learning span { color: var(--ink-4); font: 600 9.5px var(--mono); text-transform: uppercase; letter-spacing: .08em; }
-.hypothesis-learning strong { color: var(--ink-soft); font: 500 12px var(--sans); }
-
 .generation-split {
   margin: 22px;
   padding: 15px;
@@ -2326,7 +2313,6 @@ p { margin: 0; }
   .pack-plan-empty { align-items: stretch; flex-direction: column; }
   .pack-plan-delta { margin: 14px 18px 0; }
   .hypothesis-block { margin: 18px; }
-  .hypothesis-learning { grid-template-columns: 1fr; gap: 4px; }
   .generation-split { margin: 18px; }
   .generation-split-copy { grid-template-columns: 1fr; align-items: start; gap: 4px; }
   .generation-split-visual { flex-direction: column; }

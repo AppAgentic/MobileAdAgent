@@ -1354,10 +1354,8 @@ function renderPackPlan(app, stage) {
 
       <section class="hypothesis-block">
         <div>
-          <p class="mono-label">Our idea</p>
-          <h3>${escapeHtml(plan.hypothesis?.statement || '')}</h3>
-          ${coverage.sourceCount ? `<p>${escapeHtml(plan.hypothesis?.tension || '')}</p>` : ''}
-          <div class="hypothesis-learning"><span>What this pack should teach us</span><strong>${escapeHtml(plan.hypothesis?.intendedLearning || '')}</strong></div>
+          <p class="mono-label">What we're testing</p>
+          <h3>${escapeHtml(packPlanTestQuestion(app))}</h3>
         </div>
       </section>
 
@@ -1444,6 +1442,13 @@ function packPlanBasisCopy({ productTruth = [], coverage = {}, learnings = [] } 
   else parts.push('No public feedback yet');
   if (learnings.length) parts.push(`${learnings.length} past decision${learnings.length === 1 ? '' : 's'}`);
   return parts.join(' · ');
+}
+
+function packPlanTestQuestion(app = {}) {
+  const shortName = String(app.name || '').split(/[:|]/)[0].trim();
+  return shortName
+    ? `Which ${shortName} message resonates more?`
+    : 'Which product message resonates more?';
 }
 
 function packPlanDeltaCopy(learnings = []) {
