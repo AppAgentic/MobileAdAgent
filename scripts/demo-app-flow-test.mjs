@@ -77,6 +77,26 @@ assert.equal(acceptedPlan.request.outputMix.ugc, 1);
 assert.equal(acceptedPlan.assignments.length, 2);
 assert.equal(planned.pack.packPlanId, acceptedPlan.planId);
 assert.equal(planned.creditBalance, 272);
+assert.equal(
+  acceptedPlan.hypothesis.statement,
+  '“Practice a new language with vocabulary, translation, and listening exercises” should be the stronger opening.',
+);
+assert.equal(
+  acceptedPlan.experiment.primary.angle,
+  'Practice a new language with vocabulary, translation, and listening exercises',
+);
+assert.equal(
+  acceptedPlan.experiment.primary.rationale,
+  'Use the Vocabulary choice exercise to make this benefit concrete.',
+);
+assert.equal(
+  acceptedPlan.experiment.challenger.angle,
+  'Build language skills with short guided exercises',
+);
+assert.equal(
+  acceptedPlan.experiment.challenger.rationale,
+  'Use the Sentence translation exercise to test a different reviewed benefit.',
+);
 
 console.log('Proof-backed demo flow test passed');
 console.log(JSON.stringify({

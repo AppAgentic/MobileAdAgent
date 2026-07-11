@@ -88,10 +88,12 @@ const fallbackPlan = buildCreativePackPlan({
 });
 assert.equal(fallbackPlan.schemaVersion, CREATIVE_PACK_PLAN_SCHEMA_VERSION);
 assert.equal(fallbackPlan.evidenceMode, 'exploratory');
-assert.equal(fallbackPlan.hypothesis.statement, 'Showing the app first will be clearer than leading with a broad benefit.');
-assert.equal(fallbackPlan.hypothesis.intendedLearning, 'Which opening should lead the next pack.');
-assert.equal(fallbackPlan.experiment.primary.angle, 'Show the app in action');
-assert.equal(fallbackPlan.experiment.challenger.angle, 'Lead with the main benefit');
+assert.equal(fallbackPlan.hypothesis.statement, '“Review progress in one place” should be the stronger opening.');
+assert.equal(fallbackPlan.hypothesis.intendedLearning, 'Which product message should lead the next pack.');
+assert.equal(fallbackPlan.experiment.primary.angle, 'Review progress in one place');
+assert.equal(fallbackPlan.experiment.primary.rationale, 'Use the Progress overview to make this benefit concrete.');
+assert.equal(fallbackPlan.experiment.challenger.angle, 'Plan a daily routine');
+assert.equal(fallbackPlan.experiment.challenger.rationale, 'Use the Routine planner to test a different reviewed benefit.');
 assert.equal(fallbackPlan.researchSnapshot.coverage.marketSignalCount, 0);
 assert.equal(fallbackPlan.researchSnapshot.coverage.sourceCount, 0);
 assert.equal(fallbackPlan.experiment.variable, 'angle');

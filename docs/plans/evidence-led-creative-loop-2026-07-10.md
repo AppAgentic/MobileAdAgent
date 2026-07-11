@@ -40,7 +40,7 @@ The accepted Pack Plan snapshot travels into the paid pack and creative job grap
 ## Implemented in this pass
 
 - Immutable, fingerprinted research snapshots and Creative Pack Plans.
-- Bounded grounded public-web research with citation filtering and an honest no-configuration/no-evidence fallback.
+- Bounded grounded public-web research with citation filtering and an honest no-configuration/no-evidence fallback. When public evidence is empty, the fallback still derives two distinct product-specific angles from reviewed claims and pairs each with the closest real app screen; it never substitutes generic creative formats for ideas.
 - Full-width native Pack Plan UX, evidence disclosure, primary/challenger comparison, exact output controls, and explicit credit approval.
 - Server-owned plan approval and idempotent debit; packs cannot bypass the plan or change their output mix after approval.
 - Plan assignments carried into image and UGC job construction.
