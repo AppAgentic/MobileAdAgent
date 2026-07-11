@@ -1324,6 +1324,7 @@ function renderPackPlan(app, stage) {
     || plannedMix.ugc !== pendingMix.ugc;
   const displayedMix = mixChanged ? pendingMix : plannedMix;
   const displayedCost = mixChanged ? currentCost() : plan.costCredits;
+  const generationSplit = packPlanGenerationSplit(plan.assignments);
   const generatedPackCount = (app.runs || []).length;
   const packNumber = app.packPlanStatus === 'accepted'
     ? Math.max(1, generatedPackCount)
@@ -1359,6 +1360,8 @@ function renderPackPlan(app, stage) {
           <div class="hypothesis-learning"><span>What this pack should teach us</span><strong>${escapeHtml(plan.hypothesis?.intendedLearning || '')}</strong></div>
         </div>
       </section>
+
+      ${packPlanGenerationSplitHtml(generationSplit)}
 
       <div class="experiment-grid">
         ${packPlanLaneHtml('Idea A', plan.experiment?.primary, plan.assignments)}
@@ -1455,14 +1458,78 @@ function packPlanDeltaCopy(learnings = []) {
 }
 
 function packPlanLaneHtml(label, lane, assignments = []) {
-  const count = assignments.filter((item) => item.lane === lane?.id).length;
+  const laneAssignments = assignments.filter((item) => item.lane === lane?.id);
+  const count = laneAssignments.length;
+  const images = laneAssignments.filter((item) => item.format === 'image_ad').length;
+  const ugc = laneAssignments.filter((item) => item.format === 'ugc_ad').length;
   return `
     <article class="experiment-lane ${lane?.id || ''}">
-      <div class="experiment-lane-head"><span>${escapeHtml(label)}</span><small>${count} output${count === 1 ? '' : 's'}</small></div>
+      <div class="experiment-lane-head"><span>${escapeHtml(label)}</span><small>We'll generate ${count} creative${count === 1 ? '' : 's'}</small></div>
       <h3>${escapeHtml(lane?.angle || '')}</h3>
       <p>${escapeHtml(lane?.rationale || '')}</p>
+      <div class="experiment-lane-mix">${packPlanLaneMixLabel({ images, ugc })}</div>
     </article>
   `;
+}
+
+function packPlanGenerationSplit(assignments = []) {
+  const summarize = (lane) => {
+    const items = assignments.filter((item) => item.lane === lane);
+    return {
+      count: items.length,
+      images: items.filter((item) => item.format === 'image_ad').length,
+      ugc: items.filter((item) => item.format === 'ugc_ad').length,
+    };
+  };
+  return {
+    total: assignments.length,
+    primary: summarize('primary'),
+    challenger: summarize('challenger'),
+  };
+}
+
+function packPlanGenerationSplitHtml(split) {
+  const bothIdeas = split.primary.count > 0 && split.challenger.count > 0;
+  const evenlySplit = bothIdeas && split.primary.count === split.challenger.count;
+  const sameFormatMix = evenlySplit
+    && split.primary.images === split.challenger.images
+    && split.primary.ugc === split.challenger.ugc;
+  const allocationCopy = bothIdeas
+    ? `${split.primary.count} for Idea A + ${split.challenger.count} for Idea B.${sameFormatMix ? ' Both ideas use the same format mix for a clear comparison.' : ''}`
+    : `${split.primary.count || split.challenger.count} assigned to the active idea.`;
+  const headline = evenlySplit
+    ? `${split.total} creatives total, split evenly`
+    : `${split.total} creative${split.total === 1 ? '' : 's'} ${bothIdeas ? 'split across both ideas' : 'in this plan'}`;
+  return `
+    <section class="generation-split" aria-label="How creatives will be split between the two ideas">
+      <div class="generation-split-copy">
+        <p class="mono-label">What we'll generate</p>
+        <h3>${headline}</h3>
+        <p>${allocationCopy}</p>
+      </div>
+      <div class="generation-split-visual" aria-hidden="true">
+        ${packPlanSplitSegment('Idea A', split.primary, 'primary')}
+        ${packPlanSplitSegment('Idea B', split.challenger, 'challenger')}
+      </div>
+    </section>
+  `;
+}
+
+function packPlanSplitSegment(label, lane, tone) {
+  return `
+    <div class="generation-split-segment ${tone}" style="--allocation: ${Math.max(lane.count, 0.2)}">
+      <span>${escapeHtml(label)}</span>
+      <strong>${lane.count} creative${lane.count === 1 ? '' : 's'}</strong>
+      <small>${packPlanLaneMixLabel(lane)}</small>
+    </div>
+  `;
+}
+
+function packPlanLaneMixLabel({ images = 0, ugc = 0 } = {}) {
+  const parts = [];
+  if (images) parts.push(`${images} image ad${images === 1 ? '' : 's'}`);
+  if (ugc) parts.push(`${ugc} UGC ad${ugc === 1 ? '' : 's'}`);
+  return parts.join(' + ') || 'No creatives assigned';
 }
 
 function packPlanEvidenceGroup(title, tone, helper, items) {

@@ -115,6 +115,27 @@ assert.deepEqual(imageAssignments[0].proofEvidenceRefs, imageAssignments[1].proo
 assert.deepEqual(ugcAssignments[0].claimEvidenceRefs, ugcAssignments[1].claimEvidenceRefs);
 assert.deepEqual(ugcAssignments[0].proofEvidenceRefs, ugcAssignments[1].proofEvidenceRefs);
 
+// The launch-pack UI must be able to state the exact 28 -> 14/14 allocation
+// from persisted assignments, including an identical 12-image + 2-UGC mix.
+const launchPackPlan = buildCreativePackPlan({
+  orgId: 'org-a',
+  workspaceId: 'ws-default',
+  appId: app.appId,
+  createdBy: 'user-owner',
+  createdAt: '2026-07-10T10:01:30.000Z',
+  researchSnapshot: emptyResearch,
+  outputMix: { image: 24, ugc: 4 },
+});
+const launchPrimary = launchPackPlan.assignments.filter((item) => item.lane === 'primary');
+const launchChallenger = launchPackPlan.assignments.filter((item) => item.lane === 'challenger');
+assert.equal(launchPackPlan.assignments.length, 28);
+assert.equal(launchPrimary.length, 14);
+assert.equal(launchChallenger.length, 14);
+assert.equal(launchPrimary.filter((item) => item.format === 'image_ad').length, 12);
+assert.equal(launchPrimary.filter((item) => item.format === 'ugc_ad').length, 2);
+assert.equal(launchChallenger.filter((item) => item.format === 'image_ad').length, 12);
+assert.equal(launchChallenger.filter((item) => item.format === 'ugc_ad').length, 2);
+
 // Identical canonical input produces stable source and plan fingerprints.
 const emptyResearchAgain = buildPackPlanResearchSnapshot({
   productTruth: [...truth].reverse(),
