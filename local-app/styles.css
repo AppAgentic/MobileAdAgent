@@ -1352,7 +1352,7 @@ p { margin: 0; }
 .hypothesis-learning strong { color: var(--ink-soft); font: 500 12px var(--sans); }
 
 .generation-split {
-  margin: 0 22px 22px;
+  margin: 22px;
   padding: 15px;
   border: 1px solid var(--lime-22);
   border-radius: 10px;
@@ -2327,7 +2327,7 @@ p { margin: 0; }
   .pack-plan-delta { margin: 14px 18px 0; }
   .hypothesis-block { margin: 18px; }
   .hypothesis-learning { grid-template-columns: 1fr; gap: 4px; }
-  .generation-split { margin: 0 18px 18px; }
+  .generation-split { margin: 18px; }
   .generation-split-copy { grid-template-columns: 1fr; align-items: start; gap: 4px; }
   .generation-split-visual { flex-direction: column; }
   .generation-split-segment { flex: auto; }

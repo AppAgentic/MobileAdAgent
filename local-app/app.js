@@ -1361,12 +1361,12 @@ function renderPackPlan(app, stage) {
         </div>
       </section>
 
-      ${packPlanGenerationSplitHtml(generationSplit)}
-
       <div class="experiment-grid">
         ${packPlanLaneHtml('Idea A', plan.experiment?.primary, plan.assignments)}
         ${packPlanLaneHtml('Idea B', plan.experiment?.challenger, plan.assignments)}
       </div>
+
+      ${packPlanGenerationSplitHtml(generationSplit)}
 
       <details class="pack-plan-evidence">
         <summary>
