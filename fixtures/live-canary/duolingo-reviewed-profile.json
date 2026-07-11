@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "mobile-ad-agent-reviewed-profile.v1",
+  "storeAppId": "570060128",
+  "approvedForGeneration": true,
+  "app": {
+    "name": "Duolingo: Language Lessons",
+    "category": "Education",
+    "summary": "Duolingo helps people practice a new language through short vocabulary, translation, listening, speaking, reading, and writing exercises."
+  },
+  "supportedClaims": [
+    {
+      "id": "language-exercise-formats",
+      "text": "Practice a new language with vocabulary, translation, and listening exercises.",
+      "source": "Reviewed App Store description and approved app screens",
+      "supported": true
+    },
+    {
+      "id": "guided-language-practice",
+      "text": "Build language skills with short guided exercises.",
+      "source": "Reviewed App Store description and approved app screens",
+      "supported": true
+    }
+  ],
+  "proofs": [
+    {
+      "id": "vocabulary-choice-exercise",
+      "sourcePath": "../../artifacts/rawification-canary/2026-07-09T-duolingo-live-2/rawified-candidate.jpg",
+      "label": "Vocabulary choice exercise",
+      "detail": "A Spanish vocabulary question asks the learner to choose the correct translation for the glass.",
+      "approvedForGeneration": true
+    },
+    {
+      "id": "sentence-translation-exercise",
+      "sourcePath": "../../artifacts/rawification-canary/2026-07-09T-duolingo-live-3/rawified-candidate.jpg",
+      "label": "Sentence translation exercise",
+      "detail": "A guided Spanish translation exercise asks the learner to assemble the sentence I want a salad.",
+      "approvedForGeneration": true
+    },
+    {
+      "id": "listening-exercise",
+      "sourcePath": "../../artifacts/rawification-canary/2026-07-09T-duolingo-live-5/rawified-candidate.jpg",
+      "label": "Listening exercise",
+      "detail": "A listening exercise asks the learner to type the Spanish phrase they hear.",
+      "approvedForGeneration": true
+    }
+  ],
+  "styleNotes": [
+    "Organic creator voice",
+    "Show only approved app screens",
+    "Keep claims within the reviewed language-practice evidence"
+  ]
+}

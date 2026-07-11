@@ -112,32 +112,56 @@ Agent access should support:
 1. `intake.created`
    - app URL, screenshots, icon, audience, platform, creative guidance, and constraints.
 
-2. `proof.ingested`
+2. `source.classified`
    - classify raw screenshots vs App Store stylized screenshots vs recordings.
-   - store metadata, dimensions, OCR text, source, and trust level.
+   - store metadata, dimensions, source, trust level, and whether listing art is rawifiable.
 
-3. `proof.objects.extracted`
+3. `proof.rawified`
+   - transform rawifiable App Store / Play Store listing art into raw-looking app proof
+     candidates before UI extraction.
+   - generated/rawified assets must carry provenance back to the source asset and model
+     task.
+   - crop-only previews of store art are not rawified proof.
+
+4. `proof.objects.extracted`
    - crop or isolate proof objects such as ranking cards, score boxes, charts, calculators, progress states, and result panels.
+   - run UI extraction on rawified candidates, uploaded raw screenshots, captured app
+     screenshots, and recordings.
    - preserve real pixels where truth matters.
-   - generated/rawified assets must carry provenance.
 
-4. `creative.briefed`
+5. `creative.briefed`
    - generate target angles, scripts, visual proof needs, format plan, image/video mix, and acceptance criteria.
+   - before any UGC media task, create one immutable Hook Plan from the exact reviewed
+     source snapshot: exactly eight writer candidates, one context-isolated spoken-hook
+     cold read per candidate, then an independent evidence critic.
+   - persist both selected and held plans in the asset lake with source, policy, request,
+     and plan fingerprints; bounded retries must read the stable plan key before making
+     another intelligence call.
+   - assign at most six distinct winners from one shared pool to one pack. Scale larger
+     demand across multiple queued packs/jobs rather than a single oversized Firestore
+     document.
 
-5. `render.planned`
+6. `render.planned`
    - choose render backend and write an exact render spec.
    - include duration, dimensions, fps, codec target, input proof IDs, captions, CTA, app icon, thumbnail frame, and output keys.
 
-6. `render.executed`
+7. `render.executed`
    - produce MP4/image outputs.
    - write manifest with backend, cost, runtime, dimensions, duration, file size, and artifact keys.
 
-7. `qa.completed`
+8. `qa.completed`
    - OCR checks, visual checks, proof fidelity, app claim checks, codec/platform validation, legibility, safe areas, duration, and file size.
    - pass, hold, or retry with structured reasons.
 
-8. `packaged`
+9. `packaged`
    - create downloadable creative pack and optional downstream handoff.
+
+Worker execution uses a transactionally claimed job-task lease. The lease owner and
+expiry are stored before any external call, task commit verifies the same owner/attempt,
+and an unexpired task is never converted to skipped by another worker. Quality rounds
+and infrastructure retries are separate bounded budgets. A failed/held Hook Plan keeps
+all UGC frame, video, and render adapters at zero calls. The control plane must show that
+failure/hold; it may not manufacture fixed-copy local drafts as a success fallback.
 
 ## Render Backend Abstraction
 
@@ -262,7 +286,7 @@ Bootstrap can fetch:
 But App Store screenshots may be stylized. The system must classify them:
 
 - raw enough to use as proof
-- stylized but rawifiable
+- stylized but rawifiable before UI extraction
 - marketing collage/mockup that should not be treated as proof
 - insufficient, requiring raw screenshots or simulator/customer upload
 

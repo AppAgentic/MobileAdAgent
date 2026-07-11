@@ -3,18 +3,53 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "packageManager": "pnpm@10.33.1",
   "scripts": {
+    "build:apphosting": "node scripts/apphosting-build-check.mjs",
     "dev": "node scripts/local-app-server.mjs",
     "local:app": "node scripts/local-app-server.mjs",
+    "start:apphosting": "node scripts/local-app-server.mjs",
+    "check:firebase-readiness": "node scripts/firebase-readiness-check.mjs",
+    "test:firestore-rules": "node scripts/firestore-rules-static-test.mjs",
+    "test:firestore-rules:emulator": "node scripts/run-firestore-rules-emulator-test.mjs",
+    "test:tenant": "node scripts/tenant-store-test.mjs",
+    "test:pack-plan": "node scripts/pack-plan-model-test.mjs && node scripts/pack-plan-adapter-test.mjs",
+    "test:pack-plan-flow": "node scripts/pack-plan-flow-test.mjs",
+    "test:demo-flow": "node scripts/demo-app-flow-test.mjs",
+    "test:hook-agent": "node scripts/hook-agent-test.mjs",
+    "test:script-agent": "node scripts/script-agent-test.mjs",
+    "test:hook-plan-readback": "node scripts/hook-plan-readback-test.mjs",
+    "test:live-generation-durability": "node scripts/live-generation-durability-test.mjs",
+    "test:gemini-media": "node scripts/gemini-media-client-test.mjs",
+    "test:reviewed-profile-canary": "node scripts/rawified-proof-generation-canary-test.mjs",
+    "test:jobs": "node scripts/creative-job-test.mjs",
+    "test:render-contract": "node scripts/render-contract-test.mjs",
+    "test:manifest": "node scripts/manifest-readiness-test.mjs",
+    "canary:generation": "node scripts/live-generation-canary.mjs",
+    "canary:generation:live": "node scripts/live-generation-canary.mjs --live",
+    "canary:hook-agent": "node scripts/live-hook-agent-canary.mjs",
+    "canary:hook-agent:live": "node scripts/live-hook-agent-canary.mjs --live",
+    "canary:script-agent": "node scripts/live-script-agent-canary.mjs",
+    "canary:script-agent:live": "node scripts/live-script-agent-canary.mjs --live",
+    "canary:rawification": "node scripts/rawification-canary.mjs",
+    "canary:rawification:live": "node scripts/rawification-canary.mjs --live",
+    "canary:rawified-proof-generation": "node scripts/rawified-proof-generation-canary.mjs",
+    "canary:rawified-proof-generation:live": "node scripts/rawified-proof-generation-canary.mjs --live",
     "smoke:local-app": "node scripts/smoke-local-app.mjs",
     "benchmark:local-renderers": "node scripts/local-render-benchmark.mjs",
     "render:hyperframes-adrenderer-copy": "node scripts/render-adrenderer-hyperframes-copy.mjs",
     "render:hyperframes-pepmod-ugc-copy": "node scripts/render-pepmod-ugc-hyperframes-copy.mjs"
   },
   "dependencies": {
+    "firebase-admin": "^14.1.0",
     "hyperframes": "0.7.3",
     "sharp": "0.34.5"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.1",
+    "firebase": "^12.15.0"
+  }
 }

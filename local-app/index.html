@@ -3,127 +3,215 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mobile Ad Agent Local</title>
+    <title>Mobile Ad Agent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
-    <main class="workspace">
-      <aside class="sidebar" aria-label="App and proof controls">
-        <div class="brand-row">
-          <div class="brand-mark">MA</div>
-          <div>
-            <h1>Mobile Ad Agent</h1>
-            <p>Local control plane</p>
+    <div class="app-shell">
+      <div class="frame">
+        <aside class="sidebar" aria-label="Mobile Ad Agent navigation">
+          <div class="brand">
+            <span class="brand-mark" aria-hidden="true">▲</span>
+            <span class="brand-name">mobile-ad-agent</span>
           </div>
-        </div>
 
-        <section class="panel">
-          <div class="section-head">
-            <h2>App Intake</h2>
-            <span class="status-pill" id="modePill">local mock</span>
-          </div>
-          <label>
-            App name
-            <input id="appName" autocomplete="off">
-          </label>
-          <label>
-            Store URL
-            <input id="storeUrl" autocomplete="off">
-          </label>
-          <label>
-            Audience
-            <textarea id="audience" rows="3"></textarea>
-          </label>
-          <label>
-            Objective
-            <textarea id="objective" rows="3"></textarea>
-          </label>
-          <label>
-            Avoid list
-            <textarea id="avoidList" rows="3"></textarea>
-          </label>
-        </section>
+          <nav class="nav" aria-label="Primary">
+            <button class="nav-item" type="button" data-route="home"><span class="nav-glyph" aria-hidden="true">▦</span>Home</button>
+          </nav>
 
-        <section class="panel">
-          <div class="section-head">
-            <h2>Proof Library</h2>
-            <button id="addProofButton" class="icon-button" type="button" title="Add proof">+</button>
-          </div>
-          <div id="proofList" class="proof-list"></div>
-        </section>
-      </aside>
+          <div class="side-label">Apps</div>
+          <div class="side-apps" id="sideApps"></div>
 
-      <section class="main-stage" aria-label="Creative job workspace">
-        <header class="topbar">
-          <div>
-            <p class="eyebrow">No provider calls. No ad-network mutations.</p>
-            <h2>Proof-driven UGC pipeline</h2>
-          </div>
-          <div class="actions">
-            <button id="resetButton" class="secondary-button" type="button">Reset sample</button>
-            <button id="generateButton" class="primary-button" type="button">Run local job</button>
-          </div>
-        </header>
+          <button class="nav-item credits-link" type="button" data-route="credits"><span class="nav-glyph" aria-hidden="true">◌</span>Billing</button>
 
-        <div class="stage-grid">
-          <section class="timeline-panel">
-            <div class="section-head">
-              <h3>Agent stages</h3>
-              <span id="jobStatus" class="status-pill">not run</span>
+          <div class="side-spacer"></div>
+          <div class="credit-meter" id="creditMeter"></div>
+        </aside>
+
+        <main class="main" id="main">
+          <section class="view" id="homeView">
+            <header class="home-head">
+              <div>
+                <p class="eyebrow">Mobile Ad Agent</p>
+                <h1 id="homeTitle">Paste your app link. Get a launch pack today.</h1>
+                <p class="view-sub" id="homeSub">We pull your public listing, show the app info we found, then generate paid creative after checkout.</p>
+              </div>
+              <div class="home-actions">
+                <button class="ghost-button compact-action" type="button" id="openImport" hidden>Add another app</button>
+                <div class="dev-actions" id="devActions" hidden>
+                  <span>Prototype controls</span>
+                  <button class="text-button" type="button" id="showEmptyState">First-run state</button>
+                  <button class="text-button" type="button" id="resetDemo">Reset demo</button>
+                  <span class="dev-clock" id="devClockLabel">Day 0</span>
+                  <button class="text-button" type="button" id="devClockPlus1">+1 day</button>
+                  <button class="text-button" type="button" id="devClockPlus3">+3 days</button>
+                  <button class="text-button" type="button" id="devClockReset">Reset clock</button>
+                </div>
+              </div>
+            </header>
+
+            <form class="url-bar" id="importForm" aria-label="Add an app by URL">
+              <span class="url-prompt" aria-hidden="true">$</span>
+              <input id="importUrl" type="url" required placeholder="Paste an App Store, Play Store, or website URL..." aria-label="App Store, Play Store, or website URL">
+              <button class="primary-button" type="submit">Scan my app</button>
+            </form>
+            <p class="url-note" id="urlNote">You review the plan first — approve the screenshots and features, then use credits to generate.</p>
+
+            <div class="build-strip" id="buildStrip" hidden></div>
+
+            <section id="previewPane" class="preview-pane" hidden aria-label="App preview"></section>
+
+            <div id="emptyState" class="empty-hero" hidden>
+              <div class="empty-mark" aria-hidden="true">+</div>
+              <h2>Add your first app.</h2>
+              <p>Paste your app link, check the screenshots and features we find, then generate your first creative pack.</p>
+              <div class="empty-actions">
+                <button class="ghost-button" type="button" id="demoUrl">Use a demo app</button>
+                <button class="ghost-button" type="button" id="mcpStartEmpty">Start from your agent</button>
+              </div>
+              <p class="agent-note">Using a coding agent? It can add your app and stop at the plan preview for you.</p>
             </div>
-            <div id="stageList" class="stage-list"></div>
+
+            <section id="appWorkspace" class="app-workspace" hidden>
+              <div id="upsellTouch"></div>
+              <div id="appHero"></div>
+              <div id="liveRun"></div>
+              <div id="extractionReview"></div>
+              <div id="packPlan"></div>
+
+              <div class="workspace-grid" id="workspaceGrid">
+                <section class="panel ads-panel" id="adsPanel">
+                  <div class="section-row">
+                    <div>
+                      <p class="mono-label">Ads</p>
+                      <h2>Generated for this app</h2>
+                    </div>
+                    <div class="chip-row" id="adFilters" role="group" aria-label="Ad filters"></div>
+                  </div>
+                  <div id="annualBanner"></div>
+                  <div class="ad-grid" id="adGrid"></div>
+                </section>
+
+                <aside class="panel next-panel" id="nextPanel"></aside>
+              </div>
+
+              <div class="tabs" role="tablist" aria-label="App workspace tabs">
+                <button class="tab" type="button" role="tab" data-tab="understanding">App info</button>
+                <button class="tab" type="button" role="tab" data-tab="runs">Packs</button>
+              </div>
+              <div id="tabPanel" class="tab-panel" role="tabpanel"></div>
+            </section>
           </section>
 
-          <section class="preview-panel">
-            <div class="phone-preview" aria-label="Creative preview">
-              <div class="phone-top">
-                <span id="previewAppName">PepMod</span>
-                <span>9:16</span>
+          <section class="view" id="creditsView" hidden>
+            <header class="home-head">
+              <div>
+                <p class="eyebrow">Billing</p>
+                <h1>Know the cost before you generate.</h1>
+                <p class="view-sub">Image ads are 4 credits. UGC ads are 60 credits. Plan credits reset monthly and spend first; top-up credits never expire.</p>
               </div>
-              <div id="previewScene" class="preview-scene">
-                <div class="creator-block">
-                  <span>creator segment</span>
-                </div>
-                <div class="proof-window">
-                  <span id="proofWindowTitle">Protocol log</span>
-                  <strong id="proofWindowClaim">Dose logged - next reminder</strong>
-                </div>
-                <div class="caption-strip" id="captionStrip">Stop losing track</div>
-              </div>
-              <div class="phone-footer">
-                <span id="previewCta">Try PepMod</span>
-              </div>
-            </div>
-            <div id="timelineLayers" class="layer-list"></div>
+            </header>
+
+            <div class="credits-hero" id="creditsHero"></div>
+            <div class="plan-grid" id="planGrid"></div>
+            <div class="panel upsell-demo" id="upsellDemo"></div>
           </section>
+        </main>
+      </div>
+    </div>
+
+    <div class="modal-layer" id="importModal" hidden>
+      <div class="modal-card import-card" role="dialog" aria-modal="true" aria-labelledby="importTitle">
+        <button class="modal-close" type="button" id="closeImport" aria-label="Close add app dialog">×</button>
+        <div class="modal-head">
+          <p class="eyebrow">Add App</p>
+          <h2 id="importTitle">Add another app</h2>
+          <p>Paste a store or website URL. We set it up as its own app, separate from the one you are working on.</p>
         </div>
-      </section>
+        <form class="url-bar modal-url-form" id="modalImportForm" aria-label="Add another app by URL">
+          <span class="url-prompt" aria-hidden="true">$</span>
+          <input id="modalImportUrl" type="url" required placeholder="Paste an App Store, Play Store, or website URL..." aria-label="App Store, Play Store, or website URL">
+          <button class="primary-button" type="submit">Scan my app</button>
+        </form>
+        <div class="modal-start-options">
+          <button class="ghost-button" type="button" id="mcpStartModal">Start from your agent</button>
+        </div>
+      </div>
+    </div>
 
-      <aside class="inspector" aria-label="QA and manifest inspector">
-        <section class="panel qa-panel">
-          <div class="section-head">
-            <h2>QA</h2>
-            <span id="qaVerdict" class="status-pill">waiting</span>
+    <div class="modal-layer" id="agentStartModal" hidden>
+      <div class="modal-card agent-start-card" role="dialog" aria-modal="true" aria-labelledby="agentStartTitle">
+        <button class="modal-close" type="button" id="closeAgentStart" aria-label="Close agent start dialog">×</button>
+        <div class="modal-head">
+          <p class="eyebrow">Agent Start</p>
+          <h2 id="agentStartTitle">Start from your agent</h2>
+          <p>Copy a prompt into Codex, Claude Code, or another agent. The prompt tells it to connect Mobile Ad Agent, send the app URL, and stop at the automatic plan preview.</p>
+        </div>
+        <div class="prompt-tabs" id="agentPromptTabs" role="tablist" aria-label="Agent prompt examples">
+          <button class="prompt-tab" type="button" data-agent-platform="codex">Codex</button>
+          <button class="prompt-tab" type="button" data-agent-platform="claude">Claude Code</button>
+          <button class="prompt-tab" type="button" data-agent-platform="generic">Other agents</button>
+        </div>
+        <div class="agent-prompt-card">
+          <div class="prompt-card-head">
+            <strong id="agentPromptTitle">Codex prompt</strong>
+            <span>Copy and paste into your agent</span>
           </div>
-          <div id="qaChecks" class="qa-checks"></div>
-        </section>
+          <pre id="agentPromptText"></pre>
+        </div>
+        <div class="agent-flow" aria-label="Agent start sequence">
+          <span>Agent connects Mobile Ad Agent first.</span>
+          <span>Mobile Ad Agent gathers your app info.</span>
+          <span>The agent picks screenshots and features.</span>
+          <span>You review, then generate the pack.</span>
+        </div>
+        <div class="modal-actions">
+          <button class="ghost-button" type="button" id="cancelAgentStart">Close</button>
+          <button class="ghost-button" type="button" id="simulateAgentStart" hidden>Dev: simulate agent URL</button>
+          <button class="primary-button" type="button" id="copyAgentPrompt">Copy prompt</button>
+        </div>
+      </div>
+    </div>
 
-        <section class="panel">
-          <div class="section-head">
-            <h2>Pack</h2>
-            <button id="downloadManifestButton" class="secondary-button compact" type="button" disabled>Manifest</button>
-          </div>
-          <div id="packSummary" class="pack-summary"></div>
-        </section>
+    <div class="modal-layer" id="generateModal" hidden>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="generateTitle">
+        <button class="modal-close" type="button" id="closeGenerate" aria-label="Close generate sheet">×</button>
+        <div id="generateContent"></div>
+      </div>
+    </div>
 
-        <section class="panel manifest-panel">
-          <div class="section-head">
-            <h2>Manifest Preview</h2>
-          </div>
-          <pre id="manifestPreview">{}</pre>
-        </section>
-      </aside>
-    </main>
+    <div class="modal-layer" id="upsellModal" hidden>
+      <div class="modal-card upsell-card" role="dialog" aria-modal="true" aria-labelledby="upsellTitle">
+        <button class="modal-close" type="button" id="closeUpsell" aria-label="Close credit options">×</button>
+        <div id="upsellContent"></div>
+      </div>
+    </div>
+
+    <div class="modal-layer" id="checkoutModal" hidden>
+      <div class="modal-card checkout-card" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+        <button class="modal-close" type="button" id="closeCheckout" aria-label="Close checkout">×</button>
+        <div id="checkoutContent"></div>
+      </div>
+    </div>
+
+    <div class="modal-layer" id="annualModal" hidden>
+      <div class="modal-card annual-card" role="dialog" aria-modal="true" aria-labelledby="annualTitle">
+        <button class="modal-close" type="button" id="closeAnnual" aria-label="Close Launch Annual details">×</button>
+        <div id="annualContent"></div>
+      </div>
+    </div>
+
+    <div class="modal-layer" id="handoffModal" hidden>
+      <div class="modal-card handoff-card" role="dialog" aria-modal="true" aria-labelledby="handoffTitle">
+        <button class="modal-close" type="button" id="closeHandoff" aria-label="Close export options">×</button>
+        <div id="handoffContent"></div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
     <script type="module" src="/app.js"></script>
   </body>
 </html>

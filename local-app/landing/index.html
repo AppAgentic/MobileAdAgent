@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mobile Ad Agent — Same-day ad creatives for your app</title>
+  <meta name="description" content="Paste an App Store, Play Store, or website URL. Mobile Ad Agent studies the real app, then delivers paid-ready image ads and UGC ads the same day.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/marketing/styles.css">
+</head>
+<body>
+
+  <!-- ============================ NAV ============================ -->
+  <header class="nav" id="nav">
+    <div class="nav__inner">
+      <a class="brand" href="/" aria-label="Mobile Ad Agent home">
+        <span class="brand__mark" aria-hidden="true">▲</span>
+        <span class="brand__name">mobile-ad-agent</span>
+      </a>
+      <nav class="nav__links" aria-label="Primary">
+        <a href="#how">How it works</a>
+        <a href="#tour">Inside the app</a>
+        <a href="#memory">Output</a>
+        <a href="/pricing">Pricing</a>
+        <a href="#agents">Integrations</a>
+      </nav>
+      <div class="nav__cta">
+        <a class="nav__signin" href="/login">Sign in</a>
+        <a class="btn btn--primary" href="/launch-pack">Get the Launch Pack</a>
+        <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">≡</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ============================ HERO ============================ -->
+    <section class="hero">
+      <div class="wrap">
+        <div class="hero__inner">
+          <div class="hero__copy">
+            <span class="pill"><span class="dot dot--pulse" aria-hidden="true"></span>App-specific creative factory · agent-native</span>
+            <h1>Paste your App Store URL.<br><span class="accent">Get 28 launch-ready ads today.</span></h1>
+            <p class="hero__sub">
+              Mobile Ad Agent studies the real app — listing, screenshots, key features,
+              and reviews — then turns it into a Same-Day Launch Pack: 24 image ads and
+              4 UGC ads built from the app info you approve.
+            </p>
+
+            <!-- URL-first module: the primary action, before any prompt language -->
+            <form class="urlbar" id="urlForm" novalidate>
+              <span class="urlbar__prompt" aria-hidden="true">$</span>
+              <label for="urlInput" class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">App Store or Google Play URL</label>
+              <input
+                class="urlbar__input" id="urlInput" type="url" inputmode="url"
+                placeholder="apps.apple.com/app/id6446901002"
+                value="apps.apple.com/app/id6446901002" autocomplete="off" spellcheck="false">
+              <button class="urlbar__go" type="submit">Scan my app →</button>
+            </form>
+            <div class="hero__checks">
+              <span>App preview before checkout</span>
+              <span>No brief needed</span>
+              <span>Same-day launch pack</span>
+            </div>
+            <p class="hero__note">The preview shows what we found — icon, summary, features, screenshots. The primary paid next step is the Same-Day Launch Pack; plans are for ongoing creative testing.</p>
+          </div>
+
+          <!-- build-log terminal -->
+          <div class="terminal terminal--float" aria-label="Live build log" id="buildLog">
+            <div class="terminal__bar">
+              <span class="tl"></span><span class="tl"></span><span class="tl"></span>
+              <span class="terminal__title">agent · building</span>
+            </div>
+            <div class="terminal__body">
+              <div class="log-line reveal"><span class="g">→</span> ingest url <span class="w">apps.apple.com/…</span></div>
+              <div class="log-line reveal"><span class="g">✓</span> pulled 24 screenshots, icon, 3.1k reviews</div>
+              <div class="log-line reveal"><span class="g">✓</span> found 12 key features</div>
+              <div class="log-line reveal"><span class="g">✓</span> matched 6 winning past creatives</div>
+              <div class="log-line reveal"><span class="g">▸</span> generating <span class="w">image ads</span> <span class="g">████████</span> 8/8</div>
+              <div class="log-line reveal"><span class="g">▸</span> generating <span class="w">UGC ads</span> <span class="g">█████</span><span class="bar-dim">███</span> 5/8</div>
+              <div class="draft-row reveal">
+                <div class="draft"></div>
+                <div class="draft"></div>
+                <div class="draft draft--play"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ LOGOS ============================ -->
+    <section class="logos">
+      <div class="wrap">
+        <div class="logos__inner">
+          <span class="logos__label">BUILT FOR</span>
+          <span>Indie developers</span><span>App studios</span><span>Growth teams</span><span>Creative leads</span><span>Agent workflows</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ CORE LOOP ============================ -->
+    <section class="block" id="how">
+      <div class="wrap">
+        <p class="eyebrow">The core loop</p>
+        <div class="section-head"><h2>One URL in. A working ad library out.</h2></div>
+        <div class="loop">
+          <div class="loop__step">
+            <div class="n">01</div>
+            <h3>Drop the link</h3>
+            <p>App Store, Play Store, or a landing page. That's the whole brief.</p>
+            <span class="arrow" aria-hidden="true">→</span>
+          </div>
+          <div class="loop__step">
+            <div class="n">02</div>
+            <h3>Builds your app profile</h3>
+            <p>Screenshots, icon, store copy, key features, reviews and past winners — organized into one reusable profile.</p>
+            <span class="arrow" aria-hidden="true">→</span>
+          </div>
+          <div class="loop__step">
+            <div class="n">03</div>
+            <h3>Generate on demand</h3>
+            <p>Image ads and UGC ads, sized for every placement, ready to export.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ PRODUCT TOUR ============================ -->
+    <section class="block tour" id="tour">
+      <div class="wrap">
+        <p class="eyebrow">Inside the app</p>
+        <div class="section-head">
+          <h2>Add your app once. Generate packs from then on.</h2>
+          <p class="lede">
+            Four screens carry the whole workflow: add your app, review what we found,
+            generate a pack, then review and export.
+          </p>
+        </div>
+
+        <div class="tour__layout" id="tourLayout">
+          <div class="tour__steps" role="tablist" aria-label="Product tour" aria-orientation="vertical">
+            <button class="tourstep is-active" type="button" id="tourTab-home" role="tab"
+                    aria-selected="true" aria-controls="tourPanel-home">
+              <span class="tourstep__n">01</span>
+              <span class="tourstep__body">
+                <span class="tourstep__t">Home — your apps</span>
+                <span class="tourstep__d">Paste a store URL once. Each app becomes a saved profile you can reuse.</span>
+              </span>
+            </button>
+            <button class="tourstep" type="button" id="tourTab-memory" role="tab"
+                    aria-selected="false" aria-controls="tourPanel-memory" tabindex="-1">
+              <span class="tourstep__n">02</span>
+              <span class="tourstep__body">
+                <span class="tourstep__t">App Profile — review your app info</span>
+                <span class="tourstep__d">Summary, key features and audience — everything traced to a real source.</span>
+              </span>
+            </button>
+            <button class="tourstep" type="button" id="tourTab-studio" role="tab"
+                    aria-selected="false" aria-controls="tourPanel-studio" tabindex="-1">
+              <span class="tourstep__n">03</span>
+              <span class="tourstep__body">
+                <span class="tourstep__t">Generate Pack — create a pack</span>
+                <span class="tourstep__d">Pick angles and formats, then watch the run build live.</span>
+              </span>
+            </button>
+            <button class="tourstep" type="button" id="tourTab-library" role="tab"
+                    aria-selected="false" aria-controls="tourPanel-library" tabindex="-1">
+              <span class="tourstep__n">04</span>
+              <span class="tourstep__body">
+                <span class="tourstep__t">Packs — review, export, learn</span>
+                <span class="tourstep__d">Every generated ad, filterable and export-ready.</span>
+              </span>
+            </button>
+          </div>
+
+          <div class="tour__stage">
+
+            <!-- 01 · HOME -->
+            <div class="tourpanel is-active" id="tourPanel-home" role="tabpanel"
+                 aria-labelledby="tourTab-home" tabindex="0">
+              <div class="app">
+                <div class="app__bar">
+                  <span class="tl"></span><span class="tl"></span><span class="tl"></span>
+                  <span class="app__url">app.mobileadagent.com / apps</span>
+                </div>
+                <div class="app__frame">
+                  <aside class="app__side" aria-hidden="true">
+                    <div class="app__brand"><span class="app__mark">▲</span>mobile-ad-agent</div>
+                    <span class="app__navitem is-on">▦ Apps</span>
+                    <span class="app__navitem">✦ Generate</span>
+                    <span class="app__navitem">▤ Packs</span>
+                    <span class="app__navitem">◇ Integrations</span>
+                    <div class="app__sidehead">Recent apps</div>
+                    <span class="app__recent"><span class="sw sw--lime"></span>Habitloop</span>
+                    <span class="app__recent"><span class="sw"></span>Northpeak Run</span>
+                    <div class="app__account"><span class="av">R</span><span><b>Ruvix Labs</b><i>Scale plan</i></span></div>
+                  </aside>
+                  <div class="app__main">
+                    <div class="app__top">
+                      <span class="app__title">Apps</span>
+                      <span class="app__topactions">
+                        <span class="app__search">⌕ Search apps</span>
+                        <span class="app__go">+ New app</span>
+                      </span>
+                    </div>
+                    <div class="app__content">
+                      <div class="appurl">
+                        <span class="p">$</span>
+                        <span class="hint">Paste an App Store, Play Store, or website URL to add a new app…</span>
+                        <span class="go">Analyze →</span>
+                      </div>
+                      <div class="appfilter">
+                        <span class="count">4 apps</span>
+                        <span class="chips">
+                          <span class="chip is-on">All</span><span class="chip">App Store</span><span class="chip">Play Store</span>
+                        </span>
+                      </div>
+                      <div class="appgrid">
+                        <div class="appcard appcard--hi">
+                          <div class="appcard__head"><span class="icon icon--lime"></span><span><b>Habitloop</b><i>App Store · Health</i></span></div>
+                          <div class="appcard__status is-fresh"><span class="dot"></span>Profile fresh · 48 sources</div>
+                          <div class="appcard__thumbs"><span class="th th--lime"></span><span class="th th--play">▶</span><span class="th"></span></div>
+                          <div class="appcard__foot"><span>42 ads</span><span class="open">Open →</span></div>
+                        </div>
+                        <div class="appcard">
+                          <div class="appcard__head"><span class="icon"></span><span><b>Northpeak Run</b><i>Play Store · Fitness</i></span></div>
+                          <div class="appcard__status"><span class="dot"></span>Profile updated · 6d ago</div>
+                          <div class="appcard__thumbs"><span class="th"></span><span class="th"></span><span class="th th--play th--dim">▶</span></div>
+                          <div class="appcard__foot"><span>28 ads</span><span class="open">Open →</span></div>
+                        </div>
+                        <div class="appcard appcard--hi">
+                          <div class="appcard__head"><span class="icon"></span><span><b>Cadence Sleep</b><i>App Store · Wellness</i></span></div>
+                          <div class="appcard__status is-fresh"><span class="dot dot--pulse"></span>Generating · 12/20</div>
+                          <div class="appcard__thumbs"><span class="th th--lime"></span><span class="th th--lime"></span><span class="th th--queue"></span></div>
+                          <div class="appcard__foot"><span>run in progress</span><span class="open">View →</span></div>
+                        </div>
+                        <div class="appcard appcard--add">
+                          <span class="plus">+</span>
+                          <b>Add an app</b>
+                          <i>paste a store URL</i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 02 · APP PROFILE / UNDERSTANDING -->
+            <div class="tourpanel" id="tourPanel-memory" role="tabpanel"
+                 aria-labelledby="tourTab-memory" tabindex="0">
+              <div class="app">
+                <div class="app__bar">
+                  <span class="tl"></span><span class="tl"></span><span class="tl"></span>
+                  <span class="app__url">app.mobileadagent.com / apps / habitloop</span>
+                </div>
+                <div class="app__frame">
+                  <aside class="app__side" aria-hidden="true">
+                    <div class="app__brand"><span class="app__mark">▲</span>mobile-ad-agent</div>
+                    <span class="app__navitem is-on">▦ Apps</span>
+                    <span class="app__navitem">✦ Generate</span>
+                    <span class="app__navitem">▤ Packs</span>
+                    <span class="app__navitem">◇ Integrations</span>
+                    <div class="app__sidehead">Recent apps</div>
+                    <span class="app__recent is-on"><span class="sw sw--lime"></span>Habitloop</span>
+                    <span class="app__recent"><span class="sw"></span>Northpeak Run</span>
+                    <div class="app__account"><span class="av">R</span><span><b>Ruvix Labs</b><i>Scale plan</i></span></div>
+                  </aside>
+                  <div class="app__main">
+                    <div class="app__top app__top--crumb">
+                      <span class="crumb"><span class="g">Apps</span> / Habitloop</span>
+                      <span class="app__go">Generate ads →</span>
+                    </div>
+                    <div class="app__content">
+                      <div class="apphero">
+                        <span class="apphero__icon"></span>
+                        <span>
+                          <b>Habitloop</b>
+                          <i>App Store · Health &amp; Fitness <em>|</em> <u>● profile fresh · updated 2h ago</u></i>
+                        </span>
+                      </div>
+                      <div class="apptabs">
+                        <span class="is-on">App info</span><span>Creative</span><span>Performance</span>
+                      </div>
+                      <div class="und">
+                        <div class="und__main">
+                          <div class="minicard">
+                            <b>What it is</b>
+                            <p>A habit-tracking app that turns daily routines into streaks and gentle nudges.
+                               Positions on <span class="g">simplicity</span> and <span class="g">consistency over intensity</span> —
+                               the anti-burnout tracker.</p>
+                          </div>
+                          <div class="minicard">
+                            <div class="minicard__split"><b>Key features · 12</b><span>each links to a source</span></div>
+                            <div class="claim"><span class="ok">✓</span><span class="txt">"Build a habit in 21 days with streak reminders"</span><span class="src">store copy</span></div>
+                            <div class="claim"><span class="ok">✓</span><span class="txt">"No ads, no pressure — just gentle nudges"</span><span class="src">reviews</span></div>
+                            <div class="claim"><span class="ok">✓</span><span class="txt">"Syncs across iPhone, iPad &amp; Apple Watch"</span><span class="src">store copy</span></div>
+                          </div>
+                          <div class="und__pair">
+                            <div class="minicard">
+                              <b>Key features</b>
+                              <div class="tags"><span>Streaks</span><span>Reminders</span><span>Widgets</span><span>Watch sync</span><span>Insights</span></div>
+                            </div>
+                            <div class="minicard">
+                              <b>Audience</b>
+                              <div class="tags"><span class="is-hi">Self-improvers</span><span>New Year starters</span><span>ADHD-friendly</span></div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="und__rail">
+                          <div class="und__railhead"><span>Sources</span><b>48 found</b></div>
+                          <div class="evrow"><span class="ic">▦</span><span><b>Screenshots</b><i>24 captured</i></span></div>
+                          <div class="evrow"><span class="ic">◈</span><span><b>App icon</b><i>1024×1024</i></span></div>
+                          <div class="evrow"><span class="ic">¶</span><span><b>Store listing</b><i>title · subtitle · desc</i></span></div>
+                          <div class="evrow"><span class="ic">★</span><span><b>Reviews</b><i>3,148 · 4.8 avg</i></span></div>
+                          <div class="evrow evrow--hi"><span class="ic">▶</span><span><b>Past winners</b><i>6 · imported</i></span></div>
+                          <div class="und__rebuild">↻ Refresh app profile</div>
+                          <p class="und__note">Your app profile keeps its history. Every ad shows the sources it was built from.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 03 · GENERATE PACK -->
+            <div class="tourpanel" id="tourPanel-studio" role="tabpanel"
+                 aria-labelledby="tourTab-studio" tabindex="0">
+              <div class="app">
+                <div class="app__bar">
+                  <span class="tl"></span><span class="tl"></span><span class="tl"></span>
+                  <span class="app__url">app.mobileadagent.com / studio / run_a1f92</span>
+                </div>
+                <div class="app__frame">
+                  <aside class="app__side" aria-hidden="true">
+                    <div class="app__brand"><span class="app__mark">▲</span>mobile-ad-agent</div>
+                    <span class="app__navitem">▦ Apps</span>
+                    <span class="app__navitem is-on">✦ Generate</span>
+                    <span class="app__navitem">▤ Packs</span>
+                    <span class="app__navitem">◇ Integrations</span>
+                    <div class="app__sidehead">Runs</div>
+                    <span class="app__recent is-on"><span class="dot dot--pulse"></span>run_a1f92 · live</span>
+                    <span class="app__recent"><span class="dot dot--off"></span>run_9b3c1</span>
+                    <div class="app__account"><span class="av">R</span><span><b>Ruvix Labs</b><i>Scale plan</i></span></div>
+                  </aside>
+                  <div class="app__main">
+                    <div class="studio">
+                      <div class="studio__config">
+                        <b class="studio__t">New run</b>
+                        <div class="studio__app"><span class="sw sw--lime"></span><b>Habitloop</b><i>▾</i></div>
+                        <div class="studio__lbl">Angles</div>
+                        <div class="angle is-on"><span class="cb">✓</span>Streaks &amp; consistency</div>
+                        <div class="angle is-on"><span class="cb">✓</span>Anti-burnout</div>
+                        <div class="angle"><span class="cb cb--off"></span>Review love · 4.8★</div>
+                        <div class="angle"><span class="cb cb--off"></span>Apple Watch sync</div>
+                        <div class="studio__lbl">Formats</div>
+                        <div class="studio__formats"><span>Image ads</span><span>UGC ads</span></div>
+                        <div class="ratios"><span class="is-on">9:16</span><span class="is-on">1:1</span><span>4:5</span></div>
+                        <div class="studio__lbl studio__lbl--split"><span>Variations</span><b>40</b></div>
+                        <div class="meter"><span style="width:52%"></span></div>
+                        <div class="bias"><span class="sw2"><span></span></span>Bias toward past winners</div>
+                        <div class="studio__gen">Generate 40 ads →</div>
+                      </div>
+                      <div class="studio__run">
+                        <div class="studio__runhead">
+                          <span>
+                            <b>run_a1f92</b>
+                            <em class="live"><span class="dot dot--pulse"></span>generating</em>
+                            <i>27 / 40 done · ~1m 10s left</i>
+                          </span>
+                          <span class="studio__runbtns"><span>Pause</span><span>Logs</span></span>
+                        </div>
+                        <div class="meter meter--run"><span style="width:67%"></span></div>
+                        <div class="rungrid">
+                          <span class="tile tile--done">✓ streaks</span>
+                          <span class="tile tile--done tile--play">✓ UGC ad</span>
+                          <span class="tile tile--done">✓ burnout</span>
+                          <span class="tile tile--done">✓ 1:1</span>
+                          <span class="tile tile--render">rendering</span>
+                          <span class="tile tile--render">rendering</span>
+                          <span class="tile tile--queue">queued</span>
+                          <span class="tile tile--queue">queued</span>
+                        </div>
+                        <div class="runlog">
+                          <div><span class="g">✓</span> app profile loaded · 48 sources</div>
+                          <div><span class="g">✓</span> planned 40 variations across 2 angles · 3 ratios</div>
+                          <div><span class="g">▸</span> rendering batch 3/5 <span class="g">██████████████</span><span class="dim">██████</span> 27/40</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 04 · PACKS -->
+            <div class="tourpanel" id="tourPanel-library" role="tabpanel"
+                 aria-labelledby="tourTab-library" tabindex="0">
+              <div class="app">
+                <div class="app__bar">
+                  <span class="tl"></span><span class="tl"></span><span class="tl"></span>
+                  <span class="app__url">app.mobileadagent.com / library</span>
+                </div>
+                <div class="app__frame">
+                  <aside class="app__side" aria-hidden="true">
+                    <div class="app__brand"><span class="app__mark">▲</span>mobile-ad-agent</div>
+                    <span class="app__navitem">▦ Apps</span>
+                    <span class="app__navitem">✦ Generate</span>
+                    <span class="app__navitem is-on">▤ Packs</span>
+                    <span class="app__navitem">◇ Integrations</span>
+                    <div class="app__sidehead">Collections</div>
+                    <span class="app__recent is-lime">★ Top performers</span>
+                    <span class="app__recent">▤ Ready to ship</span>
+                    <span class="app__recent">◷ Drafts</span>
+                    <div class="app__account"><span class="av">R</span><span><b>Ruvix Labs</b><i>Scale plan</i></span></div>
+                  </aside>
+                  <div class="app__main">
+                    <div class="app__top">
+                      <span class="app__title">Packs</span>
+                      <span class="app__topactions">
+                        <span class="app__search">↓ Export selected · 3</span>
+                        <span class="app__go">Export pack →</span>
+                      </span>
+                    </div>
+                    <div class="app__content">
+                      <div class="appfilter">
+                        <span class="chips">
+                          <span class="chip is-on">All · 96</span><span class="chip">Image ads · 58</span><span class="chip">UGC ads · 38</span><span class="chip">Habitloop ▾</span><span class="chip">9:16 ▾</span>
+                        </span>
+                        <span class="count">Sort · performance ▾</span>
+                      </div>
+                      <div class="libgrid">
+                        <span class="lib"><span class="fr fr--lime"><em class="badge">★ TOP PERFORMER</em></span><span class="cap"><span>image · streaks</span><i>↓</i></span></span>
+                        <span class="lib"><span class="fr fr--play">▶</span><span class="cap"><span>UGC ad · 0:15</span><i>↓</i></span></span>
+                        <span class="lib"><span class="fr"></span><span class="cap"><span>image · burnout</span><i>↓</i></span></span>
+                        <span class="lib"><span class="fr fr--lime fr--play">▶</span><span class="cap"><span>UGC ad · 0:22</span><i>↓</i></span></span>
+                        <span class="lib"><span class="fr"></span><span class="cap"><span>image · watch</span><i>↓</i></span></span>
+                        <span class="lib"><span class="fr"><em class="badge badge--dim">1:1</em></span><span class="cap"><span>image · social</span><i>↓</i></span></span>
+                        <span class="lib"><span class="fr fr--play">▶</span><span class="cap"><span>UGC ad · 0:18</span><i>↓</i></span></span>
+                        <span class="lib"><span class="fr fr--lime"></span><span class="cap"><span>image · streaks</span><i>↓</i></span></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <p class="tour__foot">
+          <span class="g">$</span> add app → review app info → generate pack → review, export, learn.
+          Drafts stay in Packs until you approve them.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================ APP MEMORY ============================ -->
+    <section class="block memory" id="memory">
+      <div class="wrap">
+        <div class="memory__grid">
+          <div class="memory__copy">
+            <p class="eyebrow">App Profile</p>
+            <h2>A living profile of your app, built from real sources.</h2>
+            <p>
+              Mobile Ad Agent studies your real product and keeps what it learns —
+              screenshots, store copy, key features, reviews and past winners — and
+              reuses it for every pack.
+            </p>
+            <ul class="memory__list">
+              <li>Every feature an ad mentions links back to your real app.</li>
+              <li>Review themes and audience signals come straight from your reviews.</li>
+              <li>Past winners steer the next pack toward what converts.</li>
+            </ul>
+          </div>
+
+          <!-- App Profile product surface -->
+          <div class="surface" aria-label="App Profile example — Habitloop">
+            <div class="surface__bar">
+              <span class="tl"></span><span class="tl"></span><span class="tl"></span>
+              <span class="surface__url">app.mobileadagent.com / apps / habitloop</span>
+            </div>
+            <div class="surface__body">
+              <div class="surface__apphead">
+                <div class="surface__icon" aria-hidden="true"></div>
+                <div>
+                  <div class="surface__appname">Habitloop</div>
+                  <div class="surface__meta">
+                    <span>App Store · Health &amp; Fitness</span>
+                    <span class="sep">|</span>
+                    <span class="fresh">● profile fresh · updated 2h ago</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="evline">
+                <span class="evchip">▦ Screenshots <b>24</b></span>
+                <span class="evchip">★ Reviews <b>3,148</b></span>
+                <span class="evchip">▶ Past winners <b>6</b></span>
+                <span class="evchip">◆ Sources <b>48</b></span>
+              </div>
+
+              <div class="card">
+                <div class="card__t">Key features <span class="num">· 12</span></div>
+                <div style="margin-top:10px">
+                  <div class="claim"><span class="ok">✓</span><span class="txt">"Build a habit in 21 days with streak reminders"</span><span class="src">store page</span></div>
+                  <div class="claim"><span class="ok">✓</span><span class="txt">"No ads, no pressure — just gentle nudges"</span><span class="src">reviews</span></div>
+                  <div class="claim"><span class="ok">✓</span><span class="txt">"Syncs across iPhone, iPad &amp; Apple Watch"</span><span class="src">store page</span></div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card__t">Review themes <span class="num">· from 3,148 reviews</span></div>
+                <div style="margin-top:12px">
+                  <div class="theme"><span class="lbl">Easy to stick with</span><span class="track"><span class="fill" style="width:86%"></span></span><span class="pct">86%</span></div>
+                  <div class="theme"><span class="lbl">Clean design</span><span class="track"><span class="fill" style="width:71%"></span></span><span class="pct">71%</span></div>
+                  <div class="theme"><span class="lbl">Wants more stats</span><span class="track"><span class="fill fill--muted" style="width:38%"></span></span><span class="pct">38%</span></div>
+                </div>
+              </div>
+
+              <p class="surface__foot">Your app profile keeps its history. Every ad shows the sources it was built from.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ REVIEW & APPROVE ============================ -->
+    <section class="block" id="review">
+      <div class="wrap">
+        <div class="block__head--split">
+          <div>
+            <p class="eyebrow">Output</p>
+            <div class="section-head"><h2>Paid-social ready, on brand.</h2></div>
+          </div>
+        </div>
+
+        <div class="review__grid">
+          <!-- draft review panel -->
+          <div class="reviewpanel">
+            <div class="reviewpanel__bar">
+              <span class="t">Pack drafts · Habitloop</span>
+              <div class="toggle" role="group" aria-label="Format">
+                <button type="button" data-format="all" aria-pressed="true">All drafts</button>
+                <button type="button" data-format="image" aria-pressed="false">Image ads</button>
+                <button type="button" data-format="ugc" aria-pressed="false">UGC ads</button>
+              </div>
+            </div>
+            <div class="drafts" id="drafts">
+              <div class="draftcard" data-kind="image">
+                <div class="draftcard__frame"><span class="draftcard__tag">image · 9:16</span></div>
+                <div class="draftcard__cite">from: streak feature</div>
+                <div class="draftcard__actions">
+                  <button type="button" class="approve">Approve</button>
+                  <button type="button" class="tweak">Tweak</button>
+                  <button type="button" class="reject">Reject</button>
+                </div>
+              </div>
+              <div class="draftcard" data-kind="image">
+                <div class="draftcard__frame"><span class="draftcard__tag">image · 1:1</span></div>
+                <div class="draftcard__cite">from: review theme</div>
+                <div class="draftcard__actions">
+                  <button type="button" class="approve">Approve</button>
+                  <button type="button" class="tweak">Tweak</button>
+                  <button type="button" class="reject">Reject</button>
+                </div>
+              </div>
+              <div class="draftcard draftcard--video" data-kind="ugc">
+                <div class="draftcard__frame"><span class="draftcard__tag">UGC ad · 0:15</span></div>
+                <div class="draftcard__cite">from: "no pressure" review</div>
+                <div class="draftcard__actions">
+                  <button type="button" class="approve">Approve</button>
+                  <button type="button" class="tweak">Tweak</button>
+                  <button type="button" class="reject">Reject</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- QA / guardrail rail -->
+          <div class="qa">
+            <div class="qa__head">
+              <span class="t">Quality checks</span>
+              <span class="qa__verdict">passing</span>
+            </div>
+            <div class="qa__check"><span class="ok">✓</span> Every feature traced to a real source</div>
+            <div class="qa__check"><span class="ok">✓</span> No invented UI or fabricated screens</div>
+            <div class="qa__check"><span class="ok">✓</span> Text legibility &amp; safe-area checks</div>
+            <div class="qa__check"><span class="ok">✓</span> Duration, codec &amp; export specs valid</div>
+            <p class="qa__note">
+              Drafts stay in your workspace until you approve them — then they are
+              ready to export.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ AGENT-NATIVE ============================ -->
+    <section class="block" id="agents">
+      <div class="wrap">
+        <div class="agents__card">
+          <div class="agents__top">
+            <div>
+              <p class="eyebrow">Agent-native</p>
+              <h2>Runs where your agents already run</h2>
+              <p>Every generation is an API call. Wire the factory into your own stack — or
+                 hand the keys to your coding agent and let it brief, generate and pull ads on its own.</p>
+            </div>
+            <div class="agents__badges">
+              <span>OpenAPI 3.1</span><span>Webhooks</span>
+            </div>
+          </div>
+
+          <div class="agents__body">
+            <!-- code terminal -->
+            <div class="terminal code">
+              <div class="terminal__bar">
+                <span class="tl"></span><span class="tl"></span><span class="tl"></span>
+                <span class="terminal__title">~ / create pack</span>
+              </div>
+              <div class="code__body">
+                <div><span class="g">$</span> create pack \</div>
+                <div class="w indent">--url <span class="g">apps.apple.com/app/id644…</span> \</div>
+                <div class="w indent">--formats "image ads","UGC ads" --count <span class="g">40</span></div>
+                <div class="gap"><span class="g">✓</span> app profile ready</div>
+                <div><span class="g">✓</span> 40 creatives queued</div>
+                <div><span class="g">→</span> POST <span class="w">webhook</span> · <span class="w">ads.ready</span></div>
+                <div class="gap d"># or from your agent</div>
+                <div class="w">createPack(url, {count:40})</div>
+              </div>
+            </div>
+
+            <!-- integration tiles -->
+            <div class="tiles">
+              <div class="tile">
+                <div class="tile__t">REST API</div>
+                <p>Generate programmatically. Webhooks fire the moment a batch is ready.</p>
+              </div>
+              <div class="tile tile--hi">
+                <div class="tile__t">Agent tools</div>
+                <p>Let your agents start packs, check status, and pull approved files.</p>
+              </div>
+              <div class="tile">
+                <div class="tile__t">Claude Code</div>
+                <p>Kick off ad batches without leaving your terminal session.</p>
+              </div>
+              <div class="tile">
+                <div class="tile__t">Codex</div>
+                <p>Wire creative generation into your OpenAI agent workflows.</p>
+              </div>
+              <div class="tile tile--wide">
+                <div>
+                  <div class="tile__t">ChatGPT</div>
+                  <p>A custom GPT that takes a URL and returns finished ads inline.</p>
+                </div>
+                <span class="more">+ Zapier · n8n</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="agents__guard">
+            <span class="lock" aria-hidden="true"></span>
+            <span>Agents propose. <b>Guardrails still own source checks, QA, cost, approvals and exports</b>.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ STATS ============================ -->
+    <section class="block" style="padding-top:0">
+      <div class="wrap">
+        <div class="stats">
+          <div class="stat"><div class="num">100+</div><div class="lbl">ad variations per pack</div></div>
+          <div class="stat"><div class="num">Minutes</div><div class="lbl">from URL to first drafts</div></div>
+          <div class="stat"><div class="num">1 call</div><div class="lbl">API, agent tool or a single link</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ PRICING ============================ -->
+    <section class="block pricing" id="pricing">
+      <div class="wrap">
+        <p class="eyebrow">Pricing</p>
+        <div class="section-head">
+          <h2>Paid from the first generated ad.</h2>
+          <p class="lede">
+            Preview your app first. The Same-Day Launch Pack is the one-time sprint
+            that gets your first ads ready today. Plans are for ongoing creative
+            testing after you know the workflow fits.
+          </p>
+        </div>
+
+        <div class="pricing__hero">
+          <div class="packcard">
+            <div class="packcard__head">
+              <span class="packcard__badge">Start here · one-time</span>
+              <h3>Same-Day Launch Pack</h3>
+              <div class="packcard__price">$249</div>
+            </div>
+            <p class="packcard__lede">Your app URL in the morning. An ad-ready creative pack the same day.</p>
+            <ul class="packcard__list">
+              <li>App profile built from your store or site URL</li>
+              <li>Ad angles matched to real app features</li>
+              <li>24 image ads + 4 UGC ads</li>
+              <li>One revision round</li>
+              <li>Credit the full $249 toward an annual plan if you upgrade within 7 days</li>
+              <li>Export-ready files and handoff checklist</li>
+            </ul>
+            <a class="btn btn--primary btn--lg packcard__cta" href="/preview?offer=launch-pack">Get my Launch Pack →</a>
+            <p class="packcard__guarantee">Delivery guarantee: if your app link and screenshots are usable, you get a usable pack on time — or we rerun or credit the affected assets. We don't promise installs, ROAS, or revenue; nobody honestly can.</p>
+          </div>
+        </div>
+
+        <details class="pricing__plans-toggle">
+          <summary>Need ongoing creatives after your first pack? View monthly plans</summary>
+          <div class="pricing__plans">
+          <div class="pricecard">
+            <div class="pricecard__name">Launch</div>
+            <div class="pricecard__price">$99<span>/mo</span></div>
+            <div class="pricecard__credits">Ongoing creative engine</div>
+            <p>Fresh monthly creative refreshes for one app after your first launch pack.</p>
+            <a class="btn btn--ghost" href="/preview?plan=launch">Start with Launch</a>
+          </div>
+          <div class="pricecard pricecard--featured">
+            <div class="pricecard__name">Scale <em>most popular</em></div>
+            <div class="pricecard__price">$249<span>/mo</span></div>
+            <div class="pricecard__credits">Weekly creative testing</div>
+            <p>More frequent refreshes, winner iteration, and testing across 1-3 apps.</p>
+            <a class="btn btn--primary" href="/preview?plan=scale">Start with Scale</a>
+          </div>
+          <div class="pricecard">
+            <div class="pricecard__name">Studio</div>
+            <div class="pricecard__price">$599<span>/mo</span></div>
+            <div class="pricecard__credits">Portfolio creative system</div>
+            <p>Creative production, approvals, and handoff for portfolios, agencies, and teams.</p>
+            <a class="btn btn--ghost" href="/preview?plan=studio">Start with Studio</a>
+          </div>
+          </div>
+        </details>
+
+        <p class="pricing__topups">
+          Need more mid-cycle? Subscriber top-ups are available for heavier testing months.
+          Your plan allowance resets monthly; top-ups stay available while your subscription is active.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================ CTA ============================ -->
+    <section class="cta" id="start">
+      <div class="wrap">
+        <h2>From app URL to a launch-ready creative pack — today.</h2>
+        <div class="cta__row">
+          <a class="btn btn--primary btn--lg" href="/preview?offer=launch-pack">Get the Same-Day Launch Pack →</a>
+          <a class="btn btn--ghost btn--lg" href="/preview">Scan my app first</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================ FOOTER ============================ -->
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer__inner">
+        <span>▲ mobile-ad-agent · an AppAgentic product</span>
+        <div class="footer__links">
+          <a href="#how">How it works</a>
+          <a href="#memory">App Profile</a>
+          <a href="/pricing">Pricing</a>
+          <a href="#agents">API / agents</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/marketing/landing.js" defer></script>
+</body>
+</html>
