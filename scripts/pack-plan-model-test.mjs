@@ -339,8 +339,9 @@ assert.ok(!customerJson.includes('orgs/org-a/workspaces'));
 assert.ok(JSON.stringify(researchedPlan).includes('Rawify before UI extraction'));
 assert.ok(JSON.stringify(researchedPlan).includes('store_art'));
 assert.ok(!/rawify|pre_rawification|store_art|raw_app_proof|Gemini Omni/i.test(customerJson));
+assert.ok(!customerJson.includes('Needs review before use'));
 assert.deepEqual(customerScreens.map((item) => item.source.label).sort(), ['Store screenshot', 'Uploaded screenshot']);
-assert.equal(customerScreens.find((item) => item.id === 'screen:screen-progress')?.text, 'Progress overview — Needs review before use');
+assert.equal(customerScreens.find((item) => item.id === 'screen:screen-progress')?.text, 'Progress overview — selected visual reference from the app’s store listing');
 assert.equal(customerScreens.find((item) => item.id === 'screen:screen-plan')?.text, 'Routine planner');
 assert.ok(customerPlan.research.marketSignals.every((signal) => signal.canSupportProductClaim === false));
 

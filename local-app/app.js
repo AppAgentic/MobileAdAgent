@@ -1572,7 +1572,7 @@ function customerEvidenceCopy(item = {}) {
   if (item.kind !== 'screen') return copy;
   const label = String(copy).split(/\s+—\s+/)[0].trim() || 'App screenshot';
   return customerEvidenceSourceLabel(item, item.source) === 'Store screenshot'
-    ? `${label} — Needs review before use`
+    ? `${label} — selected visual reference from the app’s store listing`
     : label;
 }
 
