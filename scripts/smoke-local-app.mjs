@@ -118,6 +118,20 @@ check(Boolean(preview.app.summary), 'preview must include app summary');
 check(preview.features.length === 2, 'preview must include feature candidates');
 check(preview.screenshots.length === 2, 'preview must include the screenshot grid');
 check(preview.readiness.readyCount === 1 && preview.readiness.reviewCount === 1, 'preview must report screenshot readiness');
+
+const internalCopyExtraction = structuredClone(fixtureExtraction);
+internalCopyExtraction.uiObjects[1].usability = {
+  status: 'review',
+  label: 'Rawify first',
+  reason: 'Store art is in pre_rawification and needs raw UI extraction.',
+};
+internalCopyExtraction.uiObjects[1].rawifyEligible = true;
+const customerSafePreview = buildPreviewPayload(internalCopyExtraction, session);
+check(
+  !/rawify|pre_rawification|store_art|raw_app_proof/i.test(JSON.stringify(customerSafePreview)),
+  'anonymous preview must translate internal screenshot stages into customer-safe wording',
+);
+check(customerSafePreview.screenshots[1].readiness.label === 'Needs review', 'store screenshot preview should use plain-language readiness');
 check(Array.isArray(preview.readiness.gaps), 'preview must report readiness gaps');
 check(preview.access.tier === 'anonymous_preview', 'preview access tier must be anonymous_preview');
 check(preview.access.canGenerate === false, 'anonymous preview must not allow generation');

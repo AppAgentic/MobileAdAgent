@@ -43,8 +43,8 @@ const app = {
     {
       id: 'screen-progress',
       label: 'Progress overview',
-      detail: 'A reviewed screen showing progress history.',
-      sourceType: 'raw_app_proof',
+      detail: 'Google Play screenshot candidate. Rawify before UI extraction with Gemini Omni. Stage: pre_rawification.',
+      sourceType: 'store_art',
       sourceUrl: 'https://cdn.example.test/progress.png',
       storageKey: 'orgs/org-a/workspaces/ws-default/apps/example-app/source/screen-progress',
       selected: true,
@@ -331,10 +331,17 @@ assert.throws(
 // tenant storage keys and internal actor identity.
 const customerPlan = customerSafeCreativePackPlan(researchedPlan);
 const customerJson = JSON.stringify(customerPlan);
+const customerScreens = customerPlan.research.productTruth.filter((item) => item.kind === 'screen');
 assert.equal(customerPlan.planFingerprint, researchedPlan.planFingerprint);
 assert.ok(!customerJson.includes('createdBy'));
 assert.ok(!customerJson.includes('storageKey'));
 assert.ok(!customerJson.includes('orgs/org-a/workspaces'));
+assert.ok(JSON.stringify(researchedPlan).includes('Rawify before UI extraction'));
+assert.ok(JSON.stringify(researchedPlan).includes('store_art'));
+assert.ok(!/rawify|pre_rawification|store_art|raw_app_proof|Gemini Omni/i.test(customerJson));
+assert.deepEqual(customerScreens.map((item) => item.source.label).sort(), ['Store screenshot', 'Uploaded screenshot']);
+assert.equal(customerScreens.find((item) => item.id === 'screen:screen-progress')?.text, 'Progress overview — Needs review before use');
+assert.equal(customerScreens.find((item) => item.id === 'screen:screen-plan')?.text, 'Routine planner');
 assert.ok(customerPlan.research.marketSignals.every((signal) => signal.canSupportProductClaim === false));
 
 // Review actions deterministically create typed learning memory.

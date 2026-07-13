@@ -1556,15 +1556,45 @@ function packPlanEvidenceGroup(title, tone, helper, items, emptyCopy = 'No evide
       <div class="evidence-group-head"><span></span><div><strong>${escapeHtml(title)}</strong><small>${escapeHtml(helper)}</small></div></div>
       <div class="evidence-list">
         ${visible.length ? visible.map((item) => {
-          const copy = item.instruction || item.paraphrase || item.text || item.theme || '';
+          const copy = customerEvidenceCopy(item);
           const source = item.source || {};
-          const sourceLabel = source.platform || source.label || (item.kind === 'screen' ? 'Reviewed screen' : 'Reviewed app info');
+          const sourceLabel = customerEvidenceSourceLabel(item, source);
           return `<article><p>${escapeHtml(shorten(copy, 220))}</p>${source.url ? `<a href="${escapeHtml(source.url)}" target="_blank" rel="noreferrer">${escapeHtml(sourceLabel)} ↗</a>` : `<small>${escapeHtml(sourceLabel)}</small>`}</article>`;
         }).join('') : `<p class="evidence-empty">${escapeHtml(emptyCopy)}</p>`}
         ${(items || []).length > visible.length ? `<small class="evidence-more">${items.length - visible.length} more in the saved snapshot</small>` : ''}
       </div>
     </section>
   `;
+}
+
+function customerEvidenceCopy(item = {}) {
+  const copy = item.instruction || item.paraphrase || item.text || item.theme || '';
+  if (item.kind !== 'screen') return copy;
+  const label = String(copy).split(/\s+—\s+/)[0].trim() || 'App screenshot';
+  return customerEvidenceSourceLabel(item, item.source) === 'Store screenshot'
+    ? `${label} — Needs review before use`
+    : label;
+}
+
+function customerEvidenceSourceLabel(item = {}, source = {}) {
+  if (item.kind !== 'screen') {
+    return source.platform || source.label || 'Reviewed app info';
+  }
+  const sourceType = String(source.label || '').trim().toLowerCase().replaceAll(' ', '_');
+  const labels = {
+    store_art: 'Store screenshot',
+    rawified_store_art: 'Store screenshot',
+    raw_app_proof: 'Uploaded screenshot',
+    raw_proof: 'Uploaded screenshot',
+    app_screenshot: 'Uploaded screenshot',
+    user_upload: 'Uploaded screenshot',
+    screen_recording: 'Screen recording',
+    website_asset: 'Website image',
+    first_party_capture: 'App screenshot',
+  };
+  return labels[sourceType] || (['Store screenshot', 'Uploaded screenshot', 'Screen recording', 'Website image', 'App screenshot'].includes(source.label)
+    ? source.label
+    : 'Reviewed app screen');
 }
 
 function packPlanQuantityControl(type, label, value) {
@@ -1791,11 +1821,11 @@ function canGenerateFromPlan(app) {
 
 function screenJudgement(screen) {
   if (screen.usability && screen.usabilityLabel && screen.usabilityReason) {
-    return {
+    return customerSafeScreenJudgement(screen.sourceType, {
       status: screen.usability,
       label: screen.usabilityLabel,
       reason: screen.usabilityReason,
-    };
+    });
   }
   if (screen.sourceType === 'website_asset') {
     return {
@@ -1840,6 +1870,38 @@ function screenJudgement(screen) {
     reason: screen.sourceType === 'store_art'
       ? 'Store screenshot found, but dimensions were not available in the URL.'
       : 'This asset is context only.',
+  };
+}
+
+function customerSafeScreenJudgement(sourceType, judgement = {}) {
+  const status = ['recommended', 'review', 'blocked'].includes(judgement.status) ? judgement.status : 'review';
+  if (sourceType === 'store_art') {
+    if (status === 'recommended') {
+      return { status, label: 'Ready for ads', reason: 'Store screenshot reviewed for use.' };
+    }
+    if (status === 'blocked') {
+      return { status, label: 'Not used', reason: 'This store screenshot is not selected for ads.' };
+    }
+    return { status, label: 'Needs review', reason: 'Check this store screenshot before using it in ads.' };
+  }
+  const internalCopy = /rawif|pre_rawification|ui_extracted|store_art|raw_app_proof/i.test(
+    `${judgement.label || ''} ${judgement.reason || ''}`,
+  );
+  if (!internalCopy) {
+    return {
+      status,
+      label: judgement.label || usabilityLabelFor(status),
+      reason: judgement.reason || 'Review this screenshot before using it in ads.',
+    };
+  }
+  return {
+    status,
+    label: status === 'recommended' ? 'Ready for ads' : status === 'blocked' ? 'Not used' : 'Needs review',
+    reason: status === 'recommended'
+      ? 'This app screenshot is ready to use.'
+      : status === 'blocked'
+        ? 'This image is not selected for ads.'
+        : 'Check this screenshot before using it in ads.',
   };
 }
 
@@ -4124,11 +4186,11 @@ function extractionStatusLine(extraction) {
 
 function judgementFromUiObject(object) {
   if (object?.usability?.status) {
-    return {
+    return customerSafeScreenJudgement(object.sourceType, {
       status: object.usability.status,
       label: object.usability.label || usabilityLabelFor(object.usability.status),
       reason: object.usability.reason || 'Automatically checked from the extracted app info.',
-    };
+    });
   }
   return screenJudgement({
     sourceType: object.sourceType,
@@ -4144,12 +4206,10 @@ function usabilityLabelFor(status) {
 }
 
 function screenDetail(object) {
-  const parts = [
-    object.description,
-    object.screenType ? `Type: ${object.screenType.replace(/_/g, ' ')}` : '',
-    object.sourceType === 'store_art' ? 'Store listing material; edit the plan if this should not be used.' : '',
-  ].filter(Boolean);
-  return parts.join(' ');
+  if (object.sourceType === 'store_art') return 'Store screenshot — Needs review before use.';
+  if (object.sourceType === 'raw_app_proof') return 'Uploaded app screenshot.';
+  if (object.sourceType === 'website_asset') return 'Website image.';
+  return 'Reviewed app screenshot.';
 }
 
 function sourceLabel(extraction) {
