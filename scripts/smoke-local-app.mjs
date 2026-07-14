@@ -240,6 +240,9 @@ check(appJsText.includes("credit.status = 'expired'"), 'credit must silently exp
 check(appJsText.includes("credit.status = 'applied'"), 'applying annual must consume the credit');
 check(appJsText.includes('startLaunchPackCredit'), 'Launch Pack checkout must start the credit window');
 check(appJsText.includes("Your first creative experiment"), 'pre-auth preview must show the creative experiment before account creation');
+check(appJsText.includes('How we built this plan'), 'Creative Plan must explain how its evidence shaped the plan');
+check(appJsText.includes('written customer review'), 'Creative Plan construction copy must name written reviews when they were used');
+check(appJsText.includes("app.store === 'Google Play'"), 'Creative Plan construction copy must use the imported store name');
 check(appJsText.includes('/api/previews/pack-plan'), 'pre-auth preview must build its Pack Plan through the shared server route');
 check(appJsText.includes("packPlanStatus: payload.packPlan?.plan ? 'ready' : 'error'"), 'initial extraction must reveal app info and the Creative Plan together');
 check(appJsText.includes('analysis and creative plan are ready'), 'combined preview completion must use one final reveal message');

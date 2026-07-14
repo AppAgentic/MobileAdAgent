@@ -1085,7 +1085,6 @@ function renderPreviewPackPlan(data, expires) {
   const research = plan.researchSnapshot || {};
   const productTruth = research.productTruth || [];
   const marketSignals = research.marketSignals || [];
-  const coverage = research.coverage || {};
   const limitations = state.preview.researchLimitations || [];
   const split = packPlanGenerationSplit(plan.assignments || []);
   const outputMix = plan.request?.outputMix || { image: 0, ugc: 0 };
@@ -1096,7 +1095,10 @@ function renderPreviewPackPlan(data, expires) {
         <div>
           <p class="mono-label">Your first creative experiment</p>
           <h2 id="previewPackPlanTitle">Your creative plan</h2>
-          <small class="pack-plan-basis">${escapeHtml(packPlanBasisCopy({ productTruth, coverage, learnings: [] }))}</small>
+          <div class="pack-plan-construction">
+            <span>How we built this plan</span>
+            <p>${escapeHtml(packPlanConstructionCopy({ app: data.app, productTruth, marketSignals }))}</p>
+          </div>
         </div>
       </div>
 
@@ -1432,7 +1434,6 @@ function renderPackPlan(app, stage) {
 
   const research = plan.research || {};
   const acceptedReadOnly = app.packPlanStatus === 'accepted';
-  const coverage = research.coverage || {};
   const marketSignals = research.marketSignals || [];
   const productTruth = research.productTruth || [];
   const learnings = [...(research.learningSignals || [])].sort((left, right) => Date.parse(right.createdAt) - Date.parse(left.createdAt));
@@ -1460,7 +1461,10 @@ function renderPackPlan(app, stage) {
             <p class="mono-label">Creative plan · ${returning ? `Pack ${packNumber}` : 'First pack'}</p>
           </div>
           <h2 id="packPlanTitle">Your creative plan</h2>
-          <small class="pack-plan-basis">${escapeHtml(packPlanBasisCopy({ productTruth, coverage, learnings }))}</small>
+          <div class="pack-plan-construction">
+            <span>How we built this plan</span>
+            <p>${escapeHtml(packPlanConstructionCopy({ app, productTruth, marketSignals, learnings }))}</p>
+          </div>
         </div>
       </div>
 
@@ -1566,13 +1570,25 @@ function renderPackPlan(app, stage) {
   });
 }
 
-function packPlanBasisCopy({ productTruth = [], coverage = {}, learnings = [] } = {}) {
-  const facts = productTruth.filter((item) => item.canSupportProductClaim).length;
-  const parts = [`${facts} verified app fact${facts === 1 ? '' : 's'}`];
-  if (coverage.sourceCount) parts.push(`${coverage.sourceCount} public source${coverage.sourceCount === 1 ? '' : 's'}`);
-  else parts.push('No public feedback yet');
-  if (learnings.length) parts.push(`${learnings.length} past decision${learnings.length === 1 ? '' : 's'}`);
-  return parts.join(' · ');
+function packPlanConstructionCopy({ app = {}, productTruth = [], marketSignals = [], learnings = [] } = {}) {
+  const store = app.store === 'Google Play' ? 'Google Play' : 'App Store';
+  const hasListingEvidence = productTruth.some((item) => item.kind === 'claim' || item.canSupportProductClaim);
+  const screenCount = productTruth.filter((item) => item.kind === 'screen').length;
+  const reviewCount = marketSignals.filter((item) => item.kind === 'store_review').length;
+  const hasWiderFeedback = marketSignals.some((item) => item.kind !== 'store_review');
+  const sources = [];
+
+  if (hasListingEvidence) sources.push(`your ${store} description`);
+  if (screenCount) sources.push(`${screenCount} product screen${screenCount === 1 ? '' : 's'}`);
+  if (reviewCount) sources.push(`${reviewCount} written customer review${reviewCount === 1 ? '' : 's'}`);
+  if (hasWiderFeedback) sources.push('wider public feedback');
+  if (learnings.length) sources.push('your previous creative feedback');
+  if (!sources.length) sources.push('the app information you provided');
+
+  const sourceList = sources.length === 1
+    ? sources[0]
+    : `${sources.slice(0, -1).join(', ')} and ${sources.at(-1)}`;
+  return `We analysed ${sourceList} to find the messages most worth testing. Those findings shaped the two ideas and how this creative pack is split between them.`;
 }
 
 function packPlanTestQuestion(app = {}) {
