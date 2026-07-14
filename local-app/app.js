@@ -114,8 +114,10 @@ const authRuntime = {
 const PREVIEW_STEPS = [
   'Found listing',
   'Found screenshots',
-  'Picked key features',
-  'Preview ready',
+  'Read customer feedback',
+  'Matched product evidence',
+  'Built creative plan',
+  'Analysis ready',
 ];
 
 const PROOF_BACKED_DEMO_URL = 'https://apps.apple.com/us/app/duolingo-language-lessons/id570060128';
@@ -3856,7 +3858,12 @@ async function startPreview(rawUrl) {
     const response = await fetch('/api/previews/from-url', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ url }),
+      body: JSON.stringify({
+        url,
+        imageCount: LAUNCH_PACK_MIX.image,
+        videoCount: LAUNCH_PACK_MIX.video,
+        locale: navigator.language || 'en-US',
+      }),
     });
     const payload = await response.json().catch(() => ({}));
     if (!response.ok || !payload.ok) {
@@ -3872,14 +3879,17 @@ async function startPreview(rawUrl) {
       status: 'ready',
       url,
       data: payload.preview,
-      packPlanStatus: 'researching',
+      packPlanStatus: payload.packPlan?.plan ? 'ready' : 'error',
+      packPlan: payload.packPlan?.plan || null,
+      researchStatus: payload.packPlan?.researchStatus || null,
+      researchLimitations: payload.packPlan?.researchLimitations || [],
+      packPlanError: payload.packPlanError || null,
     });
     try {
       localStorage.setItem(PREVIEW_SESSION_KEY, JSON.stringify({ id: payload.preview.previewSession.id }));
     } catch { /* storage unavailable; preview still works for this visit */ }
     renderAll();
-    toast(`${payload.preview.app.name} found. Building your creative plan now.`);
-    buildPreviewPackPlan(payload.preview.previewSession.id);
+    toast(`${payload.preview.app.name} analysis and creative plan are ready.`);
   } catch (error) {
     if (state.importSeq !== importSeq) return;
     clearInterval(timer);
@@ -3905,11 +3915,17 @@ async function tryRestorePreview() {
       status: 'ready',
       url: payload.preview.app.storeUrl || '',
       data: payload.preview,
-      packPlanStatus: 'researching',
+      packPlanStatus: payload.packPlan?.plan ? 'ready' : 'researching',
+      packPlan: payload.packPlan?.plan || null,
+      researchStatus: payload.packPlan?.researchStatus || null,
+      researchLimitations: payload.packPlan?.researchLimitations || [],
     });
     renderAll();
-    toast('Welcome back — rebuilding your saved creative plan.');
-    buildPreviewPackPlan(payload.preview.previewSession.id);
+    if (payload.packPlan?.plan) toast('Welcome back — your saved creative plan is ready.');
+    else {
+      toast('Welcome back — finishing your saved creative plan.');
+      buildPreviewPackPlan(payload.preview.previewSession.id);
+    }
   } catch {
     try { localStorage.removeItem(PREVIEW_SESSION_KEY); } catch { /* ignore */ }
   }

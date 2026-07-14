@@ -236,11 +236,27 @@ const server = createServer(async (request, response) => {
         previewStore.cacheExtraction(canonicalAppId, extraction);
       }
       const session = previewStore.createSession({ canonicalAppId, url: body.url });
+      let packPlan = null;
+      let packPlanError = null;
+      try {
+        packPlan = await getOrBuildAnonymousPackPlan({
+          session,
+          extraction,
+          locale: body.locale || 'en-US',
+          imageCount: body.imageCount,
+          videoCount: body.videoCount,
+        });
+      } catch (error) {
+        packPlanError = error.message;
+      }
       sendJson(response, {
         ok: true,
         cache,
         preview: buildPreviewPayload(extraction, session),
+        packPlan,
+        packPlanError,
         previewStats: previewStore.getCacheStats(canonicalAppId),
+        providerMutations: 0,
       });
       return;
     }
@@ -252,7 +268,14 @@ const server = createServer(async (request, response) => {
         sendJson(response, { ok: false, error: 'Preview expired. Paste the app URL again to refresh it.' }, 404);
         return;
       }
-      sendJson(response, { ok: true, claimed: Boolean(session.claim), preview: buildPreviewPayload(extraction, session) });
+      const packPlan = previewStore.getCachedPackPlan(session.canonicalAppId);
+      sendJson(response, {
+        ok: true,
+        claimed: Boolean(session.claim),
+        preview: buildPreviewPayload(extraction, session),
+        packPlan,
+        providerMutations: 0,
+      });
       return;
     }
 
@@ -265,45 +288,15 @@ const server = createServer(async (request, response) => {
         return;
       }
 
-      const cached = previewStore.getCachedPackPlan(pending.canonicalAppId);
-      if (cached) {
-        sendJson(response, { ok: true, ...cached, cache: 'hit', providerMutations: 0 });
-        return;
-      }
-
       try {
-        const createdAt = new Date().toISOString();
-        const reviewedApp = buildAnonymousPreviewPlanningApp({
+        const result = await getOrBuildAnonymousPackPlan({
+          session: pending,
           extraction,
-          canonicalAppId: pending.canonicalAppId,
-          createdAt,
-        });
-        const materials = await buildPackPlanMaterials({
-          reviewedApp,
           locale: body.locale || 'en-US',
+          imageCount: body.imageCount,
+          videoCount: body.videoCount,
         });
-        const plan = buildCreativePackPlan({
-          orgId: 'anonymous-preview',
-          workspaceId: 'preview',
-          appId: pending.canonicalAppId,
-          createdBy: 'anonymous-preview',
-          createdAt,
-          researchSnapshot: materials.researchSnapshot,
-          strategy: materials.strategy,
-          outputMix: {
-            image: Number.isInteger(body.imageCount) ? body.imageCount : 24,
-            ugc: Number.isInteger(body.videoCount) ? body.videoCount : 4,
-          },
-          goal: 'Choose the clearest first creative direction before checkout.',
-          channel: 'Paid social',
-        });
-        const result = {
-          plan,
-          researchStatus: materials.researchStatus,
-          researchLimitations: materials.researchLimitations,
-        };
-        previewStore.cachePackPlan(pending.canonicalAppId, result);
-        sendJson(response, { ok: true, ...result, cache: 'miss', providerMutations: 0 });
+        sendJson(response, { ok: true, ...result, providerMutations: 0 });
       } catch (error) {
         sendJson(response, { ok: false, error: error.message, providerMutations: 0 }, 400);
       }
@@ -683,6 +676,39 @@ function buildAnonymousPreviewPlanningApp({ extraction, canonicalAppId, createdA
       ignored: screen.usability === 'blocked',
     })),
   };
+}
+
+async function getOrBuildAnonymousPackPlan({ session, extraction, locale = 'en-US', imageCount, videoCount }) {
+  const cached = previewStore.getCachedPackPlan(session.canonicalAppId);
+  if (cached) return { ...cached, cache: 'hit' };
+  const createdAt = new Date().toISOString();
+  const reviewedApp = buildAnonymousPreviewPlanningApp({
+    extraction,
+    canonicalAppId: session.canonicalAppId,
+    createdAt,
+  });
+  const materials = await buildPackPlanMaterials({ reviewedApp, locale });
+  const result = {
+    plan: buildCreativePackPlan({
+      orgId: 'anonymous-preview',
+      workspaceId: 'preview',
+      appId: session.canonicalAppId,
+      createdBy: 'anonymous-preview',
+      createdAt,
+      researchSnapshot: materials.researchSnapshot,
+      strategy: materials.strategy,
+      outputMix: {
+        image: Number.isInteger(imageCount) ? imageCount : 24,
+        ugc: Number.isInteger(videoCount) ? videoCount : 4,
+      },
+      goal: 'Choose the clearest first creative direction before checkout.',
+      channel: 'Paid social',
+    }),
+    researchStatus: materials.researchStatus,
+    researchLimitations: materials.researchLimitations,
+  };
+  previewStore.cachePackPlan(session.canonicalAppId, result);
+  return { ...result, cache: 'miss' };
 }
 
 async function buildPackPlanMaterials({ reviewedApp, locale = 'en-US' }) {
