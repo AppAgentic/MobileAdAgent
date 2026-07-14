@@ -119,8 +119,8 @@ check(preview.app.name === 'Example App', 'preview must include app name');
 check(Boolean(preview.app.iconUrl), 'preview must include app icon');
 check(Boolean(preview.app.summary), 'preview must include app summary');
 check(preview.features.length === 2, 'preview must include feature candidates');
-check(preview.screenshots.length === 2, 'preview must include the screenshot grid');
-check(preview.readiness.readyCount === 1 && preview.readiness.reviewCount === 1, 'preview must report screenshot readiness');
+check(preview.screenshots.length === 1, 'preview must show only screenshots already usable or internally preparable');
+check(preview.screenCoverage.usableCount === 1 && preview.screenCoverage.hiddenCount === 1, 'preview must report usable screen coverage without readiness labels');
 
 const internalCopyExtraction = structuredClone(fixtureExtraction);
 internalCopyExtraction.uiObjects[1].usability = {
@@ -134,8 +134,8 @@ check(
   !/rawify|pre_rawification|store_art|raw_app_proof/i.test(JSON.stringify(customerSafePreview)),
   'anonymous preview must translate internal screenshot stages into customer-safe wording',
 );
-check(customerSafePreview.screenshots[1].readiness.label === 'Needs review', 'store screenshot preview should use plain-language readiness');
-check(Array.isArray(preview.readiness.gaps), 'preview must report readiness gaps');
+check(customerSafePreview.screenshots.length === 2, 'rawify-eligible store art should be included as an internally preparable screen');
+check(!customerSafePreview.screenshots.some((screen) => 'readiness' in screen), 'customer screenshots must not expose readiness states');
 check(preview.access.tier === 'anonymous_preview', 'preview access tier must be anonymous_preview');
 check(preview.access.canGenerate === false, 'anonymous preview must not allow generation');
 check(preview.access.canUploadScreenshots === false, 'anonymous preview must not allow uploads');

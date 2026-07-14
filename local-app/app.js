@@ -977,7 +977,6 @@ function renderPreviewPane() {
   if (!data) return;
   const features = data.features || [];
   const screenshots = data.screenshots || [];
-  const gaps = data.readiness?.gaps || [];
   const expires = formatPreviewExpiry(data.previewSession?.expiresAt);
   $('#previewPane').innerHTML = `
     <section class="panel preview-head-card">
@@ -989,7 +988,7 @@ function renderPreviewPane() {
           <p>${escapeHtml(data.app.summary || 'No summary found on the listing yet. You can write one after you save the preview.')}</p>
           <div class="hero-pills">
             <span class="pill live"><span class="dot"></span>App found</span>
-            <span class="pill">${screenshots.length} screenshot${screenshots.length === 1 ? '' : 's'}</span>
+            <span class="pill">${screenshots.length} usable screenshot${screenshots.length === 1 ? '' : 's'}</span>
             <span class="pill">${features.length} key feature${features.length === 1 ? '' : 's'}</span>
           </div>
         </div>
@@ -1016,25 +1015,19 @@ function renderPreviewPane() {
       </section>
 
       <section class="panel preview-shots">
-        <p class="mono-label">Screenshots</p>
-        <h3>${data.readiness.readyCount} of ${data.readiness.total} look ad-ready</h3>
-        <p class="panel-note">Shown from the public listing. Uploading your own screenshots unlocks after checkout.</p>
-        <div class="preview-shot-grid">
+        <p class="mono-label">Product screens</p>
+        <h3>Screens we can use</h3>
+        <p class="panel-note">Selected from the public listing. We’ll prepare them for generation after checkout.</p>
+        ${screenshots.length ? `<div class="preview-shot-grid">
           ${screenshots.slice(0, 8).map((shot, index) => `
-            <figure class="preview-shot ${escapeHtml(shot.readiness.status)}">
+            <figure class="preview-shot">
               <div class="preview-shot-frame">
                 ${shot.url ? `<img src="${escapeHtml(shot.url)}" alt="${escapeHtml(shot.label)}" loading="lazy" decoding="async" onerror="this.remove()">` : '<span></span>'}
-                <b>${escapeHtml(shot.readiness.label)}</b>
               </div>
               <figcaption>${escapeHtml(shot.label || `Screenshot ${index + 1}`)}</figcaption>
             </figure>
           `).join('')}
-        </div>
-        ${gaps.length ? `
-          <div class="preview-gaps">
-            ${gaps.map((gap) => `<p><span aria-hidden="true">△</span>${escapeHtml(gap)}</p>`).join('')}
-          </div>
-        ` : ''}
+        </div>` : '<div class="extract-empty"><strong>No usable product screens found</strong><small>You can add screenshots after checkout before anything generates.</small></div>'}
       </section>
     </div>
 
