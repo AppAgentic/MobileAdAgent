@@ -241,6 +241,9 @@ check(appJsText.includes("credit.status = 'applied'"), 'applying annual must con
 check(appJsText.includes('startLaunchPackCredit'), 'Launch Pack checkout must start the credit window');
 check(appJsText.includes("Your first creative experiment"), 'pre-auth preview must show the creative experiment before account creation');
 check(appJsText.includes('/api/previews/pack-plan'), 'pre-auth preview must build its Pack Plan through the shared server route');
+check(appJsText.includes("$('#importForm').hidden = loading || showPreview"), 'the URL form must disappear after extraction succeeds');
+check(appJsText.includes('Review the creative plan for ${previewName}.'), 'the ready state must replace the paste-URL heading with plan-review context');
+check(appJsText.includes('Try another app'), 'the ready state must keep a small, explicit way to restart with another app');
 check(appJsText.includes('Generate My Ads'), 'pre-auth preview CTA must be outcome-led');
 check(
   appJsText.indexOf("const AUTH_SESSION_KEY = 'maaAuthSession'") < appJsText.indexOf('const STORED_AUTH_SESSION_RAW = readStoredAuthSession()'),

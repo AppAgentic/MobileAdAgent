@@ -931,12 +931,17 @@ function renderAnonymousHome() {
   const previewStatus = state.preview.status;
   const showPreview = previewStatus === 'ready';
   const loading = previewStatus === 'loading';
+  const previewName = state.preview.data?.app?.name || 'your app';
 
-  $('#homeTitle').textContent = state.launchIntent
-    ? 'Paste your app URL. Get 28 launch-ready ad creatives today.'
-    : 'Paste your app URL. See the launch pack we can build.';
-  $('#homeSub').textContent = 'We show the public app info we found before checkout, then generate the pack only after payment.';
-  $('#importForm').hidden = loading;
+  $('#homeTitle').textContent = showPreview
+    ? `Review the creative plan for ${previewName}.`
+    : state.launchIntent
+      ? 'Paste your app URL. Get 28 launch-ready ad creatives today.'
+      : 'Paste your app URL. See the launch pack we can build.';
+  $('#homeSub').textContent = showPreview
+    ? 'See what we found, compare the two ideas, and open the evidence behind the plan before continuing.'
+    : 'We show the public app info we found before checkout, then generate the pack only after payment.';
+  $('#importForm').hidden = loading || showPreview;
   $('#openImport').hidden = true;
   $('#showEmptyState').hidden = true;
   $('#urlNote').textContent = 'No account needed for the app preview. Generated ads start with the Same-Day Launch Pack.';
@@ -988,7 +993,7 @@ function renderPreviewPane() {
         </div>
       </div>
       <div class="hero-actions">
-        <button class="ghost-button" type="button" id="previewAnotherApp">Preview a different app</button>
+        <button class="ghost-button" type="button" id="previewAnotherApp">Try another app</button>
       </div>
     </section>
 
