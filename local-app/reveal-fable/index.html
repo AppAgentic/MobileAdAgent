@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07090a">
+  <title>Research Reveal — Fable Set — Mobile Ad Agent</title>
+  <link rel="stylesheet" href="/reveal-fable/styles.css">
+</head>
+<body>
+  <header class="bar">
+    <a class="brand" href="/" aria-label="Mobile Ad Agent home"><span class="brand-mark">▲</span><span>mobile-ad-agent</span></a>
+    <nav class="vnav" aria-label="Reveal variants">
+      <a href="?variant=1" data-v="1"><b>01</b><span>Case File</span></a>
+      <a href="?variant=2" data-v="2"><b>02</b><span>Evidence Wall</span></a>
+      <a href="?variant=3" data-v="3"><b>03</b><span>Worklog</span></a>
+      <a href="?variant=4" data-v="4"><b>04</b><span>Darkroom</span></a>
+      <a href="?variant=5" data-v="5"><b>05</b><span>Receipts</span></a>
+    </nav>
+    <div class="bar-right">
+      <div class="live" role="status"><i></i><span id="status">Opening your app…</span></div>
+      <button id="replay" type="button">↻ Replay</button>
+    </div>
+  </header>
+
+  <main id="stage" aria-live="polite"></main>
+
+  <footer class="foot">
+    <span class="truth"><b>●</b> Only what was actually found in your app is shown</span>
+    <span id="thesis"></span>
+  </footer>
+
+  <script src="/reveal-fable/app.js" defer></script>
+</body>
+</html>
