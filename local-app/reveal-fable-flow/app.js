@@ -191,7 +191,7 @@ let tl = null;
 const VARIANTS = {
   1: { name: 'Contact Sheet', thesis: 'Every frame develops from something actually found — the circled selects become the plan.', render: contactSheet },
   2: { name: 'Reading Room', thesis: 'Watch the sources being read — every note in the notebook links back to the line it came from.', render: readingRoom },
-  3: { name: 'Route', thesis: 'The analysis builds the page as it travels — scroll back over the route it took.', render: route },
+  3: { name: 'Route', thesis: 'The analysis builds one focused test between two ideas — scroll back over the evidence that shaped it.', render: route },
   4: { name: 'The Sort', thesis: 'Evidence lands first, then visibly sorts itself into the two directions it supports.', render: theSort },
   5: { name: 'Front Page', thesis: 'Findings arrive on the wire, then compose into your edition.', render: frontPage },
 };
@@ -480,24 +480,35 @@ function route(t) {
         <p class="dim f3-note f3-step">Six written reviews, read in full. The highlighted phrases repeat across different people.</p>`,
     },
     {
-      title: 'Language matched to proof',
-      act: ['Cross-checking their words against your screens…', 'Every message below is backed by a real screen'],
-      hop: 'Every match held. Drafting the two directions this evidence supports',
-      html: `<div class="f3-matches">${matchRows('f3-step')}</div><div class="f3-step f3-method">${methodNote()}</div>`,
+      title: 'What stood out',
+      act: ['Finding the clearest messages worth testing…', 'Two clear messages are worth testing'],
+      hop: 'Two clear messages found. Turning them into one focused test',
+      html: `<div class="f3-insights">
+          <article class="f3-insight">
+            <div><span>INSIGHT 1</span><h3>${IDEAS[0].title}</h3><p>People repeatedly describe fitting quick lessons into real life.</p></div>
+            <div class="f3-insight-screen">${screenImg(IDEAS[0].screen, 'mini')}<p>Shown by your sentence translation exercise</p></div>
+          </article>
+          <article class="f3-insight">
+            <div><span>INSIGHT 2</span><h3>${IDEAS[1].title}</h3><p>People value having different ways to practise without it feeling repetitive.</p></div>
+            <div class="f3-insight-screen">${screenImg(IDEAS[1].screen, 'mini')}<p>Shown across your vocabulary, translation and listening screens</p></div>
+          </article>
+        </div>
+        <p class="f3-step f3-method f3-plain-rule">We only test messages your app can actually show.</p>`,
     },
     {
-      title: 'Two directions drafted',
-      act: ['Drafting directions from the strongest matches…', 'Two directions — each one chosen for its proof'],
-      hop: 'Both directions fully backed — setting the 14 / 14 split',
-      html: `<div class="ideas-grid">${IDEAS.map((_, index) => ideaCard(index)).join('')}</div>
-        <p class="dim f3-note f3-step">Chosen because your own reviews repeat these two messages — and your real screens can prove both.</p>`,
-    },
-    {
-      title: 'The plan',
-      act: ['Sizing the plan…', '28 creatives — 14 per direction'],
+      title: 'What we’re testing',
+      act: ['Building one focused test from the strongest matches…', 'One test — two evidence-backed ideas'],
       hop: '',
-      html: `<div class="f3-step f3-split">${splitBar()}</div><div class="f3-step f3-cta">${ctaBlock()}</div>
-        <p class="dim f3-note f3-step center">Scroll back up any time — the whole route stays on the page.</p>`,
+      html: `<div class="f3-step f3-test-intro">
+          <p>YOUR CREATIVE PLAN</p>
+          <h3>Which Duolingo message resonates more?</h3>
+          <span>We’ll generate both ideas as one balanced test, then use the results to decide what to explore next.</span>
+        </div>
+        <div class="ideas-grid">${IDEAS.map((_, index) => ideaCard(index)).join('')}</div>
+        <p class="dim f3-note f3-step f3-why">These are the two messages repeated in your reviews that your real screens can also prove.</p>
+        <div class="f3-step f3-split">${splitBar()}</div>
+        <div class="f3-step f3-cta">${ctaBlock()}</div>
+        <p class="dim f3-note f3-step center f3-scroll-note">Scroll back up any time — the whole route stays on the page.</p>`,
     },
   ];
 
@@ -649,29 +660,28 @@ function route(t) {
   t.at(at, () => depart(3));
   at += HOP;
 
-  // 05 — Matching: each row lands, then the method resolves.
-  t.at(at, () => arrive(4, STATUS.match));
-  t.at(at + 320, () => qa(4, '.matchrow')[0].classList.add('in'));
-  t.at(at + 880, () => qa(4, '.matchrow')[1].classList.add('in'));
+  // 05 — Synthesis: two plain-language insights emerge from the research.
+  t.at(at, () => arrive(4, 'Finding the strongest messages to test…'));
+  t.at(at + 320, () => qa(4, '.f3-insight')[0].classList.add('in'));
+  t.at(at + 880, () => qa(4, '.f3-insight')[1].classList.add('in'));
   t.at(at + 1380, () => { q(4, '.f3-method').classList.add('in'); setAct(4, 1); });
   at += 1720;
   t.at(at, () => depart(4));
   at += HOP;
 
-  // 06 — Directions: drafted one after the other, then the why.
+  // 06 — The plan is the test: question first, then both ideas and their balanced split.
   t.at(at, () => arrive(5, STATUS.ideas));
-  t.at(at + 280, () => qa(5, '.idea')[0].classList.add('in'));
-  t.at(at + 760, () => qa(5, '.idea')[1].classList.add('in'));
-  t.at(at + 1240, () => { q(5, '.f3-note').classList.add('in'); setAct(5, 1); });
-  at += 1580;
-  t.at(at, () => depart(5));
-  at += HOP;
-
-  // 07 — The plan: the split fills, then the door to generation.
-  t.at(at, () => arrive(6, STATUS.plan));
-  t.at(at + 320, () => q(6, '.f3-split').classList.add('in'));
-  t.at(at + 700, () => q(6, '.f3-cta').classList.add('in'));
-  t.at(at + 980, () => { q(6, '.f3-note').classList.add('in'); setAct(6, 1); });
+  t.at(at + 280, () => q(5, '.f3-test-intro').classList.add('in'));
+  t.at(at + 620, () => qa(5, '.idea')[0].classList.add('in'));
+  t.at(at + 1080, () => qa(5, '.idea')[1].classList.add('in'));
+  t.at(at + 1460, () => q(5, '.f3-why').classList.add('in'));
+  t.at(at + 1800, () => q(5, '.f3-split').classList.add('in'));
+  t.at(at + 2160, () => q(5, '.f3-cta').classList.add('in'));
+  t.at(at + 2460, () => {
+    q(5, '.f3-scroll-note').classList.add('in');
+    setAct(5, 1);
+    setStatus(STATUS.plan);
+  });
 
   t.onFinish(() => {
     followBtn.hidden = true;

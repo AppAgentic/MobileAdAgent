@@ -340,7 +340,23 @@ body.done .f3-station.on .f3-node { animation: none; }
 .f3-revs .rev.read { border-color: var(--line-2); }
 .f3-revs .rev mark { background: transparent; color: inherit; transition: background .5s var(--ease), color .5s var(--ease); }
 .f3-revs .rev.read mark { background: var(--lime-soft); color: var(--lime); }
-.f3-matches { display: grid; gap: 14px; }
+.f3-insights { display: grid; gap: 12px; }
+.f3-insight {
+  display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: center;
+  padding: 18px; border: 1px solid var(--line-2); border-radius: 14px; background: var(--panel-2);
+  opacity: 0; transform: translateY(12px); transition: opacity .55s var(--ease), transform .55s var(--ease);
+}
+.f3-insight.in { opacity: 1; transform: none; }
+.f3-insight > div:first-child > span { color: var(--lime); font: 700 9px var(--mono); letter-spacing: .14em; }
+.f3-insight h3 { margin: 7px 0 6px; font-size: 20px; letter-spacing: -.02em; }
+.f3-insight > div:first-child > p { margin: 0; color: var(--muted); font-size: 12.5px; line-height: 1.55; }
+.f3-insight-screen { display: grid; grid-template-columns: auto minmax(100px, 150px); gap: 10px; align-items: center; }
+.f3-insight-screen p { margin: 0; color: var(--muted); font: 500 9px/1.5 var(--mono); }
+.f3-plain-rule { margin: 14px 0 0; padding: 11px 14px; border-left: 2px solid var(--lime); color: #c3c9c2; font-size: 12px; background: var(--lime-soft); }
+.f3-test-intro { margin-bottom: 20px; max-width: 760px; }
+.f3-test-intro > p { margin: 0 0 8px; color: var(--lime); font: 700 9px var(--mono); letter-spacing: .16em; }
+.f3-test-intro h3 { margin: 0; font-size: clamp(24px, 3.4vw, 40px); line-height: 1.08; letter-spacing: -.035em; }
+.f3-test-intro > span { display: block; margin-top: 10px; max-width: 620px; color: var(--muted); font-size: 13px; line-height: 1.6; }
 /* Split bar fills once the route reaches the plan. */
 .f3 .split-bar i { transform: scaleX(0); transform-origin: left; transition: transform .9s var(--ease) .1s; }
 .f3 .f3-split.in .split-bar i { transform: scaleX(1); }
@@ -476,6 +492,8 @@ body.done .f3-station.on .f3-node { animation: none; }
   .f3 { padding: 28px 16px 70px; }
   .f3-revs { columns: 1; }
   .f3-station { padding-left: 34px; }
+  .f3-insight { grid-template-columns: 1fr; }
+  .f3-insight-screen { grid-template-columns: auto 1fr; }
 
   .f4 { padding: 24px 16px 70px; }
   .f4-claimchips { margin-left: 0; }
