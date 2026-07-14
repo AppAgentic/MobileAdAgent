@@ -244,6 +244,9 @@ check(appJsText.includes('/api/previews/pack-plan'), 'pre-auth preview must buil
 check(appJsText.includes("$('#importForm').hidden = loading || showPreview"), 'the URL form must disappear after extraction succeeds');
 check(appJsText.includes('Review the creative plan for ${previewName}.'), 'the ready state must replace the paste-URL heading with plan-review context');
 check(appJsText.includes('Try another app'), 'the ready state must keep a small, explicit way to restart with another app');
+check(appJsText.includes("headline: 'Previewing your app'"), 'anonymous store extraction must use a neutral loading label until the real app name is known');
+check(!appJsText.includes('`Previewing ${deriveName(parsed)}`'), 'anonymous loading copy must not derive an app name from a store locale path');
+check(appJsText.includes("const appIndex = parts.indexOf('app')"), 'App Store URL name hints must skip arbitrary country path segments');
 check(appJsText.includes('Generate My Ads'), 'pre-auth preview CTA must be outcome-led');
 check(
   appJsText.indexOf("const AUTH_SESSION_KEY = 'maaAuthSession'") < appJsText.indexOf('const STORED_AUTH_SESSION_RAW = readStoredAuthSession()'),

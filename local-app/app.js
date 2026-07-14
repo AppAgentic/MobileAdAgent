@@ -3832,8 +3832,8 @@ async function startPreview(rawUrl) {
   state.importSeq = importSeq;
   state.preview = createPreviewState({ status: 'loading', url });
   state.building = {
-    name: deriveName(parsed),
-    headline: `Previewing ${deriveName(parsed)}`,
+    name: 'Your app',
+    headline: 'Previewing your app',
     url,
     step: 0,
     detail: 'Reading the public listing...',
@@ -4467,10 +4467,18 @@ function sentenceLikeTitle(value) {
 }
 
 function deriveName(url) {
-  if (url.hostname.includes('apps.apple.com') || url.hostname.includes('play.google.com')) {
+  if (url.hostname.includes('apps.apple.com')) {
     const parts = url.pathname.split('/').filter(Boolean);
-    const candidate = parts.find((part) => !['us', 'app', 'store', 'details'].includes(part) && !part.startsWith('id')) || 'Imported App';
+    const appIndex = parts.indexOf('app');
+    const candidate = appIndex >= 0 && parts[appIndex + 1] && !parts[appIndex + 1].startsWith('id')
+      ? parts[appIndex + 1]
+      : 'Imported App';
     return titleCase(candidate.replace(/-/g, ' '));
+  }
+  if (url.hostname.includes('play.google.com')) {
+    const packageId = url.searchParams.get('id') || '';
+    const candidate = packageId.split('.').filter((part) => !['app', 'android', 'mobile'].includes(part.toLowerCase())).at(-1);
+    return candidate ? titleCase(candidate.replace(/[-_]/g, ' ')) : 'Imported App';
   }
   return titleCase(url.hostname.replace(/^www\./, '').split('.')[0].replace(/-/g, ' '));
 }
