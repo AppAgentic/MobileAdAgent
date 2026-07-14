@@ -1,0 +1,60 @@
+runConfig:
+  minInstances: 0
+  maxInstances: 10
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 1024
+
+env:
+  - variable: HOST
+    value: 0.0.0.0
+    availability:
+      - RUNTIME
+  - variable: GOOGLE_CLOUD_PROJECT
+    value: mobileadagent
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: MAA_TENANT_BACKEND
+    value: firestore
+    availability:
+      - RUNTIME
+  - variable: MAA_AUTH_MODE
+    value: firebase
+    availability:
+      - RUNTIME
+  - variable: MAA_FIREBASE_WEB_API_KEY
+    secret: mobileadagent-firebase-web-api-key@1
+    availability:
+      - RUNTIME
+  - variable: MAA_PREVIEW_RATE_LIMIT
+    value: "12"
+    availability:
+      - RUNTIME
+  - variable: MAA_PREVIEW_DAILY_COST_CENTS
+    value: "400"
+    availability:
+      - RUNTIME
+  - variable: MAA_PREVIEW_COST_CENTS
+    value: "8"
+    availability:
+      - RUNTIME
+  - variable: GEMINI_API_KEY
+    secret: mobileadagent-gemini-api-key
+    availability:
+      - RUNTIME
+
+scripts:
+  buildCommand: pnpm run build:apphosting
+  runCommand: pnpm run start:apphosting
+
+outputFiles:
+  serverApp:
+    include:
+      - lib
+      - local-app
+      - node_modules
+      - scripts/apphosting-build-check.mjs
+      - scripts/local-app-server.mjs
+      - package.json
+      - pnpm-lock.yaml

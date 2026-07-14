@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "mobile-ad-agent-reviewed-profile.v1",
+  "storeAppId": "1480220328",
+  "approvedForGeneration": true,
+  "app": {
+    "name": "Tiimo: Daily To-Do List",
+    "category": "Productivity",
+    "summary": "Tiimo helps people turn an overwhelming mix of tasks into a visual daily plan, clearer priorities, and focused work sessions."
+  },
+  "supportedClaims": [
+    {
+      "id": "visual-daily-planner",
+      "text": "Organize daily tasks in a visual schedule grouped by time of day.",
+      "source": "Reviewed App Store description and approved visual-planner screen",
+      "supported": true
+    },
+    {
+      "id": "ai-co-planner",
+      "text": "Turn a brain dump into a planned list of tasks with the AI Co-Planner.",
+      "source": "Reviewed App Store description and approved Co-Planner screen",
+      "supported": true
+    },
+    {
+      "id": "focus-timer",
+      "text": "Use a visual countdown timer to stay with the task in front of you.",
+      "source": "Reviewed App Store description and approved focus-timer screen",
+      "supported": true
+    }
+  ],
+  "proofs": [
+    {
+      "id": "visual-daily-schedule",
+      "sourcePath": "../../artifacts/tiimo-canary/rawified-3/rawified-candidate.jpg",
+      "label": "Visual daily schedule",
+      "detail": "A Tuesday plan groups tasks under Anytime, Morning, Day, and Evening, with task names and scheduled times visible.",
+      "approvedForGeneration": true
+    },
+    {
+      "id": "ai-co-planner-task-plan",
+      "sourcePath": "../../artifacts/tiimo-canary/rawified-5/rawified-candidate.jpg",
+      "label": "AI Co-Planner task plan",
+      "detail": "A user enters several errands and responsibilities, and the Co-Planner returns a structured list with individual tasks and times.",
+      "approvedForGeneration": true
+    },
+    {
+      "id": "visual-focus-timer",
+      "sourcePath": "../../artifacts/tiimo-canary/rawified-6/rawified-candidate.jpg",
+      "label": "Visual focus timer",
+      "detail": "A focus session for Laundry shows its scheduled time, a circular progress indicator, a countdown, and a pause control.",
+      "approvedForGeneration": true
+    }
+  ],
+  "styleNotes": [
+    "Use an organic creator voice for people who feel overwhelmed deciding what to do first.",
+    "Prefer concrete tension such as too many tasks in your head, unclear priorities, or losing track of time.",
+    "Avoid medical outcomes, diagnosis claims, testimonials, and productivity guarantees.",
+    "Show only approved Tiimo screens and keep every spoken product claim tied to the visible proof."
+  ]
+}
