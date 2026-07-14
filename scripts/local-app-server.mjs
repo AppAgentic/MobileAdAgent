@@ -67,6 +67,7 @@ const contentTypes = {
 const marketingRoutes = new Set(['/', '/pricing', '/launch-pack']);
 const revealLabRoutes = new Set(['/reveal-lab']);
 const revealFableRoutes = new Set(['/reveal-fable']);
+const revealFableFlowRoutes = new Set(['/reveal-fable-flow']);
 const appShellRoutes = new Set(['/app', '/app/import', '/preview', '/login', '/signup']);
 const appShellPrefixes = ['/app/apps/', '/app/packs/'];
 const publicAssets = new Map([
@@ -78,6 +79,8 @@ const publicAssets = new Map([
   ['/reveal-lab/app.js', 'reveal-lab/app.js'],
   ['/reveal-fable/styles.css', 'reveal-fable/styles.css'],
   ['/reveal-fable/app.js', 'reveal-fable/app.js'],
+  ['/reveal-fable-flow/styles.css', 'reveal-fable-flow/styles.css'],
+  ['/reveal-fable-flow/app.js', 'reveal-fable-flow/app.js'],
   ['/demo-assets/duolingo-vocabulary-choice.jpg', 'demo-assets/duolingo-vocabulary-choice.jpg'],
   ['/demo-assets/duolingo-sentence-translation.jpg', 'demo-assets/duolingo-sentence-translation.jpg'],
   ['/demo-assets/duolingo-listening-exercise.jpg', 'demo-assets/duolingo-listening-exercise.jpg'],
@@ -592,6 +595,11 @@ async function serveStatic(pathname, response) {
 
   if (revealFableRoutes.has(route)) {
     await serveFile('reveal-fable/index.html', response);
+    return;
+  }
+
+  if (revealFableFlowRoutes.has(route)) {
+    await serveFile('reveal-fable-flow/index.html', response);
     return;
   }
 
