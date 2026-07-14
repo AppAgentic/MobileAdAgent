@@ -1458,6 +1458,38 @@ p { margin: 0; }
 .pack-output-mix { display: flex; justify-content: space-between; align-items: center; gap: 18px; }
 .pack-output-mix strong { display: block; margin-top: 3px; font: 600 14px var(--sans); }
 .pack-output-mix small { display: block; margin-top: 3px; color: var(--lime); font: 500 10.5px var(--mono); }
+
+.preview-pack-plan { margin-top: 18px; }
+.preview-plan-footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, .75fr);
+  align-items: end;
+  gap: 20px;
+}
+.preview-plan-checkout {
+  display: grid;
+  justify-items: end;
+  gap: 10px;
+  text-align: right;
+}
+.preview-plan-checkout small {
+  max-width: 52ch;
+  color: var(--ink-4);
+  font: 500 10px/1.45 var(--mono);
+}
+.preview-plan-checkout .primary-button { min-width: 210px; }
+.preview-plan-error {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-color: rgba(226,181,62,.42);
+  background: linear-gradient(135deg, rgba(226,181,62,.055), transparent 58%), var(--panel);
+}
+.preview-plan-error h3 { margin: 6px 0; }
+.preview-plan-error p:not(.mono-label) { max-width: 64ch; }
+.preview-plan-error-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 .pack-output-controls { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 .pack-output-stepper {
   display: grid;
@@ -2337,6 +2369,12 @@ p { margin: 0; }
   .pack-plan-evidence summary small { display: none; }
   .pack-plan-footer { padding: 16px 18px 18px; }
   .pack-output-mix { align-items: flex-start; flex-direction: column; }
+  .preview-plan-footer { grid-template-columns: 1fr; align-items: stretch; }
+  .preview-plan-checkout { justify-items: stretch; text-align: left; }
+  .preview-plan-checkout .primary-button { width: 100%; min-width: 0; }
+  .preview-plan-error { align-items: stretch; flex-direction: column; }
+  .preview-plan-error-actions { display: grid; justify-content: stretch; }
+  .preview-plan-error-actions button { width: 100%; }
   .pack-output-controls { width: 100%; justify-content: flex-start; }
   .pack-plan-actions { flex-direction: column-reverse; }
   .pack-plan-actions button { width: 100%; }

@@ -108,6 +108,9 @@ const store = createPreviewStore();
 const canonicalId = canonicalPreviewAppId(fixtureExtraction.url);
 store.cacheExtraction(canonicalId, fixtureExtraction);
 check(store.getCachedExtraction(canonicalId) === fixtureExtraction, 'preview cache must return cached extraction');
+const cachedPreviewPlan = { plan: { planId: 'plan-preview-fixture' }, researchStatus: 'complete', researchLimitations: [] };
+store.cachePackPlan(canonicalId, cachedPreviewPlan);
+check(store.getCachedPackPlan(canonicalId) === cachedPreviewPlan, 'preview cache must return the research-led Pack Plan');
 
 const session = store.createSession({ canonicalAppId: canonicalId, url: fixtureExtraction.url });
 const preview = buildPreviewPayload(fixtureExtraction, session);
@@ -236,7 +239,8 @@ check(appJsText.includes('creditWindowDays: 7'), 'Launch Pack credit window must
 check(appJsText.includes("credit.status = 'expired'"), 'credit must silently expire after the window');
 check(appJsText.includes("credit.status = 'applied'"), 'applying annual must consume the credit');
 check(appJsText.includes('startLaunchPackCredit'), 'Launch Pack checkout must start the credit window');
-check(appJsText.includes('Ready to generate ads from this app?'), 'pre-auth preview must lead with generation value before showing price');
+check(appJsText.includes("Your first creative experiment"), 'pre-auth preview must show the creative experiment before account creation');
+check(appJsText.includes('/api/previews/pack-plan'), 'pre-auth preview must build its Pack Plan through the shared server route');
 check(appJsText.includes('Generate My Ads'), 'pre-auth preview CTA must be outcome-led');
 check(
   appJsText.indexOf("const AUTH_SESSION_KEY = 'maaAuthSession'") < appJsText.indexOf('const STORED_AUTH_SESSION_RAW = readStoredAuthSession()'),
@@ -251,6 +255,10 @@ check(appJsText.includes('Which ${shortName} message resonates more?'), 'Pack Pl
 check(!appJsText.includes('<p class="mono-label">Our idea</p>'), 'first Pack Plan must not imply the system already picked a winning idea');
 check(!appJsText.includes('escapeHtml(plan.hypothesis?.statement'), 'internal hypothesis prediction must not be rendered as the customer-facing winner');
 check(appJsText.includes('Create an account to continue'), 'first modal after preview CTA must be account creation');
+check(
+  appJsText.indexOf('Why this plan?') < appJsText.indexOf('Create an account to continue'),
+  'Why this plan must be rendered before the account and checkout gate',
+);
 check(appJsText.includes('Continue to checkout'), 'account modal must continue to checkout after auth');
 check(appJsText.includes('No payment yet. Checkout appears after your account is created.'), 'account modal must clarify no payment happens before checkout');
 check(!appJsText.includes('Save app plan'), 'pre-auth preview must not use the save-plan CTA');

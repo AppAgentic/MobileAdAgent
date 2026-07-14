@@ -156,6 +156,28 @@ Create or update the app profile, wait for Mobile Ad Agent to pick the first scr
 
 let nextAdNumber = 14;
 
+function createPreviewState({
+  status = 'idle',
+  url = '',
+  data = null,
+  packPlanStatus = 'idle',
+  packPlan = null,
+  researchStatus = null,
+  researchLimitations = [],
+  packPlanError = null,
+} = {}) {
+  return {
+    status,
+    url,
+    data,
+    packPlanStatus,
+    packPlan,
+    researchStatus,
+    researchLimitations,
+    packPlanError,
+  };
+}
+
 const state = {
   route: 'home',
   activeAppId: ANONYMOUS_START || RESTORE_PERSISTED_SESSION ? null : 'pepmod',
@@ -173,7 +195,7 @@ const state = {
     : RESTORE_PERSISTED_SESSION
       ? { authed: true, ...STORED_AUTH_SESSION }
       : { authed: true, uid: 'user-demo', email: 'demo@appagentic.dev', orgId: 'org-demo', workspaceId: 'ws-default' },
-  preview: { status: 'idle', url: '', data: null },
+  preview: createPreviewState(),
   checkoutProductId: START_LAUNCH_PACK ? 'launch_pack' : REQUESTED_PLAN || 'launch_pack',
   checkoutStep: 'offer',
   checkoutEmail: '',
@@ -602,7 +624,7 @@ function bindShell() {
     state.session = { authed: true, email: 'demo@appagentic.dev', orgId: 'org-demo', workspaceId: 'ws-default' };
     state.launchPackMode = false;
     state.launchIntent = false;
-    state.preview = { status: 'idle', url: '', data: null };
+    state.preview = createPreviewState();
     state.credits = initialCredits();
     state.building = null;
     state.clockOffsetDays = 0;
@@ -1009,24 +1031,121 @@ function renderPreviewPane() {
       </section>
     </div>
 
-    <section class="panel preview-gate">
-      <div>
-        <p class="mono-label">Recommended next step</p>
-        <h3>Ready to generate ads from this app?</h3>
-        <p>Create an account in the next step so we can keep this app summary, features, and screenshots. Checkout appears after that, before any paid generation starts.</p>
-        <small>Preview saved on this device until ${escapeHtml(expires)}. Paid generation starts only after checkout.</small>
-      </div>
-      <div class="preview-gate-actions">
-        <button class="primary-button" type="button" id="previewCheckoutLaunch">Generate My Ads</button>
-      </div>
-    </section>
+    ${renderPreviewPackPlan(data, expires)}
   `;
   $('#previewAnotherApp').addEventListener('click', () => {
-    state.preview = { status: 'idle', url: '', data: null };
+    state.preview = createPreviewState();
     renderAll();
     $('#importUrl')?.focus();
   });
-  $('#previewCheckoutLaunch').addEventListener('click', () => openCheckout('launch_pack'));
+  $('#previewCheckoutLaunch')?.addEventListener('click', () => openCheckout('launch_pack'));
+  $('#retryPreviewPackPlan')?.addEventListener('click', () => {
+    const sessionId = state.preview.data?.previewSession?.id;
+    if (sessionId) buildPreviewPackPlan(sessionId);
+  });
+  $('#continueWithoutPreviewPlan')?.addEventListener('click', () => openCheckout('launch_pack'));
+}
+
+function renderPreviewPackPlan(data, expires) {
+  if (state.preview.packPlanStatus === 'researching') {
+    return `
+      <section class="panel pack-plan-panel pack-plan-researching preview-pack-plan-loading" aria-live="polite">
+        <div class="pack-plan-status-mark"><span class="spinner" aria-hidden="true"></span></div>
+        <div>
+          <p class="mono-label">Building your creative plan</p>
+          <h2>Turning app facts and customer feedback into two testable ideas.</h2>
+          <p>We are reading written store reviews and matching the strongest recurring needs to verified app information.</p>
+          <div class="pack-plan-research-note">
+            <span class="dot"></span>
+            <strong>Research in progress</strong>
+            <small>No account, checkout, or credits yet.</small>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  if (state.preview.packPlanStatus === 'error' || !state.preview.packPlan) {
+    return `
+      <section class="panel preview-plan-error">
+        <div>
+          <p class="mono-label">Creative plan unavailable</p>
+          <h3>We could not finish the plan from this listing.</h3>
+          <p>${escapeHtml(state.preview.packPlanError || 'Try the research again, or continue and add clearer app screenshots after account creation.')}</p>
+        </div>
+        <div class="preview-plan-error-actions">
+          <button class="ghost-button" type="button" id="retryPreviewPackPlan">Retry plan</button>
+          <button class="primary-button" type="button" id="continueWithoutPreviewPlan">Continue and add screenshots</button>
+        </div>
+      </section>
+    `;
+  }
+
+  const plan = state.preview.packPlan;
+  const research = plan.researchSnapshot || {};
+  const productTruth = research.productTruth || [];
+  const marketSignals = research.marketSignals || [];
+  const coverage = research.coverage || {};
+  const limitations = state.preview.researchLimitations || [];
+  const split = packPlanGenerationSplit(plan.assignments || []);
+  const outputMix = plan.request?.outputMix || { image: 0, ugc: 0 };
+
+  return `
+    <section class="panel pack-plan-panel preview-pack-plan" aria-labelledby="previewPackPlanTitle">
+      <div class="pack-plan-head section-row">
+        <div>
+          <p class="mono-label">Your first creative experiment</p>
+          <h2 id="previewPackPlanTitle">Your creative plan</h2>
+          <small class="pack-plan-basis">${escapeHtml(packPlanBasisCopy({ productTruth, coverage, learnings: [] }))}</small>
+        </div>
+      </div>
+
+      <section class="hypothesis-block">
+        <div>
+          <p class="mono-label">What we're testing</p>
+          <h3>${escapeHtml(packPlanTestQuestion(data.app))}</h3>
+        </div>
+      </section>
+
+      <div class="experiment-grid">
+        ${packPlanLaneHtml('Idea A', plan.experiment?.primary, plan.assignments || [])}
+        ${packPlanLaneHtml('Idea B', plan.experiment?.challenger, plan.assignments || [])}
+      </div>
+
+      ${packPlanGenerationSplitHtml(split)}
+
+      <details class="pack-plan-evidence">
+        <summary><span>Why this plan?</span></summary>
+        ${limitations.length ? `
+          <p class="evidence-research-note"><strong>Research note:</strong> ${escapeHtml(limitations.join(' '))}</p>
+        ` : ''}
+        <div class="evidence-grid two-columns">
+          ${packPlanEvidenceGroup('From your app', 'claim', 'Facts and visual references shaping the plan', productTruth)}
+          ${packPlanEvidenceGroup(
+            'From public feedback',
+            'signal',
+            'Written store reviews and public conversations',
+            marketSignals,
+            'Public feedback could not be loaded for this plan.',
+          )}
+        </div>
+      </details>
+
+      <div class="pack-plan-footer preview-plan-footer">
+        <div class="pack-output-mix">
+          <div>
+            <p class="mono-label">What we'll generate</p>
+            <strong>${packMixLabel(outputMix)}</strong>
+            <small>${plan.costCredits} credits after checkout · nothing charged now</small>
+          </div>
+        </div>
+        <div class="preview-plan-checkout">
+          <small>Approve the app info after checkout before any paid generation starts. Preview saved until ${escapeHtml(expires)}.</small>
+          <button class="primary-button" type="button" id="previewCheckoutLaunch">Generate My Ads</button>
+        </div>
+      </div>
+    </section>
+  `;
 }
 
 function formatPreviewExpiry(iso) {
@@ -3657,6 +3776,43 @@ function renderCredits() {
   });
 }
 
+async function buildPreviewPackPlan(previewSessionId) {
+  if (!previewSessionId || state.preview.data?.previewSession?.id !== previewSessionId) return;
+  state.preview.packPlanStatus = 'researching';
+  state.preview.packPlanError = null;
+  renderAll();
+
+  try {
+    const response = await fetch('/api/previews/pack-plan', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        previewSessionId,
+        imageCount: LAUNCH_PACK_MIX.image,
+        videoCount: LAUNCH_PACK_MIX.video,
+        locale: navigator.language || 'en-US',
+      }),
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok || !payload.ok || !payload.plan) {
+      throw new Error(payload.error || 'Could not build the creative plan.');
+    }
+    if (state.preview.data?.previewSession?.id !== previewSessionId) return;
+    state.preview.packPlan = payload.plan;
+    state.preview.packPlanStatus = 'ready';
+    state.preview.researchStatus = payload.researchStatus || 'limited';
+    state.preview.researchLimitations = payload.researchLimitations || [];
+    renderAll();
+    toast('Creative plan ready. Open “Why this plan?” to see the evidence.');
+    $('#previewPackPlanTitle')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (error) {
+    if (state.preview.data?.previewSession?.id !== previewSessionId) return;
+    state.preview.packPlanStatus = 'error';
+    state.preview.packPlanError = error.message || 'Could not build the creative plan.';
+    renderAll();
+  }
+}
+
 async function startPreview(rawUrl) {
   if (!rawUrl) return;
   let parsed;
@@ -3669,7 +3825,7 @@ async function startPreview(rawUrl) {
   const url = parsed.href;
   const importSeq = state.importSeq + 1;
   state.importSeq = importSeq;
-  state.preview = { status: 'loading', url, data: null };
+  state.preview = createPreviewState({ status: 'loading', url });
   state.building = {
     name: deriveName(parsed),
     headline: `Previewing ${deriveName(parsed)}`,
@@ -3707,17 +3863,23 @@ async function startPreview(rawUrl) {
     if (state.importSeq !== importSeq) return;
     clearInterval(timer);
     state.building = null;
-    state.preview = { status: 'ready', url, data: payload.preview };
+    state.preview = createPreviewState({
+      status: 'ready',
+      url,
+      data: payload.preview,
+      packPlanStatus: 'researching',
+    });
     try {
       localStorage.setItem(PREVIEW_SESSION_KEY, JSON.stringify({ id: payload.preview.previewSession.id }));
     } catch { /* storage unavailable; preview still works for this visit */ }
     renderAll();
-    toast(`${payload.preview.app.name} preview ready. Check it, then save it at checkout.`);
+    toast(`${payload.preview.app.name} found. Building your creative plan now.`);
+    buildPreviewPackPlan(payload.preview.previewSession.id);
   } catch (error) {
     if (state.importSeq !== importSeq) return;
     clearInterval(timer);
     state.building = null;
-    state.preview = { status: 'idle', url: '', data: null };
+    state.preview = createPreviewState();
     renderAll();
     toast(error.message || 'Could not preview that URL.');
   }
@@ -3734,9 +3896,15 @@ async function tryRestorePreview() {
     const payload = await response.json().catch(() => ({}));
     if (!response.ok || !payload.ok || payload.claimed) throw new Error('expired');
     if (state.session.authed || state.preview.status !== 'idle') return;
-    state.preview = { status: 'ready', url: payload.preview.app.storeUrl || '', data: payload.preview };
+    state.preview = createPreviewState({
+      status: 'ready',
+      url: payload.preview.app.storeUrl || '',
+      data: payload.preview,
+      packPlanStatus: 'researching',
+    });
     renderAll();
-    toast('Welcome back — your saved preview is ready.');
+    toast('Welcome back — rebuilding your saved creative plan.');
+    buildPreviewPackPlan(payload.preview.previewSession.id);
   } catch {
     try { localStorage.removeItem(PREVIEW_SESSION_KEY); } catch { /* ignore */ }
   }
@@ -3999,7 +4167,7 @@ function applyClaim({ session, claim, extraction, app, apps }) {
   state.annualEntitlements = null;
   if (claim.product.type === 'launch_pack') startLaunchPackCredit();
   else state.upsellTouchpoints = initialUpsellTouchpoints();
-  state.preview = { status: 'idle', url: '', data: null };
+  state.preview = createPreviewState();
   try { localStorage.removeItem(PREVIEW_SESSION_KEY); } catch { /* ignore */ }
   closeCheckout();
   syncUrlPlaceholder();

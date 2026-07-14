@@ -11,6 +11,7 @@ import {
 import { buildJobManifest } from '../lib/creative-job-model.mjs';
 import { researchMarketSignals } from '../lib/pack-plan-adapter.mjs';
 import {
+  buildCreativePackPlan,
   buildLearnedPackPlanStrategy,
   buildPackPlanResearchSnapshot,
   buildSelectedProductTruth,
@@ -31,7 +32,7 @@ import {
   tenantBackendMode,
 } from '../lib/server-auth.mjs';
 import { createConfiguredTenantStore } from '../lib/tenant-store-factory.mjs';
-import { applyReviewedPlanPatch } from '../lib/tenant-model.mjs';
+import { applyReviewedPlanPatch, buildClaimedAppDocs } from '../lib/tenant-model.mjs';
 
 const rootDir = fileURLToPath(new URL('..', import.meta.url));
 const publicDir = join(rootDir, 'local-app');
@@ -255,6 +256,60 @@ const server = createServer(async (request, response) => {
       return;
     }
 
+    if (url.pathname === '/api/previews/pack-plan' && request.method === 'POST') {
+      const body = await readJson(request);
+      const pending = previewStore.getSession(body.previewSessionId);
+      const extraction = pending ? previewStore.getCachedExtraction(pending.canonicalAppId) : null;
+      if (!pending || !extraction) {
+        sendJson(response, { ok: false, error: 'Preview expired. Paste the app URL again to refresh it.' }, 410);
+        return;
+      }
+
+      const cached = previewStore.getCachedPackPlan(pending.canonicalAppId);
+      if (cached) {
+        sendJson(response, { ok: true, ...cached, cache: 'hit', providerMutations: 0 });
+        return;
+      }
+
+      try {
+        const createdAt = new Date().toISOString();
+        const reviewedApp = buildAnonymousPreviewPlanningApp({
+          extraction,
+          canonicalAppId: pending.canonicalAppId,
+          createdAt,
+        });
+        const materials = await buildPackPlanMaterials({
+          reviewedApp,
+          locale: body.locale || 'en-US',
+        });
+        const plan = buildCreativePackPlan({
+          orgId: 'anonymous-preview',
+          workspaceId: 'preview',
+          appId: pending.canonicalAppId,
+          createdBy: 'anonymous-preview',
+          createdAt,
+          researchSnapshot: materials.researchSnapshot,
+          strategy: materials.strategy,
+          outputMix: {
+            image: Number.isInteger(body.imageCount) ? body.imageCount : 24,
+            ugc: Number.isInteger(body.videoCount) ? body.videoCount : 4,
+          },
+          goal: 'Choose the clearest first creative direction before checkout.',
+          channel: 'Paid social',
+        });
+        const result = {
+          plan,
+          researchStatus: materials.researchStatus,
+          researchLimitations: materials.researchLimitations,
+        };
+        previewStore.cachePackPlan(pending.canonicalAppId, result);
+        sendJson(response, { ok: true, ...result, cache: 'miss', providerMutations: 0 });
+      } catch (error) {
+        sendJson(response, { ok: false, error: error.message, providerMutations: 0 }, 400);
+      }
+      return;
+    }
+
     if (url.pathname === '/api/previews/claim' && request.method === 'POST') {
       const body = await readJson(request);
       const auth = await authContextForRequest({ request, body });
@@ -325,38 +380,12 @@ const server = createServer(async (request, response) => {
         const reviewedApp = body.appPlan
           ? applyReviewedPlanPatch(currentApp, { ...body.appPlan, updatedAt: new Date().toISOString() })
           : currentApp;
-        const locale = body.locale || 'en-US';
-        const [storeReviews, publicResearch] = await Promise.all([
-          fetchStoreReviews({ app: reviewedApp, locale }),
-          researchMarketSignals({
-            app: reviewedApp,
-            priorLearnings: reviewedApp.learningEvents || [],
-            locale,
-          }),
-        ]);
-        const directReviewSignals = storeReviewSignalsForPackPlan(storeReviews);
-        const publicWebSignals = marketSignalsForPackPlan(publicResearch);
-        const marketSignals = [...directReviewSignals, ...publicWebSignals].slice(0, 24);
-        const researchLimitations = combinedResearchLimitations({
-          storeReviews,
-          publicResearch,
-          hasDirectReviews: directReviewSignals.length > 0,
-        });
-        const researchStatus = marketSignals.length
-          ? researchLimitations.length ? 'partial' : 'complete'
-          : 'limited';
-        const researchSnapshot = buildPackPlanResearchSnapshot({
-          productTruth: buildSelectedProductTruth(reviewedApp),
-          marketSignals,
-          learningSignals: learningSignalsForPackPlan(reviewedApp.learningEvents || []),
-          capturedAt: new Date().toISOString(),
-        });
-        const strategy = buildLearnedPackPlanStrategy({ reviewedApp, researchSnapshot, publicResearch });
+        const materials = await buildPackPlanMaterials({ reviewedApp, locale: body.locale || 'en-US' });
         const result = await tenantStore.createPackPlanForUser({
           ...context,
           appPlan: body.appPlan,
-          researchSnapshot,
-          strategy,
+          researchSnapshot: materials.researchSnapshot,
+          strategy: materials.strategy,
           imageCount: body.imageCount,
           videoCount: body.videoCount,
           goal: body.goal || 'Find the clearest creative direction for this app.',
@@ -366,8 +395,8 @@ const server = createServer(async (request, response) => {
         sendJson(response, {
           ok: true,
           ...result,
-          researchStatus,
-          researchLimitations,
+          researchStatus: materials.researchStatus,
+          researchLimitations: materials.researchLimitations,
           providerMutations: 0,
         });
       } catch (error) {
@@ -632,6 +661,58 @@ async function readJson(request) {
     return {};
   }
   return JSON.parse(raw);
+}
+
+function buildAnonymousPreviewPlanningApp({ extraction, canonicalAppId, createdAt }) {
+  const { app } = buildClaimedAppDocs({
+    orgId: 'anonymous-preview',
+    workspaceId: 'preview',
+    appId: canonicalAppId,
+    createdBy: 'anonymous-preview',
+    extraction,
+    createdAt,
+  });
+  return {
+    ...app,
+    extractionStatus: 'approved',
+    screens: app.screens.map((screen) => ({
+      ...screen,
+      // Before checkout these are planning references only. They may shape
+      // the two ideas, but they still require review before paid generation.
+      selected: screen.usability !== 'blocked',
+      ignored: screen.usability === 'blocked',
+    })),
+  };
+}
+
+async function buildPackPlanMaterials({ reviewedApp, locale = 'en-US' }) {
+  const [storeReviews, publicResearch] = await Promise.all([
+    fetchStoreReviews({ app: reviewedApp, locale }),
+    researchMarketSignals({
+      app: reviewedApp,
+      priorLearnings: reviewedApp.learningEvents || [],
+      locale,
+    }),
+  ]);
+  const directReviewSignals = storeReviewSignalsForPackPlan(storeReviews);
+  const publicWebSignals = marketSignalsForPackPlan(publicResearch);
+  const marketSignals = [...directReviewSignals, ...publicWebSignals].slice(0, 24);
+  const researchLimitations = combinedResearchLimitations({
+    storeReviews,
+    publicResearch,
+    hasDirectReviews: directReviewSignals.length > 0,
+  });
+  const researchStatus = marketSignals.length
+    ? researchLimitations.length ? 'partial' : 'complete'
+    : 'limited';
+  const researchSnapshot = buildPackPlanResearchSnapshot({
+    productTruth: buildSelectedProductTruth(reviewedApp),
+    marketSignals,
+    learningSignals: learningSignalsForPackPlan(reviewedApp.learningEvents || []),
+    capturedAt: new Date().toISOString(),
+  });
+  const strategy = buildLearnedPackPlanStrategy({ reviewedApp, researchSnapshot, publicResearch });
+  return { researchSnapshot, strategy, researchStatus, researchLimitations };
 }
 
 function marketSignalsForPackPlan(research) {
