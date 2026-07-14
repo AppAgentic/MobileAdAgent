@@ -64,16 +64,19 @@
   if (urlForm && goBtn) {
     urlForm.addEventListener('submit', function (e) {
       e.preventDefault();
-      var value = (urlInput.value || '').trim() || (urlInput.placeholder || '').trim();
-      if (!value) return;
+      var value = (urlInput.value || '').trim();
+      if (!value) {
+        urlInput.setAttribute('aria-invalid', 'true');
+        urlInput.focus();
+        return;
+      }
       goBtn.textContent = 'Opening preview…';
       goBtn.disabled = true;
       // URL-first: the app shows the preview before any checkout/sign-up.
       window.location.assign('/preview?u=' + encodeURIComponent(value));
     });
-    // keep the demo value if the field is emptied
-    urlInput.addEventListener('blur', function () {
-      if (!urlInput.value.trim()) urlInput.value = urlInput.placeholder;
+    urlInput.addEventListener('input', function () {
+      urlInput.removeAttribute('aria-invalid');
     });
   }
 

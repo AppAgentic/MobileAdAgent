@@ -272,6 +272,8 @@ check(landingHtmlText.includes('href="/launch-pack"'), 'landing launch CTA must 
 check(landingHtmlText.includes('href="/preview?offer=launch-pack"'), 'launch pack CTA must start from /preview');
 check(landingHtmlText.includes('href="/preview?plan=launch"'), 'plan CTA must start from /preview');
 check(landingJsText.includes("'/preview?u='"), 'URL form must hand off to /preview?u=');
+check(!landingHtmlText.includes('value="apps.apple.com/app/id6446901002"'), 'landing URL input must not be pre-filled with a demo app');
+check(!landingJsText.includes('urlInput.placeholder'), 'landing URL form must not submit or restore placeholder text as user input');
 
 /* ---- Production route contract: no legacy landing/dashboard paths ---- */
 
