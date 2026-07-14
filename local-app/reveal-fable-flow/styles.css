@@ -256,37 +256,113 @@ main { flex: 1; width: 100%; }
 .f3-head h1 { margin: 0; font-size: clamp(30px, 4.6vw, 56px); letter-spacing: -.035em; line-height: 1; }
 .f3-head h1 em { font-family: var(--serif); font-weight: 400; color: var(--lime); }
 .f3-route { list-style: none; margin: 0; padding: 0; position: relative; }
-.f3-station { position: relative; padding: 0 0 26px 44px; opacity: 0; transform: translateY(24px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+.f3-station { position: relative; padding: 0 0 30px 44px; opacity: 0; transform: translateY(24px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
 .f3-station.on { opacity: 1; transform: none; }
+/* Connector: grows only while travelling to the next station. */
 .f3-station::before {
   content: ""; position: absolute; left: 10px; top: 26px; bottom: -8px; width: 2px;
   background: linear-gradient(180deg, rgba(198, 242, 78, .55), rgba(198, 242, 78, .12));
-  transform: scaleY(0); transform-origin: top; transition: transform 1.1s var(--ease) .25s;
+  transform: scaleY(0); transform-origin: top; transition: transform .75s var(--ease);
 }
-.f3-station.on::before { transform: scaleY(1); }
+.f3-station.travel::before { transform: scaleY(1); }
 .f3-station:last-child::before { display: none; }
+.f3-runner {
+  position: absolute; left: 7px; top: 26px; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--lime); box-shadow: 0 0 10px var(--lime); opacity: 0; pointer-events: none;
+}
+.f3-station.travel .f3-runner { animation: f3run .75s var(--ease) forwards; }
+.f3-station:last-child .f3-runner { display: none; }
 .f3-node {
   position: absolute; left: 3px; top: 8px; width: 16px; height: 16px; border-radius: 50%;
   border: 2px solid var(--line-2); background: var(--bg); transition: border-color .4s, box-shadow .4s;
 }
 .f3-station.on .f3-node { border-color: var(--lime); box-shadow: 0 0 14px rgba(198, 242, 78, .55); }
-.f3-card h2 { display: flex; gap: 12px; align-items: baseline; margin: 0 0 16px; font-size: clamp(20px, 2.6vw, 30px); letter-spacing: -.025em; }
+.f3-station.on:not(.travelled) .f3-node { animation: nodepulse 1.8s ease-in-out infinite; }
+body.done .f3-station.on .f3-node { animation: none; }
+.f3-card h2 { display: flex; gap: 12px; align-items: baseline; margin: 0 0 8px; font-size: clamp(20px, 2.6vw, 30px); letter-spacing: -.025em; }
 .f3-card h2 b { color: var(--lime); font: 600 11px var(--mono); }
+/* Activity line: busy while the station reads/extracts, resolves to ✓ summary. */
+.f3-act {
+  display: flex; gap: 8px; align-items: center; margin: 0 0 16px; min-height: 14px;
+  color: var(--muted); font: 500 10px var(--mono); letter-spacing: .08em; text-transform: uppercase;
+}
+.f3-act:empty { visibility: hidden; }
+.f3-act::before { content: "✓"; color: var(--lime); font-weight: 700; flex: none; }
+.f3-act.busy::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--lime); animation: breathe 1.1s ease-in-out infinite;
+}
+/* Generic sub-step: evidence pieces arrive one at a time. */
+.f3-step { opacity: 0; transform: translateY(12px); transition: opacity .55s var(--ease), transform .55s var(--ease); }
+.f3-step.in { opacity: 1; transform: none; }
+.f3 .ideas-grid .idea { opacity: 0; transform: translateY(12px); transition: opacity .55s var(--ease), transform .55s var(--ease); }
+.f3 .ideas-grid .idea.in { opacity: 1; transform: none; }
 .f3-id { display: flex; gap: 14px; align-items: center; padding: 16px 18px; border: 1px solid var(--line-2); border-radius: 14px; background: var(--panel-2); max-width: 480px; }
 .f3-id b { display: block; font-size: 14px; }
 .f3-id span { color: var(--muted); font: 500 10px var(--mono); }
+/* Claims light up in the description copy, then land as chips. */
+.f3 .quotebox span { padding: 0 2px; border-radius: 4px; transition: background .5s var(--ease), color .5s var(--ease); }
+.f3 .quotebox span.read { background: var(--lime-soft); color: var(--lime); font-style: normal; }
 .f3-claims { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-.f3-note { margin: 14px 0 0; font-size: 12.5px; line-height: 1.6; max-width: 520px; }
-.f3-note.center { margin: 20px auto 0; text-align: center; }
+/* Synthesis line: what the station means for the plan. */
+.f3-note { position: relative; margin: 16px 0 0; padding-left: 18px; font-size: 12.5px; line-height: 1.6; max-width: 560px; }
+.f3-note::before { content: "↳"; position: absolute; left: 0; color: var(--lime); }
+.f3-note.center { margin: 20px auto 0; padding-left: 0; text-align: center; }
+.f3-note.center::before { display: none; }
+/* Screens: greyed until scanned, then stamped usable. */
 .f3-shots { display: flex; flex-wrap: wrap; gap: 18px; }
-.f3-shot { position: relative; margin: 0; display: grid; justify-items: center; gap: 6px; }
+.f3-shot {
+  position: relative; margin: 0; display: grid; justify-items: center; gap: 6px;
+  opacity: .22; filter: grayscale(1); transform: translateY(10px);
+  transition: opacity .5s var(--ease), filter .5s var(--ease), transform .5s var(--ease);
+}
+.f3-shot.in { opacity: 1; filter: none; transform: none; }
 .f3-shot .shot { width: 126px; }
+.f3-shotwrap { position: relative; display: block; overflow: hidden; border-radius: 14px; }
+.f3-scan {
+  position: absolute; inset: 0 auto 0 -45%; width: 45%; opacity: 0; pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(198, 242, 78, .22), transparent);
+}
+.f3-shot.in .f3-scan { animation: scan .8s var(--ease) 1; }
 .f3-shot figcaption { color: var(--muted); font: 500 9px var(--mono); }
-.f3-shot .stamp { position: absolute; top: 8px; right: -6px; }
+.f3-shot .stamp {
+  position: absolute; top: 8px; right: -6px; opacity: 0; transform: rotate(-3deg) scale(1.5);
+  transition: opacity .35s var(--ease), transform .35s var(--ease);
+}
+.f3-shot.ok .stamp { opacity: .95; transform: rotate(-3deg) scale(1); }
+/* Reviews: appear one at a time; the meaningful phrase resolves a beat later. */
 .f3-revs { columns: 2; column-gap: 12px; }
-.f3-revs .rev { break-inside: avoid; margin-bottom: 12px; }
+.f3-revs .rev {
+  break-inside: avoid; margin-bottom: 12px; opacity: 0; transform: translateY(10px);
+  transition: opacity .5s var(--ease), transform .5s var(--ease), border-color .5s var(--ease);
+}
+.f3-revs .rev.in { opacity: 1; transform: none; border-color: rgba(198, 242, 78, .45); }
+.f3-revs .rev.read { border-color: var(--line-2); }
+.f3-revs .rev mark { background: transparent; color: inherit; transition: background .5s var(--ease), color .5s var(--ease); }
+.f3-revs .rev.read mark { background: var(--lime-soft); color: var(--lime); }
 .f3-matches { display: grid; gap: 14px; }
+/* Split bar fills once the route reaches the plan. */
+.f3 .split-bar i { transform: scaleX(0); transform-origin: left; transition: transform .9s var(--ease) .1s; }
+.f3 .f3-split.in .split-bar i { transform: scaleX(1); }
+/* Thinking capsule shown while travelling; stays as a dim waypoint note. */
+.f3-hop {
+  display: inline-flex; gap: 10px; align-items: center; max-width: 100%;
+  margin: 14px 0 0; padding: 8px 13px; border: 1px solid var(--line-2); border-radius: 999px;
+  background: var(--panel-2); color: var(--muted); font: 500 10px/1.5 var(--mono);
+  opacity: 0; transform: translateY(6px);
+  transition: opacity .45s var(--ease), transform .45s var(--ease), border-color .45s var(--ease);
+}
+.f3-station.travel .f3-hop { opacity: 1; transform: none; border-color: rgba(198, 242, 78, .35); }
+.f3-station.travel .f3-hop.done { opacity: .55; border-color: var(--line-2); }
+.f3-dots { display: inline-flex; gap: 3px; flex: none; }
+.f3-dots b { width: 4px; height: 4px; border-radius: 50%; background: var(--lime); animation: hopdot 1s ease-in-out infinite; }
+.f3-dots b:nth-child(2) { animation-delay: .15s; }
+.f3-dots b:nth-child(3) { animation-delay: .3s; }
+.f3-hop.done .f3-dots { display: none; }
 .f3-follow { position: fixed; bottom: 56px; left: 50%; transform: translateX(-50%); z-index: 30; background: var(--panel-2); box-shadow: 0 16px 50px rgba(0, 0, 0, .55); }
+@keyframes f3run { 0% { opacity: 1; top: 26px; } 82% { opacity: 1; } 100% { opacity: 0; top: calc(100% - 6px); } }
+@keyframes nodepulse { 0%, 100% { box-shadow: 0 0 6px rgba(198, 242, 78, .3); } 50% { box-shadow: 0 0 16px rgba(198, 242, 78, .75); } }
+@keyframes hopdot { 0%, 100% { opacity: .25; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-2px); } }
 
 /* =========================================================
  * 04 — THE SORT

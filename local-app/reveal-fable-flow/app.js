@@ -440,37 +440,64 @@ function readingRoom(t) {
 }
 
 /* =========================================================
- * 03 — ROUTE: the analysis builds the scrollable page
+ * 03 — ROUTE: the analysis builds the scrollable page.
+ * Each station runs a truthful mini-cycle — read the source,
+ * extract what's useful item by item, resolve a short synthesis —
+ * then travels the connector to the next station with a compact
+ * thinking capsule. The finished route stays as a dossier.
  * ======================================================= */
 function route(t) {
+  // The real description, with the words each claim was pulled from wired up.
+  const descHtml = `“<span data-c="0">Short</span> <span data-c="1">vocabulary</span>, <span data-c="2">translation</span>, <span data-c="3">listening</span>, speaking, reading and writing <span data-c="0">exercises</span>.”`;
+
   const stations = [
     {
-      title: 'Listing found', status: STATUS.found,
-      html: `<div class="f3-id">${appIcon('sm')}<div><b>${APP.name}</b><span>${APP.category} · found via your ${APP.source}</span></div></div>`,
+      title: 'Listing found',
+      act: ['Looking up the URL you pasted…', 'Matched from your App Store listing'],
+      hop: 'Right app confirmed — reading the description next',
+      html: `<div class="f3-id f3-step">${appIcon('sm')}<div><b>${APP.name}</b><span>${APP.category} · found via your ${APP.source}</span></div></div>`,
     },
     {
-      title: 'Description read', status: STATUS.claims,
-      html: `<p class="quotebox">“${APP.summary}”</p><div class="f3-claims">${CLAIMS.map((claim) => `<span class="chip">${claim.text}</span>`).join('')}</div><p class="dim f3-note">Four claims noted. Each one still has to be proven by a real screen.</p>`,
+      title: 'Description read',
+      act: ['Reading the description copy…', 'Four product claims pulled from the copy'],
+      hop: 'Claims are only words so far — checking the screens for proof',
+      html: `<p class="quotebox f3-step">${descHtml}</p>
+        <div class="f3-claims">${CLAIMS.map((claim, index) => `<span class="chip f3-step" data-claim="${index}">${claim.text}</span>`).join('')}</div>
+        <p class="dim f3-note f3-step">Four claims noted. Each one still has to be proven by a real screen.</p>`,
     },
     {
-      title: 'Screens inspected', status: STATUS.screensDone,
-      html: `<div class="f3-shots">${SCREENS.map((screen, index) => `<figure class="f3-shot">${screenImg(index)}<figcaption>${esc(screen.title)}</figcaption><em class="stamp">USABLE</em></figure>`).join('')}</div><p class="dim f3-note">Three real screens pulled from the listing — nothing generated, nothing mocked up.</p>`,
+      title: 'Screens inspected',
+      act: ['Opening each screen from the listing…', 'Three screens checked — all three usable'],
+      hop: 'Screens show what the app does. The reviews will show why people care',
+      html: `<div class="f3-shots">${SCREENS.map((screen, index) => `<figure class="f3-shot" data-s="${index}"><span class="f3-shotwrap">${screenImg(index)}<i class="f3-scan" aria-hidden="true"></i></span><figcaption>${esc(screen.title)}</figcaption><em class="stamp">USABLE</em></figure>`).join('')}</div>
+        <p class="dim f3-note f3-step">Three real screens pulled from the listing — nothing generated, nothing mocked up.</p>`,
     },
     {
-      title: 'Reviews read', status: STATUS.reviewsDone,
-      html: `<div class="f3-revs">${REVIEWS.map((review) => `<blockquote class="rev">${markQuote(review)}<cite>written store review</cite></blockquote>`).join('')}</div><p class="dim f3-note">Six written reviews, read in full. The highlighted phrases repeat across different people.</p>`,
+      title: 'Reviews read',
+      act: ['Reading each written review in full…', 'Six reviews read — repeated phrases marked'],
+      hop: 'The same phrases repeat across different people — matching them to real screens',
+      html: `<div class="f3-revs">${REVIEWS.map((review, index) => `<blockquote class="rev" data-r="${index}">${markQuote(review)}<cite>written store review</cite></blockquote>`).join('')}</div>
+        <p class="dim f3-note f3-step">Six written reviews, read in full. The highlighted phrases repeat across different people.</p>`,
     },
     {
-      title: 'Language matched to proof', status: STATUS.match,
-      html: `<div class="f3-matches">${matchRows()}</div>${methodNote()}`,
+      title: 'Language matched to proof',
+      act: ['Cross-checking their words against your screens…', 'Every message below is backed by a real screen'],
+      hop: 'Every match held. Drafting the two directions this evidence supports',
+      html: `<div class="f3-matches">${matchRows('f3-step')}</div><div class="f3-step f3-method">${methodNote()}</div>`,
     },
     {
-      title: 'Two directions drafted', status: STATUS.ideas,
-      html: `<div class="ideas-grid">${IDEAS.map((_, index) => ideaCard(index)).join('')}</div>`,
+      title: 'Two directions drafted',
+      act: ['Drafting directions from the strongest matches…', 'Two directions — each one chosen for its proof'],
+      hop: 'Both directions fully backed — setting the 14 / 14 split',
+      html: `<div class="ideas-grid">${IDEAS.map((_, index) => ideaCard(index)).join('')}</div>
+        <p class="dim f3-note f3-step">Chosen because your own reviews repeat these two messages — and your real screens can prove both.</p>`,
     },
     {
-      title: 'The plan', status: STATUS.plan,
-      html: `${splitBar()}${ctaBlock()}<p class="dim f3-note center">Scroll back up any time — the whole route stays on the page.</p>`,
+      title: 'The plan',
+      act: ['Sizing the plan…', '28 creatives — 14 per direction'],
+      hop: '',
+      html: `<div class="f3-step f3-split">${splitBar()}</div><div class="f3-step f3-cta">${ctaBlock()}</div>
+        <p class="dim f3-note f3-step center">Scroll back up any time — the whole route stays on the page.</p>`,
     },
   ];
 
@@ -484,10 +511,13 @@ function route(t) {
       ${stations.map((station, index) => `
         <li class="f3-station" data-st="${index}">
           <span class="f3-node" aria-hidden="true"></span>
+          <span class="f3-runner" aria-hidden="true"></span>
           <div class="f3-card">
             <h2><b>${String(index + 1).padStart(2, '0')}</b>${esc(station.title)}</h2>
+            <p class="f3-act"></p>
             <div class="f3-body">${station.html}</div>
           </div>
+          ${station.hop ? `<div class="f3-hop"><span class="f3-dots" aria-hidden="true"><b></b><b></b><b></b></span><span>${esc(station.hop)}…</span></div>` : ''}
         </li>`).join('')}
     </ol>
     <button class="ghost f3-follow" type="button" hidden>▾ Resume following</button>
@@ -498,17 +528,25 @@ function route(t) {
   let follow = true;
   let latest = 0;
   let autoScrolling = false;
+  let autoTimer = 0;
 
   const userScrolled = () => {
     if (autoScrolling || tl.finished) return;
     follow = false;
     followBtn.hidden = false;
   };
+  const keyScrolled = (event) => {
+    if (event.target.closest('button, a, input, select, textarea')) return;
+    if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(event.key)) userScrolled();
+  };
   window.addEventListener('wheel', userScrolled, { passive: true });
   window.addEventListener('touchmove', userScrolled, { passive: true });
+  window.addEventListener('keydown', keyScrolled);
   onCleanup(() => {
     window.removeEventListener('wheel', userScrolled);
     window.removeEventListener('touchmove', userScrolled);
+    window.removeEventListener('keydown', keyScrolled);
+    clearTimeout(autoTimer);
   });
   followBtn.addEventListener('click', () => {
     follow = true;
@@ -516,18 +554,125 @@ function route(t) {
     goTo(stationEls[latest], 'center');
   });
 
-  stations.forEach((station, index) => {
-    t.at(700 + index * 1750, () => {
-      stationEls[index].classList.add('on');
-      latest = index;
-      setStatus(station.status);
-      if (follow && !tl.flushing) {
-        autoScrolling = true;
-        goTo(stationEls[index], index === stations.length - 1 ? 'start' : 'center');
-        setTimeout(() => { autoScrolling = false; }, 900);
-      }
+  // Scroll that follows the work but never fights the user or a flush.
+  const autoGo = (node, block) => {
+    if (!follow || tl.flushing) return;
+    autoScrolling = true;
+    goTo(node, block);
+    clearTimeout(autoTimer);
+    autoTimer = setTimeout(() => { autoScrolling = false; }, 900);
+  };
+  const q = (index, sel) => stationEls[index].querySelector(sel);
+  const qa = (index, sel) => [...stationEls[index].querySelectorAll(sel)];
+  const setAct = (index, phase) => {
+    const act = q(index, '.f3-act');
+    act.textContent = stations[index].act[phase];
+    act.classList.toggle('busy', phase === 0);
+  };
+  const arrive = (index, status) => {
+    const el = stationEls[index];
+    el.classList.add('on');
+    if (index > 0) {
+      stationEls[index - 1].classList.add('travelled');
+      stationEls[index - 1].querySelector('.f3-hop')?.classList.add('done');
+    }
+    latest = index;
+    if (status) setStatus(status);
+    setAct(index, 0);
+    autoGo(el, index === stations.length - 1 ? 'start' : 'center');
+  };
+  const depart = (index) => {
+    setAct(index, 1);
+    stationEls[index].classList.add('travel');
+  };
+
+  const HOP = 650; // connector + thinking capsule between stations
+  let at = 500;
+
+  // 01 — Listing: look up, then the identity resolves.
+  t.at(at, () => arrive(0, STATUS.find));
+  t.at(at + 380, () => { q(0, '.f3-id').classList.add('in'); setStatus(STATUS.found); });
+  t.at(at + 820, () => setAct(0, 1));
+  at += 1000;
+  t.at(at, () => depart(0));
+  at += HOP;
+
+  // 02 — Description: each claim is pulled out of the actual copy.
+  t.at(at, () => arrive(1, STATUS.desc));
+  t.at(at + 300, () => q(1, '.quotebox').classList.add('in'));
+  CLAIMS.forEach((_, index) => {
+    t.at(at + 680 + index * 340, () => {
+      qa(1, `[data-c="${index}"]`).forEach((span) => span.classList.add('read'));
+      q(1, `[data-claim="${index}"]`).classList.add('in');
     });
   });
+  t.at(at + 680 + CLAIMS.length * 340, () => {
+    setStatus(STATUS.claims);
+    q(1, '.f3-note').classList.add('in');
+    setAct(1, 1);
+  });
+  at += 680 + CLAIMS.length * 340 + 380;
+  t.at(at, () => depart(1));
+  at += HOP;
+
+  // 03 — Screens: each one arrives, gets scanned, then stamped usable.
+  t.at(at, () => arrive(2, STATUS.screens));
+  SCREENS.forEach((_, index) => {
+    t.at(at + 300 + index * 560, () => q(2, `[data-s="${index}"]`).classList.add('in'));
+    t.at(at + 620 + index * 560, () => q(2, `[data-s="${index}"]`).classList.add('ok'));
+  });
+  t.at(at + 620 + (SCREENS.length - 1) * 560 + 260, () => {
+    setStatus(STATUS.screensDone);
+    q(2, '.f3-note').classList.add('in');
+    setAct(2, 1);
+  });
+  at += 620 + (SCREENS.length - 1) * 560 + 260 + 380;
+  t.at(at, () => depart(2));
+  at += HOP;
+
+  // 04 — Reviews: read one by one; the meaningful phrase resolves a beat later.
+  t.at(at, () => arrive(3, STATUS.reviews));
+  REVIEWS.forEach((_, index) => {
+    t.at(at + 260 + index * 380, () => {
+      const rev = q(3, `[data-r="${index}"]`);
+      rev.classList.add('in');
+      if (index === 2 || index === 4) autoGo(rev, 'center');
+    });
+    t.at(at + 490 + index * 380, () => q(3, `[data-r="${index}"]`).classList.add('read'));
+  });
+  t.at(at + 490 + (REVIEWS.length - 1) * 380 + 280, () => {
+    setStatus(STATUS.reviewsDone);
+    q(3, '.f3-note').classList.add('in');
+    setAct(3, 1);
+  });
+  at += 490 + (REVIEWS.length - 1) * 380 + 280 + 380;
+  t.at(at, () => depart(3));
+  at += HOP;
+
+  // 05 — Matching: each row lands, then the method resolves.
+  t.at(at, () => arrive(4, STATUS.match));
+  t.at(at + 320, () => qa(4, '.matchrow')[0].classList.add('in'));
+  t.at(at + 880, () => qa(4, '.matchrow')[1].classList.add('in'));
+  t.at(at + 1380, () => { q(4, '.f3-method').classList.add('in'); setAct(4, 1); });
+  at += 1720;
+  t.at(at, () => depart(4));
+  at += HOP;
+
+  // 06 — Directions: drafted one after the other, then the why.
+  t.at(at, () => arrive(5, STATUS.ideas));
+  t.at(at + 280, () => qa(5, '.idea')[0].classList.add('in'));
+  t.at(at + 760, () => qa(5, '.idea')[1].classList.add('in'));
+  t.at(at + 1240, () => { q(5, '.f3-note').classList.add('in'); setAct(5, 1); });
+  at += 1580;
+  t.at(at, () => depart(5));
+  at += HOP;
+
+  // 07 — The plan: the split fills, then the door to generation.
+  t.at(at, () => arrive(6, STATUS.plan));
+  t.at(at + 320, () => q(6, '.f3-split').classList.add('in'));
+  t.at(at + 700, () => q(6, '.f3-cta').classList.add('in'));
+  t.at(at + 980, () => { q(6, '.f3-note').classList.add('in'); setAct(6, 1); });
+
   t.onFinish(() => {
     followBtn.hidden = true;
     if (tl.flushing || follow) goTo(stationEls[stationEls.length - 1], 'start');
