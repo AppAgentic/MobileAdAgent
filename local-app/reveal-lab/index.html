@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07090a">
+  <title>Research Reveal Lab — Mobile Ad Agent</title>
+  <link rel="stylesheet" href="/reveal-lab/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Mobile Ad Agent home"><span class="brand-mark">▲</span><span>mobile-ad-agent</span></a>
+    <div class="live-state"><i></i><span id="liveStatus">App identified</span></div>
+  </header>
+
+  <main>
+    <section class="lab-head">
+      <div>
+        <p class="eyebrow">RESEARCH REVEAL LAB</p>
+        <h1 id="variantTitle">Signal Scan</h1>
+        <p id="variantDescription">Screens and reviews resolve around the app as they are found.</p>
+      </div>
+      <div class="controls">
+        <button id="replay" type="button">↻ Replay</button>
+        <button id="pause" type="button" aria-pressed="false">Ⅱ Pause</button>
+      </div>
+    </section>
+
+    <nav class="variant-nav" aria-label="Research reveal variants">
+      <a href="?variant=1" data-variant-link="1"><b>01</b><span>Signal Scan</span></a>
+      <a href="?variant=2" data-variant-link="2"><b>02</b><span>Evidence Conveyor</span></a>
+      <a href="?variant=3" data-variant-link="3"><b>03</b><span>Review Pulse</span></a>
+      <a href="?variant=4" data-variant-link="4"><b>04</b><span>Discovery Spotlight</span></a>
+      <a href="?variant=5" data-variant-link="5"><b>05</b><span>Plan Loom</span></a>
+    </nav>
+
+    <section id="stage" class="stage" aria-live="polite"></section>
+
+    <footer class="stage-footer">
+      <div class="truth-note"><span>●</span> Only information actually found is revealed</div>
+      <div class="timeline" aria-label="Analysis progress">
+        <i class="timeline-fill"></i>
+        <span data-step="0">App</span><span data-step="1">Screens</span><span data-step="2">Reviews</span><span data-step="3">Ideas</span>
+      </div>
+    </footer>
+  </main>
+  <script src="/reveal-lab/app.js" defer></script>
+</body>
+</html>

@@ -65,6 +65,7 @@ const contentTypes = {
 };
 
 const marketingRoutes = new Set(['/', '/pricing', '/launch-pack']);
+const revealLabRoutes = new Set(['/reveal-lab']);
 const appShellRoutes = new Set(['/app', '/app/import', '/preview', '/login', '/signup']);
 const appShellPrefixes = ['/app/apps/', '/app/packs/'];
 const publicAssets = new Map([
@@ -72,6 +73,8 @@ const publicAssets = new Map([
   ['/app.js', 'app.js'],
   ['/marketing/styles.css', 'landing/styles.css'],
   ['/marketing/landing.js', 'landing/landing.js'],
+  ['/reveal-lab/styles.css', 'reveal-lab/styles.css'],
+  ['/reveal-lab/app.js', 'reveal-lab/app.js'],
   ['/demo-assets/duolingo-vocabulary-choice.jpg', 'demo-assets/duolingo-vocabulary-choice.jpg'],
   ['/demo-assets/duolingo-sentence-translation.jpg', 'demo-assets/duolingo-sentence-translation.jpg'],
   ['/demo-assets/duolingo-listening-exercise.jpg', 'demo-assets/duolingo-listening-exercise.jpg'],
@@ -576,6 +579,11 @@ async function serveStatic(pathname, response) {
 
   if (marketingRoutes.has(route)) {
     await serveFile('landing/index.html', response);
+    return;
+  }
+
+  if (revealLabRoutes.has(route)) {
+    await serveFile('reveal-lab/index.html', response);
     return;
   }
 
