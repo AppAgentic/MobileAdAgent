@@ -247,16 +247,18 @@ const server = createServer(async (request, response) => {
       const session = previewStore.createSession({ canonicalAppId, url: body.url });
       let packPlan = null;
       let packPlanError = null;
-      try {
-        packPlan = await getOrBuildAnonymousPackPlan({
-          session,
-          extraction,
-          locale: body.locale || 'en-US',
-          imageCount: body.imageCount,
-          videoCount: body.videoCount,
-        });
-      } catch (error) {
-        packPlanError = error.message;
+      if (!body.deferPackPlan) {
+        try {
+          packPlan = await getOrBuildAnonymousPackPlan({
+            session,
+            extraction,
+            locale: body.locale || 'en-US',
+            imageCount: body.imageCount,
+            videoCount: body.videoCount,
+          });
+        } catch (error) {
+          packPlanError = error.message;
+        }
       }
       sendJson(response, {
         ok: true,
@@ -797,10 +799,10 @@ function combinedResearchLimitations({ storeReviews, publicResearch, hasDirectRe
   const publicWeb = (publicResearch?.limitations || []).map((limitation) => {
     if (!hasDirectReviews) return limitation;
     if (/timed out/i.test(limitation)) {
-      return 'Additional community research timed out; direct store reviews are still included.';
+      return 'We couldn’t finish the wider web search; written store reviews are still included.';
     }
     if (/not configured/i.test(limitation)) {
-      return 'Additional community research is not configured; direct store reviews are still included.';
+      return 'This plan uses written store reviews; wider web research was not available.';
     }
     return `Additional community research was limited: ${String(limitation).replace(/[.!]+$/g, '')}.`;
   });

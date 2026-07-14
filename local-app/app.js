@@ -64,10 +64,10 @@ const MIN_EXTRACTION_MS = 3600;
 const EXTRACTION_STEP_MS = 900;
 
 const GENERATION_STEPS = [
-  'Planning ads from your app info',
-  'Rendering image ads',
-  'Rendering UGC ads',
-  'Packaging exports',
+  'Planning your creative pack',
+  'Creating image ads',
+  'Creating UGC videos',
+  'Preparing your files',
 ];
 
 const PREVIEW_SESSION_KEY = 'maaPreviewSession';
@@ -111,13 +111,13 @@ const authRuntime = {
   bootstrapPromise: null,
 };
 
-const PREVIEW_STEPS = [
-  'Found listing',
-  'Found screenshots',
-  'Read customer feedback',
-  'Matched product evidence',
-  'Built creative plan',
-  'Analysis ready',
+const PREVIEW_ROUTE_STAGES = [
+  { title: 'Finding your app', busy: 'Looking up the store link you pasted…', done: 'App found' },
+  { title: 'Reading your app description', busy: 'Finding the clearest features…', done: 'Key features found' },
+  { title: 'Checking your app screens', busy: 'Looking through the screens on your listing…', done: 'Screens ready to use' },
+  { title: 'Reading customer reviews', busy: 'Looking for needs and phrases that repeat…', done: 'Common themes found' },
+  { title: 'What stood out', busy: 'Choosing the clearest messages worth testing…', done: 'Two messages stand out' },
+  { title: 'What we’re testing', busy: 'Building your creative test…', done: 'Your creative plan is ready' },
 ];
 
 const PROOF_BACKED_DEMO_URL = 'https://apps.apple.com/us/app/duolingo-language-lessons/id570060128';
@@ -167,6 +167,7 @@ function createPreviewState({
   researchStatus = null,
   researchLimitations = [],
   packPlanError = null,
+  analysisStep = 0,
 } = {}) {
   return {
     status,
@@ -177,6 +178,7 @@ function createPreviewState({
     researchStatus,
     researchLimitations,
     packPlanError,
+    analysisStep,
   };
 }
 
@@ -933,28 +935,31 @@ function renderAnonymousHome() {
   const previewStatus = state.preview.status;
   const showPreview = previewStatus === 'ready';
   const loading = previewStatus === 'loading';
+  const showAnalysis = loading || showPreview;
   const previewName = state.preview.data?.app?.name || 'your app';
 
-  $('#homeTitle').textContent = showPreview
-    ? `Review the creative plan for ${previewName}.`
+  $('#homeTitle').textContent = showAnalysis
+    ? showPreview ? `See how we built the creative plan for ${previewName}.` : 'Understanding your app…'
     : state.launchIntent
       ? 'Paste your app URL. Get 28 launch-ready ad creatives today.'
       : 'Paste your app URL. See the launch pack we can build.';
-  $('#homeSub').textContent = showPreview
-    ? 'See what we found, compare the two ideas, and open the evidence behind the plan before continuing.'
+  $('#homeSub').textContent = showAnalysis
+    ? showPreview
+      ? 'Follow the app information and customer feedback into one focused test between two ideas.'
+      : 'We’re gathering the real app information that will shape your creative test.'
     : 'We show the public app info we found before checkout, then generate the pack only after payment.';
-  $('#importForm').hidden = loading || showPreview;
+  $('#importForm').hidden = showAnalysis;
   $('#openImport').hidden = true;
   $('#showEmptyState').hidden = true;
   $('#urlNote').textContent = 'No account needed for the app preview. Generated ads start with the Same-Day Launch Pack.';
-  $('#urlNote').hidden = loading || showPreview;
+  $('#urlNote').hidden = showAnalysis;
   $('#appWorkspace').hidden = true;
-  $('#previewPane').hidden = !showPreview;
-  if (showPreview) renderPreviewPane();
+  $('#previewPane').hidden = !showAnalysis;
+  if (showAnalysis) renderPreviewPane();
   else $('#previewPane').innerHTML = '';
 
   const emptyState = $('#emptyState');
-  emptyState.hidden = loading || showPreview;
+  emptyState.hidden = showAnalysis;
   if (!emptyState.hidden) {
     emptyState.querySelector('h2').textContent = state.launchIntent
       ? 'Start your Same-Day Launch Pack with a URL.'
@@ -974,66 +979,10 @@ function previewIconStub(previewApp) {
 
 function renderPreviewPane() {
   const data = state.preview.data;
-  if (!data) return;
-  const features = data.features || [];
-  const screenshots = data.screenshots || [];
-  const expires = formatPreviewExpiry(data.previewSession?.expiresAt);
-  $('#previewPane').innerHTML = `
-    <section class="panel preview-head-card">
-      <div class="preview-head-main">
-        ${appIconHtml(previewIconStub(data.app), 'app-icon lg', `${data.app.name} icon`)}
-        <div>
-          <div class="crumb"><span class="lime">App preview</span> / ${escapeHtml(data.app.store)}${data.app.category ? ` · ${escapeHtml(data.app.category)}` : ''}</div>
-          <h2>${escapeHtml(data.app.name)}</h2>
-          <p>${escapeHtml(data.app.summary || 'No summary found on the listing yet. You can write one after you save the preview.')}</p>
-          <div class="hero-pills">
-            <span class="pill live"><span class="dot"></span>App found</span>
-            <span class="pill">${screenshots.length} usable screenshot${screenshots.length === 1 ? '' : 's'}</span>
-            <span class="pill">${features.length} key feature${features.length === 1 ? '' : 's'}</span>
-          </div>
-        </div>
-      </div>
-      <div class="hero-actions">
-        <button class="ghost-button" type="button" id="previewAnotherApp">Try another app</button>
-      </div>
-    </section>
-
-    <div class="preview-grid">
-      <section class="panel preview-features">
-        <p class="mono-label">Key features</p>
-        <h3>What ads could talk about</h3>
-        <p class="panel-note">Pulled from the public listing. You can edit, remove, or add features after you save the preview.</p>
-        ${features.length ? features.map((feature) => `
-          <div class="claim-row">
-            <span class="claim-check">✓</span>
-            <div>
-              <p>${escapeHtml(feature.text)}</p>
-              <small>${escapeHtml(feature.source)}</small>
-            </div>
-          </div>
-        `).join('') : '<div class="extract-empty"><strong>No clear features found yet</strong><small>You can add true product features after you save the preview.</small></div>'}
-      </section>
-
-      <section class="panel preview-shots">
-        <p class="mono-label">Product screens</p>
-        <h3>Screens we can use</h3>
-        <p class="panel-note">Selected from the public listing. We’ll prepare them for generation after checkout.</p>
-        ${screenshots.length ? `<div class="preview-shot-grid">
-          ${screenshots.slice(0, 8).map((shot, index) => `
-            <figure class="preview-shot">
-              <div class="preview-shot-frame">
-                ${shot.url ? `<img src="${escapeHtml(shot.url)}" alt="${escapeHtml(shot.label)}" loading="lazy" decoding="async" onerror="this.remove()">` : '<span></span>'}
-              </div>
-              <figcaption>${escapeHtml(shot.label || `Screenshot ${index + 1}`)}</figcaption>
-            </figure>
-          `).join('')}
-        </div>` : '<div class="extract-empty"><strong>No usable product screens found</strong><small>You can add screenshots after checkout before anything generates.</small></div>'}
-      </section>
-    </div>
-
-    ${renderPreviewPackPlan(data, expires)}
-  `;
+  const expires = formatPreviewExpiry(data?.previewSession?.expiresAt);
+  $('#previewPane').innerHTML = renderPreviewAnalysisRoute(data, expires);
   $('#previewAnotherApp').addEventListener('click', () => {
+    state.importSeq += 1;
     state.preview = createPreviewState();
     renderAll();
     $('#importUrl')?.focus();
@@ -1046,108 +995,242 @@ function renderPreviewPane() {
   $('#continueWithoutPreviewPlan')?.addEventListener('click', () => openCheckout('launch_pack'));
 }
 
-function renderPreviewPackPlan(data, expires) {
-  if (state.preview.packPlanStatus === 'researching') {
-    return `
-      <section class="panel pack-plan-panel pack-plan-researching preview-pack-plan-loading" aria-live="polite">
-        <div class="pack-plan-status-mark"><span class="spinner" aria-hidden="true"></span></div>
-        <div>
-          <p class="mono-label">Building your creative plan</p>
-          <h2>Turning app facts and customer feedback into two testable ideas.</h2>
-          <p>We are reading written store reviews and matching the strongest recurring needs to verified app information.</p>
-          <div class="pack-plan-research-note">
-            <span class="dot"></span>
-            <strong>Research in progress</strong>
-            <small>No account, checkout, or credits yet.</small>
-          </div>
-        </div>
-      </section>
-    `;
-  }
-
-  if (state.preview.packPlanStatus === 'error' || !state.preview.packPlan) {
-    return `
-      <section class="panel preview-plan-error">
-        <div>
-          <p class="mono-label">Creative plan unavailable</p>
-          <h3>We could not finish the plan from this listing.</h3>
-          <p>${escapeHtml(state.preview.packPlanError || 'Try the research again, or continue and add clearer app screenshots after account creation.')}</p>
-        </div>
-        <div class="preview-plan-error-actions">
-          <button class="ghost-button" type="button" id="retryPreviewPackPlan">Retry plan</button>
-          <button class="primary-button" type="button" id="continueWithoutPreviewPlan">Continue and add screenshots</button>
-        </div>
-      </section>
-    `;
-  }
-
+function renderPreviewAnalysisRoute(data, expires) {
+  const step = Math.max(0, Math.min(PREVIEW_ROUTE_STAGES.length - 1, state.preview.analysisStep || 0));
+  const app = data?.app || {};
+  const features = data?.features || [];
+  const screenshots = data?.screenshots || [];
   const plan = state.preview.packPlan;
-  const research = plan.researchSnapshot || {};
-  const productTruth = research.productTruth || [];
+  const research = plan?.researchSnapshot || {};
   const marketSignals = research.marketSignals || [];
-  const limitations = state.preview.researchLimitations || [];
-  const split = packPlanGenerationSplit(plan.assignments || []);
-  const outputMix = plan.request?.outputMix || { image: 0, ugc: 0 };
+  const publicFeedback = marketSignals.filter((item) => item.kind === 'store_review' || item.kind === 'community_discussion');
+  const productTruth = research.productTruth || [];
+  const complete = state.preview.packPlanStatus === 'ready' && Boolean(plan);
 
   return `
-    <section class="panel pack-plan-panel preview-pack-plan" aria-labelledby="previewPackPlanTitle">
-      <div class="pack-plan-head section-row">
+    <section class="analysis-route ${complete ? 'is-complete' : ''}" aria-live="polite">
+      <header class="analysis-route-head">
         <div>
-          <p class="mono-label">Your first creative experiment</p>
-          <h2 id="previewPackPlanTitle">Your creative plan</h2>
-          <div class="pack-plan-construction">
-            <span>How we built this plan</span>
-            <p>${escapeHtml(packPlanConstructionCopy({ app: data.app, productTruth, marketSignals }))}</p>
-          </div>
+          <p class="mono-label">Creative research</p>
+          <h2>${data ? `Building a focused test for ${escapeHtml(app.name)}` : 'Finding the ideas worth testing'}</h2>
+          <p>${data
+            ? 'We’re using your app listing, screens, and customer feedback to choose two product messages to compare.'
+            : 'Your plan will appear here as we understand the app and what customers care about.'}</p>
         </div>
-      </div>
-
-      <section class="hypothesis-block">
-        <div>
-          <p class="mono-label">What we're testing</p>
-          <h3>${escapeHtml(packPlanTestQuestion(data.app))}</h3>
+        <div class="analysis-route-actions">
+          <span>${Math.min(step + 1, PREVIEW_ROUTE_STAGES.length)} of ${PREVIEW_ROUTE_STAGES.length}</span>
+          <button class="ghost-button" type="button" id="previewAnotherApp">Try another app</button>
         </div>
-      </section>
+      </header>
 
-      <div class="experiment-grid">
-        ${packPlanLaneHtml('Idea A', plan.experiment?.primary, plan.assignments || [])}
-        ${packPlanLaneHtml('Idea B', plan.experiment?.challenger, plan.assignments || [])}
-      </div>
-
-      ${packPlanGenerationSplitHtml(split)}
-
-      <details class="pack-plan-evidence">
-        <summary><span>Why this plan?</span></summary>
-        ${limitations.length ? `
-          <p class="evidence-research-note"><strong>Research note:</strong> ${escapeHtml(limitations.join(' '))}</p>
-        ` : ''}
-        <div class="evidence-grid two-columns">
-          ${packPlanEvidenceGroup('From your app', 'claim', 'Facts and visual references shaping the plan', productTruth)}
-          ${packPlanEvidenceGroup(
-            'From public feedback',
-            'signal',
-            'Written store reviews and public conversations',
-            marketSignals,
-            'Public feedback could not be loaded for this plan.',
-          )}
-        </div>
-      </details>
-
-      <div class="pack-plan-footer preview-plan-footer">
-        <div class="pack-output-mix">
-          <div>
-            <p class="mono-label">What we'll generate</p>
-            <strong>${packMixLabel(outputMix)}</strong>
-            <small>${plan.costCredits} credits after checkout · nothing charged now</small>
-          </div>
-        </div>
-        <div class="preview-plan-checkout">
-          <small>Approve the app info after checkout before any paid generation starts. Preview saved until ${escapeHtml(expires)}.</small>
-          <button class="primary-button" type="button" id="previewCheckoutLaunch">Generate My Ads</button>
-        </div>
-      </div>
+      <ol class="analysis-route-list">
+        ${analysisStationHtml({
+          index: 0,
+          step,
+          content: data ? analysisListingHtml(app) : analysisWaitingHtml('Searching the store for the app you pasted'),
+        })}
+        ${analysisStationHtml({
+          index: 1,
+          step,
+          content: data ? analysisDescriptionHtml(app, features) : '',
+        })}
+        ${analysisStationHtml({
+          index: 2,
+          step,
+          content: data ? analysisScreensHtml(screenshots) : '',
+        })}
+        ${analysisStationHtml({
+          index: 3,
+          step,
+          content: complete
+            ? analysisReviewsHtml(publicFeedback)
+            : state.preview.packPlanStatus === 'error'
+              ? analysisResearchErrorHtml()
+              : analysisWaitingHtml('Reading written reviews and looking for themes that repeat'),
+        })}
+        ${analysisStationHtml({
+          index: 4,
+          step,
+          content: complete ? analysisInsightsHtml(plan, screenshots) : '',
+        })}
+        ${analysisStationHtml({
+          index: 5,
+          step,
+          content: complete ? analysisPlanHtml({ data, plan, productTruth, marketSignals, expires }) : '',
+        })}
+      </ol>
     </section>
   `;
+}
+
+function analysisStationHtml({ index, step, content }) {
+  const stage = PREVIEW_ROUTE_STAGES[index];
+  const finalReady = index === PREVIEW_ROUTE_STAGES.length - 1
+    && index === step
+    && state.preview.packPlanStatus === 'ready';
+  const stateName = index < step || finalReady ? 'complete' : index === step ? 'active' : 'future';
+  const visibleContent = stateName === 'future' ? '' : content;
+  return `
+    <li class="analysis-station ${stateName}" data-analysis-stage="${index}">
+      <span class="analysis-node" aria-hidden="true">${stateName === 'complete' ? '✓' : ''}</span>
+      <article class="analysis-station-card">
+        <div class="analysis-station-title">
+          <span>${String(index + 1).padStart(2, '0')}</span>
+          <h3>${escapeHtml(stage.title)}</h3>
+        </div>
+        ${stateName === 'future' ? '' : `<p class="analysis-activity ${stateName === 'active' ? 'busy' : ''}">${escapeHtml(stateName === 'active' ? stage.busy : stage.done)}</p>`}
+        ${visibleContent ? `<div class="analysis-station-content">${visibleContent}</div>` : ''}
+      </article>
+    </li>
+  `;
+}
+
+function analysisWaitingHtml(copy) {
+  return `
+    <div class="analysis-waiting">
+      <span class="analysis-scan-line" aria-hidden="true"></span>
+      <div><i></i><i></i><i></i></div>
+      <p>${escapeHtml(copy)}</p>
+    </div>
+  `;
+}
+
+function analysisListingHtml(app) {
+  const storeDetails = [...new Set([app.store, app.category].filter(Boolean))].join(' · ');
+  return `
+    <div class="analysis-app-card">
+      ${appIconHtml(previewIconStub(app), 'app-icon lg', `${app.name} icon`)}
+      <div>
+        <strong>${escapeHtml(app.name || 'App found')}</strong>
+        <span>${escapeHtml(storeDetails)}</span>
+        <p>${escapeHtml(app.summary || 'We found the public store listing.')}</p>
+      </div>
+    </div>
+  `;
+}
+
+function analysisDescriptionHtml(app, features) {
+  return `
+    <blockquote class="analysis-summary">${escapeHtml(app.summary || 'We found the public app description.')}</blockquote>
+    ${features.length ? `<div class="analysis-feature-list">${features.slice(0, 5).map((feature) => `<span>${escapeHtml(feature.text)}</span>`).join('')}</div>` : ''}
+    <p class="analysis-meaning">Next, we check which of these features can be shown clearly in the ads.</p>
+  `;
+}
+
+function analysisScreensHtml(screenshots) {
+  if (!screenshots.length) {
+    return '<p class="analysis-empty">We did not find a clear app screen, so you can add one before anything is generated.</p>';
+  }
+  return `
+    <div class="analysis-screens">
+      ${screenshots.slice(0, 5).map((shot, index) => `
+        <figure style="--reveal-delay:${index * 90}ms">
+          <div>${shot.url ? `<img src="${escapeHtml(shot.url)}" alt="${escapeHtml(shot.label || `App screen ${index + 1}`)}" loading="eager" decoding="async" onerror="this.remove()">` : ''}<span></span></div>
+          <figcaption>${escapeHtml(shot.label || `Screen ${index + 1}`)}</figcaption>
+        </figure>
+      `).join('')}
+    </div>
+    <p class="analysis-meaning">These screens give the creative ideas something real and specific to show.</p>
+  `;
+}
+
+function analysisReviewsHtml(signals) {
+  if (!signals.length) {
+    return '<p class="analysis-empty">No written reviews were available, so this first plan uses your app description and screens.</p>';
+  }
+  return `
+    <div class="analysis-reviews">
+      ${signals.slice(0, 4).map((signal, index) => `
+        <article style="--reveal-delay:${index * 100}ms">
+          <span>${escapeHtml(signal.source?.platform || 'Customer review')}</span>
+          <p>“${escapeHtml(shorten(customerReviewDisplayCopy(signal), 190))}”</p>
+        </article>
+      `).join('')}
+    </div>
+    <p class="analysis-meaning">We use repeated customer needs to decide which product messages are worth comparing.</p>
+  `;
+}
+
+function customerReviewDisplayCopy(signal) {
+  return customerEvidenceCopy(signal).replace(/^review excerpt:\s*/i, '');
+}
+
+function analysisResearchErrorHtml() {
+  return `
+    <div class="analysis-inline-error">
+      <p>${escapeHtml(state.preview.packPlanError || 'We could not finish reading customer feedback.')}</p>
+      <button class="ghost-button" type="button" id="retryPreviewPackPlan">Try again</button>
+    </div>
+  `;
+}
+
+function analysisInsightsHtml(plan, screenshots) {
+  const lanes = [
+    ['Message A', plan.experiment?.primary],
+    ['Message B', plan.experiment?.challenger],
+  ];
+  return `
+    <div class="analysis-insights">
+      ${lanes.map(([label, lane], index) => `
+        <article>
+          <div>
+            <span>${escapeHtml(label)}</span>
+            <h4>${escapeHtml(lane?.angle || '')}</h4>
+            <p>${escapeHtml(customerPlanRationale(lane?.rationale || ''))}</p>
+          </div>
+          ${screenshots[index]?.url ? `<img src="${escapeHtml(screenshots[index].url)}" alt="${escapeHtml(screenshots[index].label || 'App screen')}">` : ''}
+        </article>
+      `).join('')}
+    </div>
+    <p class="analysis-rule">We only use messages your app can clearly demonstrate.</p>
+  `;
+}
+
+function analysisPlanHtml({ data, plan, productTruth, marketSignals, expires }) {
+  const split = packPlanGenerationSplit(plan.assignments || []);
+  const outputMix = plan.request?.outputMix || { image: 0, ugc: 0 };
+  const limitations = state.preview.researchLimitations || [];
+  return `
+    <div class="analysis-plan-intro">
+      <p class="mono-label">Your creative plan</p>
+      <h3>${escapeHtml(packPlanTestQuestion(data.app))}</h3>
+      <p>${escapeHtml(packPlanConstructionCopy({ app: data.app, productTruth, marketSignals }))}</p>
+    </div>
+    <div class="experiment-grid analysis-experiment-grid">
+      ${packPlanLaneHtml('Idea A', plan.experiment?.primary, plan.assignments || [])}
+      ${packPlanLaneHtml('Idea B', plan.experiment?.challenger, plan.assignments || [])}
+    </div>
+    ${packPlanGenerationSplitHtml(split)}
+    <details class="pack-plan-evidence analysis-evidence">
+      <summary><span>Why this plan?</span></summary>
+      ${limitations.length ? `<p class="evidence-research-note"><strong>Research note:</strong> ${escapeHtml(limitations.join(' '))}</p>` : ''}
+      <div class="evidence-grid two-columns">
+        ${packPlanEvidenceGroup('From your app', 'claim', 'App information and screens that shaped the plan', productTruth)}
+        ${packPlanEvidenceGroup('From customer feedback', 'signal', 'Written store reviews and public conversations', marketSignals, 'No public feedback was available for this plan.')}
+      </div>
+    </details>
+    <div class="pack-plan-footer preview-plan-footer analysis-plan-footer">
+      <div class="pack-output-mix">
+        <div>
+          <p class="mono-label">What we’ll create</p>
+          <strong>${packMixLabel(outputMix)}</strong>
+          <small>${plan.costCredits} credits after checkout · nothing charged now</small>
+        </div>
+      </div>
+      <div class="preview-plan-checkout">
+        <small>We’ll create both ideas so you can see which message performs better. Plan saved until ${escapeHtml(expires)}.</small>
+        <button class="primary-button" type="button" id="previewCheckoutLaunch">Generate My Ads</button>
+      </div>
+    </div>
+  `;
+}
+
+function customerPlanRationale(copy) {
+  return String(copy || '')
+    .replace(/verified product message/gi, 'clear product message')
+    .replace(/app evidence/gi, 'app information')
+    .replace(/public-feedback/gi, 'customer feedback')
+    .replace(/proof/gi, 'app screen');
 }
 
 function formatPreviewExpiry(iso) {
@@ -1224,15 +1307,15 @@ function renderLiveRun(app) {
     <div class="live-run">
       <span class="spinner" aria-hidden="true"></span>
       <div>
-        <strong>${escapeHtml(latest.label)} is cooking</strong>
-        <p>${escapeHtml(GENERATION_STEPS[latest.step || 0] || 'Packaging exports')}.</p>
+        <strong>${escapeHtml(latest.label)} is being created</strong>
+        <p>${escapeHtml(GENERATION_STEPS[latest.step || 0] || 'Preparing your files')}.</p>
         <div class="run-steps">
           ${GENERATION_STEPS.map((step, index) => `
             <span class="${index < (latest.step || 0) ? 'done' : index === (latest.step || 0) ? 'now' : ''}">${escapeHtml(step)}</span>
           `).join('')}
         </div>
       </div>
-      <span class="pill live">ready soon</span>
+      <span class="pill live">In progress</span>
     </div>
   `;
 }
@@ -1588,7 +1671,7 @@ function packPlanConstructionCopy({ app = {}, productTruth = [], marketSignals =
   const sourceList = sources.length === 1
     ? sources[0]
     : `${sources.slice(0, -1).join(', ')} and ${sources.at(-1)}`;
-  return `We analysed ${sourceList} to find the messages most worth testing. Those findings shaped the two ideas and how this creative pack is split between them.`;
+  return `We used ${sourceList} to choose two product messages worth testing. We’ll create both so you can compare which one connects better.`;
 }
 
 function packPlanTestQuestion(app = {}) {
@@ -1616,9 +1699,9 @@ function packPlanLaneHtml(label, lane, assignments = []) {
   const ugc = laneAssignments.filter((item) => item.format === 'ugc_ad').length;
   return `
     <article class="experiment-lane ${lane?.id || ''}">
-      <div class="experiment-lane-head"><span>${escapeHtml(label)}</span><small>We'll generate ${count} creative${count === 1 ? '' : 's'}</small></div>
+      <div class="experiment-lane-head"><span>${escapeHtml(label)}</span><small>We’ll create ${count} creative${count === 1 ? '' : 's'}</small></div>
       <h3>${escapeHtml(lane?.angle || '')}</h3>
-      <p>${escapeHtml(lane?.rationale || '')}</p>
+      <p>${escapeHtml(customerPlanRationale(lane?.rationale || ''))}</p>
       <div class="experiment-lane-mix">${packPlanLaneMixLabel({ images, ugc })}</div>
     </article>
   `;
@@ -1655,7 +1738,7 @@ function packPlanGenerationSplitHtml(split) {
   return `
     <section class="generation-split" aria-label="How creatives will be split between the two ideas">
       <div class="generation-split-copy">
-        <p class="mono-label">What we'll generate</p>
+        <p class="mono-label">What we’ll create</p>
         <h3>${headline}</h3>
         <p>${allocationCopy}</p>
       </div>
@@ -1684,7 +1767,7 @@ function packPlanLaneMixLabel({ images = 0, ugc = 0 } = {}) {
   return parts.join(' + ') || 'No creatives assigned';
 }
 
-function packPlanEvidenceGroup(title, tone, helper, items, emptyCopy = 'No evidence is available for this plan.') {
+function packPlanEvidenceGroup(title, tone, helper, items, emptyCopy = 'Nothing was available for this part of the plan.') {
   const visible = (items || []).slice(0, 6);
   return `
     <section class="evidence-group ${tone}">
@@ -1704,6 +1787,7 @@ function packPlanEvidenceGroup(title, tone, helper, items, emptyCopy = 'No evide
 
 function customerEvidenceCopy(item = {}) {
   const copy = item.instruction || item.paraphrase || item.text || item.theme || '';
+  if (item.kind === 'store_review') return String(copy).replace(/^review excerpt:\s*/i, '');
   if (item.kind !== 'screen') return copy;
   const label = String(copy).split(/\s+—\s+/)[0].trim() || 'App screenshot';
   return customerEvidenceSourceLabel(item, item.source) === 'Store screenshot'
@@ -3794,6 +3878,7 @@ function renderCredits() {
 
 async function buildPreviewPackPlan(previewSessionId) {
   if (!previewSessionId || state.preview.data?.previewSession?.id !== previewSessionId) return;
+  const startedAt = Date.now();
   state.preview.packPlanStatus = 'researching';
   state.preview.packPlanError = null;
   renderAll();
@@ -3814,19 +3899,36 @@ async function buildPreviewPackPlan(previewSessionId) {
       throw new Error(payload.error || 'Could not build the creative plan.');
     }
     if (state.preview.data?.previewSession?.id !== previewSessionId) return;
+    await wait(Math.max(0, 1300 - (Date.now() - startedAt)));
+    if (state.preview.data?.previewSession?.id !== previewSessionId) return;
     state.preview.packPlan = payload.plan;
     state.preview.packPlanStatus = 'ready';
     state.preview.researchStatus = payload.researchStatus || 'limited';
     state.preview.researchLimitations = payload.researchLimitations || [];
+    state.preview.analysisStep = 4;
     renderAll();
-    toast('Creative plan ready. Open “Why this plan?” to see the evidence.');
-    $('#previewPackPlanTitle')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    await wait(650);
+    if (state.preview.data?.previewSession?.id !== previewSessionId) return;
+    state.preview.analysisStep = 5;
+    renderAll();
+    toast('Your creative plan is ready. Open “Why this plan?” to see how we built it.');
+    document.querySelector('[data-analysis-stage="5"]')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   } catch (error) {
     if (state.preview.data?.previewSession?.id !== previewSessionId) return;
     state.preview.packPlanStatus = 'error';
     state.preview.packPlanError = error.message || 'Could not build the creative plan.';
+    state.preview.analysisStep = 3;
     renderAll();
   }
+}
+
+function schedulePreviewAnalysisStep(previewSessionId, step, delay) {
+  setTimeout(() => {
+    if (state.preview.data?.previewSession?.id !== previewSessionId) return;
+    if (state.preview.analysisStep >= step || state.preview.packPlanStatus === 'error') return;
+    state.preview.analysisStep = step;
+    renderAll();
+  }, delay);
 }
 
 async function startPreview(rawUrl) {
@@ -3841,27 +3943,10 @@ async function startPreview(rawUrl) {
   const url = parsed.href;
   const importSeq = state.importSeq + 1;
   state.importSeq = importSeq;
-  state.preview = createPreviewState({ status: 'loading', url });
-  state.building = {
-    name: 'Your app',
-    headline: 'Previewing your app',
-    url,
-    step: 0,
-    detail: 'Reading the public listing...',
-    steps: PREVIEW_STEPS,
-  };
-  const startedAt = Date.now();
+  state.preview = createPreviewState({ status: 'loading', url, analysisStep: 0 });
+  state.building = null;
   $('#importUrl').value = '';
   renderAll();
-
-  const timer = setInterval(() => {
-    if (!state.building || state.importSeq !== importSeq) {
-      clearInterval(timer);
-      return;
-    }
-    state.building.step = Math.min(PREVIEW_STEPS.length - 2, state.building.step + 1);
-    renderBuildStrip();
-  }, EXTRACTION_STEP_MS);
 
   try {
     const response = await fetch('/api/previews/from-url', {
@@ -3872,6 +3957,7 @@ async function startPreview(rawUrl) {
         imageCount: LAUNCH_PACK_MIX.image,
         videoCount: LAUNCH_PACK_MIX.video,
         locale: navigator.language || 'en-US',
+        deferPackPlan: true,
       }),
     });
     const payload = await response.json().catch(() => ({}));
@@ -3879,29 +3965,23 @@ async function startPreview(rawUrl) {
       throw new Error(payload.error || 'Could not preview that URL.');
     }
     if (state.importSeq !== importSeq) return;
-    const elapsed = Date.now() - startedAt;
-    await wait(Math.max(0, MIN_EXTRACTION_MS - elapsed));
-    if (state.importSeq !== importSeq) return;
-    clearInterval(timer);
-    state.building = null;
     state.preview = createPreviewState({
       status: 'ready',
       url,
       data: payload.preview,
-      packPlanStatus: payload.packPlan?.plan ? 'ready' : 'error',
-      packPlan: payload.packPlan?.plan || null,
-      researchStatus: payload.packPlan?.researchStatus || null,
-      researchLimitations: payload.packPlan?.researchLimitations || [],
-      packPlanError: payload.packPlanError || null,
+      packPlanStatus: 'researching',
+      analysisStep: 1,
     });
     try {
       localStorage.setItem(PREVIEW_SESSION_KEY, JSON.stringify({ id: payload.preview.previewSession.id }));
     } catch { /* storage unavailable; preview still works for this visit */ }
     renderAll();
-    toast(`${payload.preview.app.name} analysis and creative plan are ready.`);
+    const previewSessionId = payload.preview.previewSession.id;
+    schedulePreviewAnalysisStep(previewSessionId, 2, 450);
+    schedulePreviewAnalysisStep(previewSessionId, 3, 1050);
+    buildPreviewPackPlan(previewSessionId);
   } catch (error) {
     if (state.importSeq !== importSeq) return;
-    clearInterval(timer);
     state.building = null;
     state.preview = createPreviewState();
     renderAll();
@@ -3928,6 +4008,7 @@ async function tryRestorePreview() {
       packPlan: payload.packPlan?.plan || null,
       researchStatus: payload.packPlan?.researchStatus || null,
       researchLimitations: payload.packPlan?.researchLimitations || [],
+      analysisStep: payload.packPlan?.plan ? 5 : 3,
     });
     renderAll();
     if (payload.packPlan?.plan) toast('Welcome back — your saved creative plan is ready.');
